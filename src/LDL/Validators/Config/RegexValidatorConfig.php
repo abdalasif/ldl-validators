@@ -2,6 +2,10 @@
 
 namespace LDL\Validators\Config;
 
+use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
+use LDL\Framework\Base\Exception\ArrayFactoryException;
+use LDL\Framework\Base\Helper\RegexHelper;
+
 class RegexValidatorConfig implements ValidatorConfigInterface
 {
     use ValidatorConfigInterfaceTrait;
@@ -13,7 +17,7 @@ class RegexValidatorConfig implements ValidatorConfigInterface
 
     public function __construct(string $regex, bool $strict=false)
     {
-        RegexValidatorHelper::validate($regex);
+        RegexHelper::validate($regex);
 
         $this->regex = $regex;
         $this->_isStrict = $strict;

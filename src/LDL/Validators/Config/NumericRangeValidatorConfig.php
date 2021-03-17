@@ -4,8 +4,8 @@ namespace LDL\Validators\Config;
 
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 use LDL\Framework\Base\Exception\ArrayFactoryException;
-use LDL\Validators\Collection\Validator\MinNumericValidator;
 use LDL\Validators\MaxNumericValidator;
+use LDL\Validators\MinNumericValidator;
 
 class NumericRangeValidatorConfig implements ValidatorConfigInterface
 {

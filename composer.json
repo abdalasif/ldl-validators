@@ -8,6 +8,10 @@
         {
             "name": "Federico",
             "email": "jpfstange@gmail.com"
+        },
+        {
+            "name": "Gonzalo Coda",
+            "email": "gonzalocoda@gmail.com"
         }
     ],
     "minimum-stability": "dev",
@@ -19,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "LDL\\Type\\": "src/LDL/Validators"
+            "LDL\\Validators\\": "src/LDL/Validators"
         }
     }
 }

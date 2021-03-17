@@ -5,7 +5,7 @@ namespace LDL\Validators\Config;
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 use LDL\Framework\Base\Exception\ArrayFactoryException;
 
-class MaxNumericValidatorConfig implements ValidatorConfigInterface
+class NumericValidatorConfig implements ValidatorConfigInterface
 {
     use ValidatorConfigInterfaceTrait;
 
@@ -15,7 +15,7 @@ class MaxNumericValidatorConfig implements ValidatorConfigInterface
     private $value;
 
     /**
-     * MaxNumericValueValidator constructor.
+     * MinNumericValueValidator constructor.
      * @param $value
      * @param bool $isStrict
      */
@@ -24,7 +24,7 @@ class MaxNumericValidatorConfig implements ValidatorConfigInterface
         $this->_isStrict = $isStrict;
 
         if(null !== $value && false === filter_var($value, \FILTER_VALIDATE_INT | \FILTER_VALIDATE_FLOAT)){
-            throw new \InvalidArgumentException("Given maximum value must be a number, \"$value\" was given");
+            throw new \InvalidArgumentException("Given value must be a number, \"$value\" was given");
         }
 
         $this->value = $value;
@@ -63,6 +63,7 @@ class MaxNumericValidatorConfig implements ValidatorConfigInterface
         }catch(\Exception $e){
             throw new ArrayFactoryException($e->getMessage());
         }
+
     }
 
     /**

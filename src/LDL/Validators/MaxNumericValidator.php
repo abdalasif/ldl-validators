@@ -2,20 +2,21 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\MaxNumericValidatorConfig;
+use LDL\Validators\Config\Exception\InvalidConfigException;
+use LDL\Validators\Config\NumericValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\NumericRangeValidatorException;
 
 class MaxNumericValidator implements ValidatorInterface
 {
     /**
-     * @var MaxNumericValidatorConfig
+     * @var NumericValidatorConfig
      */
     private $config;
 
     public function __construct($value, bool $strict=true)
     {
-        $this->config = new MaxNumericValidatorConfig($value, $strict);
+        $this->config = new NumericValidatorConfig($value, $strict);
     }
 
     public function validate($value): void
@@ -24,36 +25,36 @@ class MaxNumericValidator implements ValidatorInterface
             return;
         }
 
-        $msg = "Items in this collection can not be greater than: {$this->config->getValue()}";
+        $msg = "Value can not be greater than: {$this->config->getValue()}";
         throw new NumericRangeValidatorException($msg);
     }
 
     /**
      * @param ValidatorConfigInterface $config
      * @return ValidatorInterface
-     * @throws Exception\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
     {
-        if(false === $config instanceof MaxNumericValidatorConfig){
+        if(false === $config instanceof NumericValidatorConfig){
             $msg = sprintf(
                 'Config expected to be %s, config of class %s was given',
                 __CLASS__,
                 get_class($config)
             );
-            throw new Exception\InvalidConfigException($msg);
+            throw new InvalidConfigException($msg);
         }
 
         /**
-         * @var MaxNumericValidatorConfig $config
+         * @var NumericValidatorConfig $config
          */
         return new self($config->getValue(), $config->isStrict());
     }
 
     /**
-     * @return MaxNumericValidatorConfig
+     * @return ValidatorConfigInterface
      */
-    public function getConfig(): MaxNumericValidatorConfig
+    public function getConfig(): ValidatorConfigInterface
     {
         return $this->config;
     }

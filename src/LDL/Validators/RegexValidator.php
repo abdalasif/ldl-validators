@@ -2,6 +2,9 @@
 
 namespace LDL\Validators;
 
+use LDL\Validators\Config\Exception\InvalidConfigException;
+use LDL\Validators\Config\RegexValidatorConfig;
+use LDL\Validators\Config\ValidatorConfigInterface;
 
 class RegexValidator implements ValidatorInterface
 {
@@ -15,32 +18,24 @@ class RegexValidator implements ValidatorInterface
         $this->config = new RegexValidatorConfig($regex, $strict);
     }
 
-    public function validateKey(CollectionInterface $collection, $item, $key): void
-    {
-        $this->validateValue($collection, $key, $item);
-    }
-
     /**
-     * @param CollectionInterface $collection
-     * @param mixed $item
-     * @param number|string $key
+     * @param mixed $value
      * @throws Exception\RegexValidatorException
-     *
      */
-    public function validateValue(CollectionInterface $collection, $item, $key): void
+    public function validate($value): void
     {
-        if(preg_match($this->config->getRegex(), (string) $item)) {
+        if(preg_match($this->config->getRegex(), (string) $value)) {
             return;
         }
 
-        $msg = "Given value: \"$item\" does not matches regex: \"{$this->config->getRegex()}\"";
+        $msg = "Given value: \"$value\" does not matches regex: \"{$this->config->getRegex()}\"";
         throw new Exception\RegexValidatorException($msg);
     }
 
     /**
      * @param ValidatorConfigInterface $config
      * @return ValidatorInterface
-     * @throws Exception\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
     {
@@ -50,7 +45,7 @@ class RegexValidator implements ValidatorInterface
                 __CLASS__,
                 get_class($config)
             );
-            throw new Exception\InvalidConfigException($msg);
+            throw new InvalidConfigException($msg);
         }
 
         /**
@@ -60,9 +55,9 @@ class RegexValidator implements ValidatorInterface
     }
 
     /**
-     * @return RegexValidatorConfig
+     * @return ValidatorConfigInterface
      */
-    public function getConfig(): RegexValidatorConfig
+    public function getConfig(): ValidatorConfigInterface
     {
         return $this->config;
     }

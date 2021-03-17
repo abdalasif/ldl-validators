@@ -1,22 +1,22 @@
 <?php declare(strict_types=1);
 
-namespace LDL\Validators\Collection\Validator;
+namespace LDL\Validators;
 
-use LDL\Validators\Config\MinNumericValidatorConfig;
+use LDL\Validators\Config\Exception\InvalidConfigException;
+use LDL\Validators\Config\NumericValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\NumericRangeValidatorException;
-use LDL\Validators\ValidatorInterface;
 
 class MinNumericValidator implements ValidatorInterface
 {
     /**
-     * @var MinNumericValidatorConfig
+     * @var NumericValidatorConfig
      */
     private $config;
 
     public function __construct($value, bool $strict=true)
     {
-        $this->config = new MinNumericValidatorConfig($value, $strict);
+        $this->config = new NumericValidatorConfig($value, $strict);
     }
 
     public function validate($value): void
@@ -29,27 +29,32 @@ class MinNumericValidator implements ValidatorInterface
         throw new NumericRangeValidatorException($msg);
     }
 
+    /**
+     * @param ValidatorConfigInterface $config
+     * @return ValidatorInterface
+     * @throws InvalidConfigException
+     */
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
     {
-        if(false === $config instanceof MinNumericValidatorConfig){
+        if(false === $config instanceof NumericValidatorConfig){
             $msg = sprintf(
                 'Config expected to be %s, config of class %s was given',
                 __CLASS__,
                 get_class($config)
             );
-            throw new Exception\InvalidConfigException($msg);
+            throw new InvalidConfigException($msg);
         }
 
         /**
-         * @var MinNumericValidatorConfig $config
+         * @var NumericValidatorConfig $config
          */
         return new self($config->getValue(), $config->isStrict());
     }
 
     /**
-     * @return MinNumericValidatorConfig
+     * @return ValidatorConfigInterface
      */
-    public function getConfig(): MinNumericValidatorConfig
+    public function getConfig(): ValidatorConfigInterface
     {
         return $this->config;
     }

@@ -1,20 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace LDL\Validators\Collection\Validator;
+namespace LDL\Validators;
 
-use LDL\Validators\Collection\Interfaces\CollectionInterface;
-use LDL\Validators\Collection\Interfaces\Validation\AppendItemValidatorInterface;
-use LDL\Validators\Collection\Interfaces\Validation\KeyValidatorInterface;
-use LDL\Validators\Collection\Interfaces\Validation\ValidatorInterface;
-use LDL\Validators\Collection\Interfaces\Validation\ValueValidatorInterface;
-use LDL\Validators\Collection\Traits\Validator\ValidatorInterfaceTrait;
-use LDL\Validators\Collection\Validator\Config\NumericRangeValidatorConfig;
-use LDL\Validators\Collection\Validator\Config\ValidatorConfigInterface;
+use LDL\Validators\Config\Exception\InvalidConfigException;
+use LDL\Validators\Config\NumericRangeValidatorConfig;
+use LDL\Validators\Config\ValidatorConfigInterface;
 
-class NumericRangeValidator implements AppendItemValidatorInterface, ValueValidatorInterface, KeyValidatorInterface
+class NumericRangeValidator implements ValidatorInterface
 {
-    use ValidatorInterfaceTrait;
-
     /**
      * @var NumericRangeValidatorConfig
      */
@@ -25,28 +18,16 @@ class NumericRangeValidator implements AppendItemValidatorInterface, ValueValida
         $this->config = new NumericRangeValidatorConfig($min, $max, $strict);
     }
 
-    public function validateKey(CollectionInterface $collection, $item, $key): void
+    public function validate($value): void
     {
-        $this->config->getMin()->validateKey($collection, $item, $key);
-        $this->config->getMax()->validateKey($collection, $item, $key);
-    }
-
-    /**
-     * @param CollectionInterface $collection
-     * @param mixed $item
-     * @param number|string $key
-     * @throws Exception\NumericRangeValidatorException
-     */
-    public function validateValue(CollectionInterface $collection, $item, $key): void
-    {
-        $this->config->getMin()->validateValue($collection, $item, $key);
-        $this->config->getMax()->validateValue($collection, $item, $key);
+        $this->config->getMin()->validate($value);
+        $this->config->getMax()->validate($value);
     }
 
     /**
      * @param ValidatorConfigInterface $config
      * @return ValidatorInterface
-     * @throws Exception\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
     {
@@ -56,19 +37,23 @@ class NumericRangeValidator implements AppendItemValidatorInterface, ValueValida
                 __CLASS__,
                 get_class($config)
             );
-            throw new Exception\InvalidConfigException($msg);
+            throw new InvalidConfigException($msg);
         }
 
         /**
          * @var NumericRangeValidatorConfig $config
          */
-        return new self($config->getMin(), $config->getMax(), $config->isStrict());
+        return new self(
+            $config->getMin()->getConfig()->getValue(),
+            $config->getMax()->getConfig()->getValue(),
+            $config->isStrict()
+        );
     }
 
     /**
-     * @return NumericRangeValidatorConfig
+     * @return ValidatorConfigInterface
      */
-    public function getConfig(): NumericRangeValidatorConfig
+    public function getConfig(): ValidatorConfigInterface
     {
         return $this->config;
     }
