@@ -1,0 +1,25 @@
+{
+    "name": "ldl/ldl-validators",
+    "description": "LDL Framework validators",
+    "homepage": "https://github.com/pthreat/ldl-validators",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Federico",
+            "email": "jpfstange@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "ldl-framework/framework-base": "dev-master",
+        "php": ">=7.3",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "LDL\\Type\\": "src/LDL/Validators"
+        }
+    }
+}
