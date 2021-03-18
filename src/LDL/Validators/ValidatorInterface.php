@@ -22,6 +22,6 @@ interface ValidatorInterface
     /**
      * @return ValidatorConfigInterface
      */
-    public function getConfig(): ValidatorConfigInterface;
+    public function getConfig();
 
 }

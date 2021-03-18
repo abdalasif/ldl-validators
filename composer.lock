@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/pthreat/ldl-framework-base.git",
-                "reference": "ea59543ecbcca15ace6ec97b3ae9af942b0a35f8"
+                "reference": "37e28d3614b6a0643e1af4b7d4f976636d98ca04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pthreat/ldl-framework-base/zipball/ea59543ecbcca15ace6ec97b3ae9af942b0a35f8",
-                "reference": "ea59543ecbcca15ace6ec97b3ae9af942b0a35f8",
+                "url": "https://api.github.com/repos/pthreat/ldl-framework-base/zipball/37e28d3614b6a0643e1af4b7d4f976636d98ca04",
+                "reference": "37e28d3614b6a0643e1af4b7d4f976636d98ca04",
                 "shasum": ""
             },
             "require": {
@@ -26,7 +26,8 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "LDL\\Framework\\Base\\": "src/LDL/Framework/Base/"
+                    "LDL\\Framework\\Base\\": "src/LDL/Framework/Base/",
+                    "LDL\\Framework\\Helper\\": "src/LDL/Framework/Helper/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -40,7 +41,7 @@
                 }
             ],
             "description": "LDL Framework base contracts and exceptions",
-            "time": "2021-03-17T14:12:20+00:00"
+            "time": "2021-03-18T10:49:43+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",

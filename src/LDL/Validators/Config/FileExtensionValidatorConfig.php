@@ -4,31 +4,28 @@ namespace LDL\Validators\Config;
 
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 use LDL\Framework\Base\Exception\ArrayFactoryException;
-use LDL\Framework\Helper\RegexHelper;
 
-class RegexValidatorConfig implements ValidatorConfigInterface
+class FileExtensionValidatorConfig implements ValidatorConfigInterface
 {
     use ValidatorConfigInterfaceTrait;
 
     /**
      * @var string
      */
-    private $regex;
+    private $extension;
 
-    public function __construct(string $regex, bool $strict=false)
+    public function __construct(string $extension, bool $strict = true)
     {
-        RegexHelper::validate($regex);
-
-        $this->regex = $regex;
+        $this->extension = $extension;
         $this->_isStrict = $strict;
     }
 
     /**
      * @return string
      */
-    public function getRegex(): string
+    public function getExtension(): string
     {
-        return $this->regex;
+        return $this->extension;
     }
 
     /**
@@ -46,13 +43,13 @@ class RegexValidatorConfig implements ValidatorConfigInterface
      */
     public static function fromArray(array $data = []): ArrayFactoryInterface
     {
-        if(false === array_key_exists('regex', $data)){
-            $msg = sprintf("Missing property 'regex' in %s", __CLASS__);
+        if(false === array_key_exists('extension', $data)){
+            $msg = sprintf("Missing property 'extension' in %s", __CLASS__);
             throw new ArrayFactoryException($msg);
         }
 
         try{
-            return new self((string) $data['regex'], array_key_exists('strict', $data) ? (bool)$data['strict'] : false);
+            return new self((string) $data['extension'], array_key_exists('strict', $data) ? (bool)$data['strict'] : true);
         }catch(\Exception $e){
             throw new ArrayFactoryException($e->getMessage());
         }
@@ -64,7 +61,7 @@ class RegexValidatorConfig implements ValidatorConfigInterface
     public function toArray(): array
     {
         return [
-            'regex' => $this->regex,
+            'extension' => $this->extension,
             'strict' => $this->_isStrict
         ];
     }

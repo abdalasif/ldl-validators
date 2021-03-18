@@ -3,40 +3,41 @@
 namespace LDL\Validators;
 
 use LDL\Validators\Config\Exception\InvalidConfigException;
-use LDL\Validators\Config\NumericValidatorConfig;
+use LDL\Validators\Config\FileExtensionValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
-use LDL\Validators\Exception\NumericRangeValidatorException;
 
-class MinNumericValidator implements ValidatorInterface
+class FileExtensionValidator implements ValidatorInterface
 {
     /**
-     * @var NumericValidatorConfig
+     * @var FileExtensionValidatorConfig
      */
     private $config;
 
-    public function __construct($value, bool $strict=true)
+    public function __construct(string $extension, bool $strict = true)
     {
-        $this->config = new NumericValidatorConfig($value, $strict);
+        $this->config = new FileExtensionValidatorConfig($extension, $strict);
     }
 
+    /**
+     * @param mixed $value
+     */
     public function validate($value): void
     {
-        if($value >= $this->config->getValue()){
+        if($value === $this->config->getExtension()){
             return;
         }
 
-        $msg = "Value can not be less than: {$this->config->getValue()}";
-        throw new NumericRangeValidatorException($msg);
+        throw new \LogicException('Extension does not match');
     }
 
     /**
      * @param ValidatorConfigInterface $config
-     * @return MinNumericValidator
+     * @return FileExtensionValidator
      * @throws InvalidConfigException
      */
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
     {
-        if(false === $config instanceof NumericValidatorConfig){
+        if(false === $config instanceof FileExtensionValidatorConfig){
             $msg = sprintf(
                 'Config expected to be %s, config of class %s was given',
                 __CLASS__,
@@ -46,15 +47,15 @@ class MinNumericValidator implements ValidatorInterface
         }
 
         /**
-         * @var NumericValidatorConfig $config
+         * @var FileExtensionValidatorConfig $config
          */
-        return new self($config->getValue(), $config->isStrict());
+        return new self($config->getExtension(), $config->isStrict());
     }
 
     /**
-     * @return NumericValidatorConfig
+     * @return FileExtensionValidatorConfig
      */
-    public function getConfig(): NumericValidatorConfig
+    public function getConfig(): FileExtensionValidatorConfig
     {
         return $this->config;
     }

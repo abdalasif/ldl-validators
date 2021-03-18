@@ -2,16 +2,19 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
-use LDL\Validators\Exception\NumericRangeValidatorException;
+use LDL\Validators\Exception\ValidatorException;
 use LDL\Validators\NumericRangeValidator;
 use LDL\Validators\Config\NumericRangeValidatorConfig;
 
-echo "Create numeric range validator from config: min=3 | max=7\n";
+echo "Create numeric range validator from config\n";
+echo "Set config min=3 and max=7\n";
 
-$validator = NumericRangeValidator::fromConfig(NumericRangeValidatorConfig::fromArray([
+$config = NumericRangeValidatorConfig::fromArray([
     'min' => 3,
     'max' => 7
-]));
+]);
+
+$validator = NumericRangeValidator::fromConfig($config);
 
 echo "Validate number 4\n";
 
@@ -25,7 +28,7 @@ echo "Validate number greater than 7, exception must be thrown\n";
 
 try{
     $validator->validate(8);
-}catch(NumericRangeValidatorException $e){
+}catch(ValidatorException $e){
     echo "EXCEPTION: {$e->getMessage()}\n";
 }
 
@@ -33,6 +36,6 @@ echo "Validate number less than 3, exception must be thrown\n";
 
 try{
     $validator->validate(2);
-}catch(NumericRangeValidatorException $e){
+}catch(ValidatorException $e){
     echo "EXCEPTION: {$e->getMessage()}\n";
 }

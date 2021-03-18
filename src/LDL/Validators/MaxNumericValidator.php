@@ -31,7 +31,7 @@ class MaxNumericValidator implements ValidatorInterface
 
     /**
      * @param ValidatorConfigInterface $config
-     * @return ValidatorInterface
+     * @return MaxNumericValidator
      * @throws InvalidConfigException
      */
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
@@ -52,9 +52,9 @@ class MaxNumericValidator implements ValidatorInterface
     }
 
     /**
-     * @return ValidatorConfigInterface
+     * @return NumericValidatorConfig
      */
-    public function getConfig(): ValidatorConfigInterface
+    public function getConfig(): NumericValidatorConfig
     {
         return $this->config;
     }

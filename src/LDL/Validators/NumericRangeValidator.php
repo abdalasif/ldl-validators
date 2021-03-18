@@ -26,7 +26,7 @@ class NumericRangeValidator implements ValidatorInterface
 
     /**
      * @param ValidatorConfigInterface $config
-     * @return ValidatorInterface
+     * @return NumericRangeValidator
      * @throws InvalidConfigException
      */
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
@@ -51,9 +51,9 @@ class NumericRangeValidator implements ValidatorInterface
     }
 
     /**
-     * @return ValidatorConfigInterface
+     * @return NumericRangeValidatorConfig
      */
-    public function getConfig(): ValidatorConfigInterface
+    public function getConfig(): NumericRangeValidatorConfig
     {
         return $this->config;
     }

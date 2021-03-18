@@ -34,7 +34,7 @@ class RegexValidator implements ValidatorInterface
 
     /**
      * @param ValidatorConfigInterface $config
-     * @return ValidatorInterface
+     * @return RegexValidator
      * @throws InvalidConfigException
      */
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
@@ -55,9 +55,9 @@ class RegexValidator implements ValidatorInterface
     }
 
     /**
-     * @return ValidatorConfigInterface
+     * @return RegexValidatorConfig
      */
-    public function getConfig(): ValidatorConfigInterface
+    public function getConfig(): RegexValidatorConfig
     {
         return $this->config;
     }

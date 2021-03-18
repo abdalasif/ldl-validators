@@ -62,7 +62,7 @@ class NumericRangeValidatorConfig implements ValidatorConfigInterface
 
     /**
      * @param array $data
-     * @return ArrayFactoryInterface
+     * @return ValidatorConfigInterface
      * @throws ArrayFactoryException
      */
     public static function fromArray(array $data = []): ArrayFactoryInterface
