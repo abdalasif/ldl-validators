@@ -2,17 +2,17 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
-use LDL\Validators\ExactFileNameValidator;
-use LDL\Validators\Config\ExactFileNameValidatorConfig;
+use LDL\Validators\ExactStringMatchValidator;
+use LDL\Validators\Config\ExactStringMatchValidatorConfig;
 
 echo "Create ExactFileName validator from config\n";
 echo "Set config name: 'testFile.txt'\n";
 
-$config = ExactFileNameValidatorConfig::fromArray([
-    'name' => 'testFile.txt'
+$config = ExactStringMatchValidatorConfig::fromArray([
+    'value' => 'testFile.txt'
 ]);
 
-$validator = ExactFileNameValidator::fromConfig($config);
+$validator = ExactStringMatchValidator::fromConfig($config);
 
 echo "Read files in dir: 'files'\n";
 

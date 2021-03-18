@@ -3,19 +3,19 @@
 namespace LDL\Validators;
 
 use LDL\Validators\Config\Exception\InvalidConfigException;
-use LDL\Validators\Config\ExactFileNameValidatorConfig;
+use LDL\Validators\Config\ExactStringMatchValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 
-class ExactFileNameValidator implements ValidatorInterface
+class ExactStringMatchValidator implements ValidatorInterface
 {
     /**
-     * @var ExactFileNameValidatorConfig
+     * @var ExactStringMatchValidatorConfig
      */
     private $config;
 
     public function __construct(string $name, bool $strict=true)
     {
-        $this->config = new ExactFileNameValidatorConfig($name, $strict);
+        $this->config = new ExactStringMatchValidatorConfig($name, $strict);
     }
 
     /**
@@ -23,7 +23,7 @@ class ExactFileNameValidator implements ValidatorInterface
      */
     public function validate($value): void
     {
-        if($value === $this->config->getName()){
+        if($value === $this->config->getValue()){
             return;
         }
 
@@ -32,12 +32,12 @@ class ExactFileNameValidator implements ValidatorInterface
 
     /**
      * @param ValidatorConfigInterface $config
-     * @return ExactFileNameValidator
+     * @return ExactStringMatchValidator
      * @throws InvalidConfigException
      */
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
     {
-        if(false === $config instanceof ExactFileNameValidatorConfig){
+        if(false === $config instanceof ExactStringMatchValidatorConfig){
             $msg = sprintf(
                 'Config expected to be %s, config of class %s was given',
                 __CLASS__,
@@ -47,15 +47,15 @@ class ExactFileNameValidator implements ValidatorInterface
         }
 
         /**
-         * @var ExactFileNameValidatorConfig $config
+         * @var ExactStringMatchValidatorConfig $config
          */
-        return new self($config->getName(), $config->isStrict());
+        return new self($config->getValue(), $config->isStrict());
     }
 
     /**
-     * @return ExactFileNameValidatorConfig
+     * @return ExactStringMatchValidatorConfig
      */
-    public function getConfig(): ExactFileNameValidatorConfig
+    public function getConfig(): ExactStringMatchValidatorConfig
     {
         return $this->config;
     }

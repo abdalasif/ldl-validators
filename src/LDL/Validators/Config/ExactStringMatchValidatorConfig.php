@@ -5,27 +5,27 @@ namespace LDL\Validators\Config;
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 use LDL\Framework\Base\Exception\ArrayFactoryException;
 
-class FileExtensionValidatorConfig implements ValidatorConfigInterface
+class ExactStringMatchValidatorConfig implements ValidatorConfigInterface
 {
     use ValidatorConfigInterfaceTrait;
 
     /**
      * @var string
      */
-    private $extension;
+    private $value;
 
-    public function __construct(string $extension, bool $strict = true)
+    public function __construct(string $value, bool $strict=true)
     {
-        $this->extension = $extension;
+        $this->value = $value;
         $this->_isStrict = $strict;
     }
 
     /**
      * @return string
      */
-    public function getExtension(): string
+    public function getValue(): string
     {
-        return $this->extension;
+        return $this->value;
     }
 
     /**
@@ -43,13 +43,13 @@ class FileExtensionValidatorConfig implements ValidatorConfigInterface
      */
     public static function fromArray(array $data = []): ArrayFactoryInterface
     {
-        if(false === array_key_exists('extension', $data)){
-            $msg = sprintf("Missing property 'extension' in %s", __CLASS__);
+        if(false === array_key_exists('value', $data)){
+            $msg = sprintf("Missing property 'value' in %s", __CLASS__);
             throw new ArrayFactoryException($msg);
         }
 
         try{
-            return new self((string) $data['extension'], array_key_exists('strict', $data) ? (bool)$data['strict'] : true);
+            return new self((string) $data['value'], array_key_exists('strict', $data) ? (bool)$data['strict'] : true);
         }catch(\Exception $e){
             throw new ArrayFactoryException($e->getMessage());
         }
@@ -61,7 +61,7 @@ class FileExtensionValidatorConfig implements ValidatorConfigInterface
     public function toArray(): array
     {
         return [
-            'extension' => $this->extension,
+            'value' => $this->value,
             'strict' => $this->_isStrict
         ];
     }
