@@ -1,11 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace LDL\Type\Collection\Types\Object\Validator\Config;
+namespace LDL\Validators\Config;
 
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 use LDL\Framework\Base\Exception\ArrayFactoryException;
-use LDL\Validators\Config\ValidatorConfigInterface;
-use LDL\Validators\Config\ValidatorConfigInterfaceTrait;
 
 class InterfaceComplianceValidatorConfig implements ValidatorConfigInterface
 {

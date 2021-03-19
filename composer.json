@@ -1,5 +1,5 @@
 {
-    "name": "ldl-framework/ldl-validators",
+    "name": "ldl-framework/validators",
     "description": "LDL Framework validators",
     "homepage": "https://github.com/pthreat/ldl-validators",
     "type": "library",

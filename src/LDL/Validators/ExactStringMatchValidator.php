@@ -6,7 +6,7 @@ use LDL\Validators\Config\Exception\InvalidConfigException;
 use LDL\Validators\Config\ExactStringMatchValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 
-class ExactStringMatchValidator implements ValidatorInterface
+class ExactStringMatchValidator implements ValidatorInterface, HasValidatorConfigInterface
 {
     /**
      * @var ExactStringMatchValidatorConfig

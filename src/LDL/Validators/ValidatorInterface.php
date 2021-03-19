@@ -2,7 +2,6 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\ValidatorException;
 
 interface ValidatorInterface
@@ -12,16 +11,4 @@ interface ValidatorInterface
      * @throws ValidatorException
      */
     public function validate($value) : void;
-
-    /**
-     * @param ValidatorConfigInterface $config
-     * @return ValidatorInterface
-     */
-    public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface;
-
-    /**
-     * @return ValidatorConfigInterface
-     */
-    public function getConfig();
-
 }

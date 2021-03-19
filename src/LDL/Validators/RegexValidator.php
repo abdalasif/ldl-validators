@@ -6,7 +6,7 @@ use LDL\Validators\Config\Exception\InvalidConfigException;
 use LDL\Validators\Config\RegexValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 
-class RegexValidator implements ValidatorInterface
+class RegexValidator implements ValidatorInterface, HasValidatorConfigInterface
 {
     /**
      * @var RegexValidatorConfig
