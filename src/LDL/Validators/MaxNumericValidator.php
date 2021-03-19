@@ -7,7 +7,7 @@ use LDL\Validators\Config\NumericValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\NumericRangeValidatorException;
 
-class MaxNumericValidator implements ValidatorInterface
+class MaxNumericValidator implements ValidatorInterface, HasValidatorConfigInterface
 {
     /**
      * @var NumericValidatorConfig

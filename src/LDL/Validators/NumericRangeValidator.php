@@ -6,7 +6,7 @@ use LDL\Validators\Config\Exception\InvalidConfigException;
 use LDL\Validators\Config\NumericRangeValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 
-class NumericRangeValidator implements ValidatorInterface
+class NumericRangeValidator implements ValidatorInterface, HasValidatorConfigInterface
 {
     /**
      * @var NumericRangeValidatorConfig

@@ -12,18 +12,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/pthreat/ldl-framework-base.git",
-                "reference": "5ad0c49385d50a11e049c98c32742e2907196d86"
+                "reference": "83fad101021d7aa68867d786a21fc35330708763"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pthreat/ldl-framework-base/zipball/5ad0c49385d50a11e049c98c32742e2907196d86",
-                "reference": "5ad0c49385d50a11e049c98c32742e2907196d86",
+                "url": "https://api.github.com/repos/pthreat/ldl-framework-base/zipball/83fad101021d7aa68867d786a21fc35330708763",
+                "reference": "83fad101021d7aa68867d786a21fc35330708763",
                 "shasum": ""
             },
             "require": {
                 "symfony/var-dumper": "^5.2"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -42,11 +41,7 @@
                 }
             ],
             "description": "LDL Framework base contracts and exceptions",
-            "support": {
-                "issues": "https://github.com/pthreat/ldl-framework-base/issues",
-                "source": "https://github.com/pthreat/ldl-framework-base/tree/feature/1200082912582317"
-            },
-            "time": "2021-03-18T21:00:11+00:00"
+            "time": "2021-03-22T15:22:14+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -108,23 +103,6 @@
                 "polyfill",
                 "portable",
                 "shim"
-            ],
-            "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.22.1"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
             ],
             "time": "2021-01-22T09:19:47+00:00"
         },
@@ -191,23 +169,6 @@
                 "polyfill",
                 "portable",
                 "shim"
-            ],
-            "support": {
-                "source": "https://github.com/symfony/polyfill-php80/tree/v1.22.1"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
             ],
             "time": "2021-01-07T16:49:33+00:00"
         },
@@ -280,23 +241,6 @@
                 "debug",
                 "dump"
             ],
-            "support": {
-                "source": "https://github.com/symfony/var-dumper/tree/v5.2.5"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2021-03-06T07:59:01+00:00"
         }
     ],
@@ -312,6 +256,5 @@
         "php": ">=7.3",
         "ext-json": "*"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "platform-dev": []
 }

@@ -1,13 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace LDL\Type\Collection\Types\Object\Validator;
+namespace LDL\Validators;
 
-use LDL\Type\Collection\Types\Object\Validator\Config\ClassComplianceValidatorConfig;
+use LDL\Validators\Config\ClassComplianceValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
-use LDL\Validators\ValidatorInterface;
 
-class ClassComplianceValidator implements ValidatorInterface
+class ClassComplianceValidator implements ValidatorInterface, HasValidatorConfigInterface
 {
     /**
      * @var ClassComplianceValidatorConfig

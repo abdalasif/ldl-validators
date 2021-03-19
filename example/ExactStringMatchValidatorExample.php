@@ -5,8 +5,8 @@ require __DIR__.'/../vendor/autoload.php';
 use LDL\Validators\ExactStringMatchValidator;
 use LDL\Validators\Config\ExactStringMatchValidatorConfig;
 
-echo "Create ExactFileName validator from config\n";
-echo "Set config name: 'testFile.txt'\n";
+echo "Create ExactStringMatch validator from config\n";
+echo "Set config value: 'testFile.txt'\n";
 
 $config = ExactStringMatchValidatorConfig::fromArray([
     'value' => 'testFile.txt'

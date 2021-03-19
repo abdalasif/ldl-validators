@@ -2,11 +2,11 @@
 
 namespace LDL\Validators;
 
-use LDL\Type\Collection\Types\Object\Validator\Config\InterfaceComplianceValidatorConfig;
+use LDL\Validators\Config\InterfaceComplianceValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 
-class InterfaceComplianceValidator implements ValidatorInterface
+class InterfaceComplianceValidator implements ValidatorInterface, HasValidatorConfigInterface
 {
     /**
      * @var InterfaceComplianceValidatorConfig
@@ -45,7 +45,7 @@ class InterfaceComplianceValidator implements ValidatorInterface
 
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
     {
-        if(false === $config instanceof InterfaceComplianceValidator){
+        if(false === $config instanceof InterfaceComplianceValidatorConfig){
             $msg = sprintf(
                 'Config expected to be %s, config of class %s was given',
                 __CLASS__,
