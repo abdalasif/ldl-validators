@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "92b907334b253625828047fb0d967a79",
+    "content-hash": "11026e8aec036d0348b347f7f20751a7",
     "packages": [
         {
             "name": "ldl-framework/framework-base",
@@ -12,17 +12,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/pthreat/ldl-framework-base.git",
-                "reference": "83fad101021d7aa68867d786a21fc35330708763"
+                "reference": "2ee4f337504a69a4ed682369cf6ef17fe9da757b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pthreat/ldl-framework-base/zipball/83fad101021d7aa68867d786a21fc35330708763",
-                "reference": "83fad101021d7aa68867d786a21fc35330708763",
+                "url": "https://api.github.com/repos/pthreat/ldl-framework-base/zipball/2ee4f337504a69a4ed682369cf6ef17fe9da757b",
+                "reference": "2ee4f337504a69a4ed682369cf6ef17fe9da757b",
                 "shasum": ""
             },
             "require": {
                 "symfony/var-dumper": "^5.2"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -41,7 +42,11 @@
                 }
             ],
             "description": "LDL Framework base contracts and exceptions",
-            "time": "2021-03-22T15:22:14+00:00"
+            "support": {
+                "issues": "https://github.com/pthreat/ldl-framework-base/issues",
+                "source": "https://github.com/pthreat/ldl-framework-base/tree/feature/1200103380811883"
+            },
+            "time": "2021-03-24T00:48:06+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -103,6 +108,23 @@
                 "polyfill",
                 "portable",
                 "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.22.1"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
             ],
             "time": "2021-01-22T09:19:47+00:00"
         },
@@ -169,6 +191,23 @@
                 "polyfill",
                 "portable",
                 "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php80/tree/v1.22.1"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
             ],
             "time": "2021-01-07T16:49:33+00:00"
         },
@@ -241,6 +280,23 @@
                 "debug",
                 "dump"
             ],
+            "support": {
+                "source": "https://github.com/symfony/var-dumper/tree/v5.2.5"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2021-03-06T07:59:01+00:00"
         }
     ],
@@ -256,5 +312,6 @@
         "php": ">=7.3",
         "ext-json": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
 }

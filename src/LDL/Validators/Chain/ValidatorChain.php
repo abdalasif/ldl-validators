@@ -5,6 +5,8 @@ namespace LDL\Validators\Chain;
 use LDL\Framework\Base\Collection\Contracts\CollectionInterface;
 use LDL\Framework\Base\Collection\Traits\AppendableInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\AppendManyTrait;
+use LDL\Framework\Base\Collection\Traits\BeforeAppendInterfaceTrait;
+use LDL\Framework\Base\Collection\Traits\BeforeRemoveInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\CollectionInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\LockAppendInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\RemovableInterfaceTrait;
@@ -18,11 +20,13 @@ use LDL\Validators\ValidatorInterface;
 class ValidatorChain implements ValidatorChainInterface
 {
     use CollectionInterfaceTrait;
-    use AppendableInterfaceTrait {append as private _append;}
-    use LockAppendInterfaceTrait;
-    use AppendManyTrait;
     use LockableObjectInterfaceTrait;
+    use BeforeAppendInterfaceTrait;
+    use AppendableInterfaceTrait {append as private _append;}
+    use AppendManyTrait;
+    use LockAppendInterfaceTrait;
     use RemovableInterfaceTrait;
+    use BeforeRemoveInterfaceTrait;
     use TruncateInterfaceTrait {truncate as private _truncate;}
 
     /**
@@ -32,16 +36,16 @@ class ValidatorChain implements ValidatorChainInterface
 
     public function __construct(iterable $validators=null)
     {
-        $this->_tBeforeAppendCallback = static function ($collection, $item, $key){
+        $this->getBeforeAppend()->append(static function ($collection, $item, $key){
             (new InterfaceComplianceValidator(ValidatorInterface::class, true))->validate($item);
-        };
+        });
 
         if(null !== $validators) {
             $this->appendMany($validators);
         }
     }
 
-    public function validate($value) : void
+    public function validate($value, ...$params) : void
     {
         if(0 === $this->count){
             return;
@@ -61,13 +65,13 @@ class ValidatorChain implements ValidatorChainInterface
                 $validator instanceof HasValidatorConfigInterface &&
                 true === $validator->getConfig()->isStrict()
             ){
-                $validator->validate($value);
+                $validator->validate($value, ...$params);
                 $atLeastOneValid=true;
                 continue;
             }
 
             try{
-                $validator->validate($value);
+                $validator->validate($value, ...$params);
                 $atLeastOneValid = true;
             }catch(\Exception $e){
                 $combinedException->append($e);
