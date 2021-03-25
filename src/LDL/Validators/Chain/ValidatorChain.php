@@ -8,6 +8,8 @@ use LDL\Framework\Base\Collection\Traits\AppendManyTrait;
 use LDL\Framework\Base\Collection\Traits\BeforeAppendInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\BeforeRemoveInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\CollectionInterfaceTrait;
+use LDL\Framework\Base\Collection\Traits\FilterByClassInterfaceTrait;
+use LDL\Framework\Base\Collection\Traits\FilterByInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\LockAppendInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\RemovableInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\TruncateInterfaceTrait;
@@ -28,6 +30,8 @@ class ValidatorChain implements ValidatorChainInterface
     use RemovableInterfaceTrait;
     use BeforeRemoveInterfaceTrait;
     use TruncateInterfaceTrait {truncate as private _truncate;}
+    use FilterByInterfaceTrait;
+    use FilterByClassInterfaceTrait;
 
     /**
      * @var array
@@ -61,10 +65,9 @@ class ValidatorChain implements ValidatorChainInterface
          * @var ValidatorInterface $validator
          */
         foreach($this as $validator){
-            if(
-                $validator instanceof HasValidatorConfigInterface &&
-                true === $validator->getConfig()->isStrict()
-            ){
+            $isStrict = $validator instanceof HasValidatorConfigInterface ? $validator->getConfig()->isStrict() : true;
+
+            if(true === $isStrict){
                 $validator->validate($value, ...$params);
                 $atLeastOneValid=true;
                 continue;
@@ -82,7 +85,7 @@ class ValidatorChain implements ValidatorChainInterface
             return;
         }
 
-        throw new $combinedException;
+        throw $combinedException;
     }
 
     public function append($item, $key = null, bool $dumpable = true): CollectionInterface

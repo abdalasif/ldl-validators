@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/pthreat/ldl-framework-base.git",
-                "reference": "2ee4f337504a69a4ed682369cf6ef17fe9da757b"
+                "reference": "97d81c424605114a024a2c3a1835162036473b4a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pthreat/ldl-framework-base/zipball/2ee4f337504a69a4ed682369cf6ef17fe9da757b",
-                "reference": "2ee4f337504a69a4ed682369cf6ef17fe9da757b",
+                "url": "https://api.github.com/repos/pthreat/ldl-framework-base/zipball/97d81c424605114a024a2c3a1835162036473b4a",
+                "reference": "97d81c424605114a024a2c3a1835162036473b4a",
                 "shasum": ""
             },
             "require": {
@@ -44,9 +44,9 @@
             "description": "LDL Framework base contracts and exceptions",
             "support": {
                 "issues": "https://github.com/pthreat/ldl-framework-base/issues",
-                "source": "https://github.com/pthreat/ldl-framework-base/tree/feature/1200103380811883"
+                "source": "https://github.com/pthreat/ldl-framework-base/tree/master"
             },
-            "time": "2021-03-24T00:48:06+00:00"
+            "time": "2021-03-25T20:38:16+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
