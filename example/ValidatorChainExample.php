@@ -5,6 +5,7 @@ require __DIR__.'/../vendor/autoload.php';
 use LDL\Validators\Chain\Loader\ValidatorChainLoader;
 use LDL\Validators\Chain\Dumper\ValidatorChainDumper;
 use LDL\Validators\ClassComplianceValidator;
+use LDL\Validators\HasValidatorConfigInterface;
 use LDL\Validators\RegexValidator;
 use LDL\Validators\Chain\ValidatorChain;
 use LDL\Validators\InterfaceComplianceValidator;
@@ -32,6 +33,26 @@ try{
     $chain->append(new stdClass());
 }catch(\Exception $e){
     echo "EXCEPTION: {$e->getMessage()}\n";
+}
+
+echo "Filter by class: 'RegexValidator'\n";
+
+$regex = $chain->filterByClass(RegexValidator::class);
+
+echo "Check filtered validators\n";
+
+foreach($regex as $validator){
+    echo get_class($validator)."\n";
+}
+
+echo "Filter by interface: 'HasValidatorConfigInterface'\n";
+
+$configs = $chain->filterByInterface(HasValidatorConfigInterface::class);
+
+echo "Check filtered validators\n";
+
+foreach($configs as $validator){
+    echo get_class($validator)."\n";
 }
 
 echo "Dump chain\n";
