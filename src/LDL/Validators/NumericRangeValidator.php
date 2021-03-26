@@ -18,6 +18,10 @@ class NumericRangeValidator implements ValidatorInterface, HasValidatorConfigInt
         $this->config = new NumericRangeValidatorConfig($min, $max, $strict);
     }
 
+    /**
+     * @param mixed $value
+     * @throws Exception\NumericRangeValidatorException
+     */
     public function validate($value): void
     {
         $this->config->getMin()->validate($value);

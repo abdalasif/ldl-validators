@@ -2,20 +2,21 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\ClassComplianceValidatorConfig;
+use LDL\Validators\Config\Exception\InvalidConfigException;
+use LDL\Validators\Config\StrictClassComplianceItemValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 
-class ClassComplianceValidator implements ValidatorInterface, HasValidatorConfigInterface
+class StrictClassComplianceItemValidator implements ValidatorInterface, HasValidatorConfigInterface
 {
     /**
-     * @var ClassComplianceValidatorConfig
+     * @var StrictClassComplianceItemValidatorConfig
      */
     private $config;
 
     public function __construct(string $class, bool $strict=true)
     {
-        $this->config = new ClassComplianceValidatorConfig($class, $strict);
+        $this->config = new StrictClassComplianceItemValidatorConfig($class, $strict);
     }
 
     /**
@@ -26,50 +27,54 @@ class ClassComplianceValidator implements ValidatorInterface, HasValidatorConfig
     {
         if(!is_object($value)){
             $msg = sprintf(
-                'Value expected for "%s", must be an Object, "%s" was given',
+                'Value expected for "%s", must be an Object, %s was given',
                 __CLASS__,
                 gettype($value)
             );
             throw new TypeMismatchException($msg);
         }
 
-        $class = $this->config->getClass();
+        $itemClass = get_class($value);
 
-        if($value instanceof $class) {
+        if($itemClass === $this->config->getClass()) {
             return;
         }
 
         $msg = sprintf(
-            'Value of class "%s", does not complies to class: "%s"',
+            'Item of class "%s", must be *exactly* an object of class: "%s"',
             get_class($value),
-            $class
+            $this->config->getClass()
         );
 
         throw new TypeMismatchException($msg);
     }
 
-
+    /**
+     * @param ValidatorConfigInterface $config
+     * @return ValidatorInterface
+     * @throws InvalidConfigException
+     */
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
     {
-        if(false === $config instanceof ClassComplianceValidatorConfig){
+        if(false === $config instanceof StrictClassComplianceItemValidatorConfig){
             $msg = sprintf(
                 'Config expected to be %s, config of class %s was given',
                 __CLASS__,
                 get_class($config)
             );
-            throw new TypeMismatchException($msg);
+            throw new InvalidConfigException($msg);
         }
 
         /**
-         * @var ClassComplianceValidatorConfig $config
+         * @var StrictClassComplianceItemValidatorConfig $config
          */
         return new self($config->getClass(), $config->isStrict());
     }
 
     /**
-     * @return ClassComplianceValidatorConfig
+     * @return StrictClassComplianceItemValidatorConfig
      */
-    public function getConfig(): ClassComplianceValidatorConfig
+    public function getConfig(): StrictClassComplianceItemValidatorConfig
     {
         return $this->config;
     }
