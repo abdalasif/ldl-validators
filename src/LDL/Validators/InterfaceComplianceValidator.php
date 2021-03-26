@@ -18,12 +18,17 @@ class InterfaceComplianceValidator implements ValidatorInterface, HasValidatorCo
         $this->config = new InterfaceComplianceValidatorConfig($interface, $strict);
     }
 
+    /**
+     * @param mixed $value
+     * @throws TypeMismatchException
+     */
     public function validate($value) : void
     {
         if(!is_object($value)){
             $msg = sprintf(
-                'Validator "%s", only accepts objects as items being part of a collection',
-                __CLASS__
+                'Value expected for "%s", must be an Object, "%s" was given',
+                __CLASS__,
+                gettype($value)
             );
             throw new TypeMismatchException($msg);
         }
@@ -35,7 +40,7 @@ class InterfaceComplianceValidator implements ValidatorInterface, HasValidatorCo
         }
 
         $msg = sprintf(
-            'Item to be added of class "%s", does not complies to interface: "%s"',
+            'Value of class "%s", does not complies to interface: "%s"',
             get_class($value),
             $interface
         );
