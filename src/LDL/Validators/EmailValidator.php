@@ -2,20 +2,21 @@
 
 namespace LDL\Validators;
 
+use LDL\Validators\Config\BasicValidatorConfig;
 use LDL\Validators\Config\ClassComplianceValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 
-class ClassComplianceValidator implements ValidatorInterface, HasValidatorConfigInterface
+class EmailValidator implements ValidatorInterface, HasValidatorConfigInterface
 {
     /**
-     * @var ClassComplianceValidatorConfig
+     * @var BasicValidatorConfig
      */
     private $config;
 
     public function __construct(string $class, bool $strict=true)
     {
-        $this->config = new ClassComplianceValidatorConfig($class, $strict);
+        $this->config = new BasicValidatorConfig($strict);
     }
 
     /**
@@ -24,34 +25,21 @@ class ClassComplianceValidator implements ValidatorInterface, HasValidatorConfig
      */
     public function validate($value): void
     {
-        if(!is_object($value)){
-            $msg = sprintf(
-                'Value expected for "%s", must be an Object, "%s" was given',
-                __CLASS__,
-                gettype($value)
-            );
-            throw new TypeMismatchException($msg);
-        }
-
-        $class = $this->config->getClass();
-
-        if($value instanceof $class) {
+        if(filter_var($value, \FILTER_VALIDATE_EMAIL)) {
             return;
         }
 
         $msg = sprintf(
-            'Value of class "%s", does not complies to class: "%s"',
-            get_class($value),
-            $class
+            'Value expected for "%s", must be a valid email',
+            __CLASS__
         );
 
         throw new TypeMismatchException($msg);
     }
 
-
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
     {
-        if(false === $config instanceof ClassComplianceValidatorConfig){
+        if(false === $config instanceof BasicValidatorConfig){
             $msg = sprintf(
                 'Config expected to be %s, config of class %s was given',
                 __CLASS__,
@@ -68,9 +56,9 @@ class ClassComplianceValidator implements ValidatorInterface, HasValidatorConfig
     }
 
     /**
-     * @return ClassComplianceValidatorConfig
+     * @return BasicValidatorConfig
      */
-    public function getConfig(): ClassComplianceValidatorConfig
+    public function getConfig(): BasicValidatorConfig
     {
         return $this->config;
     }

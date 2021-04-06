@@ -15,3 +15,5 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
  
 ### Changed
 
+- fixes/1200159985965825 - Simplify configurations into BasicValidatorConfig
+
