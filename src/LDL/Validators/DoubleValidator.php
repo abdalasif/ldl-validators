@@ -2,6 +2,7 @@
 
 namespace LDL\Validators;
 
+use LDL\Validators\Config\BasicValidatorConfig;
 use LDL\Validators\Config\DoubleValidatorConfig;
 use LDL\Validators\Config\Exception\InvalidConfigException;
 use LDL\Validators\Config\ValidatorConfigInterface;
@@ -16,7 +17,7 @@ class DoubleValidator implements ValidatorInterface, HasValidatorConfigInterface
 
     public function __construct(bool $strict=true)
     {
-        $this->config = new DoubleValidatorConfig($strict);
+        $this->config = new BasicValidatorConfig($strict);
     }
 
     /**

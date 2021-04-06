@@ -15,7 +15,6 @@ class NumericValidatorConfig implements ValidatorConfigInterface
     private $value;
 
     /**
-     * MinNumericValueValidator constructor.
      * @param $value
      * @param bool $isStrict
      */
@@ -24,7 +23,12 @@ class NumericValidatorConfig implements ValidatorConfigInterface
         $this->_isStrict = $isStrict;
 
         if(null !== $value && false === filter_var($value, \FILTER_VALIDATE_INT | \FILTER_VALIDATE_FLOAT)){
-            throw new \InvalidArgumentException("Given value must be a number, \"$value\" was given");
+            $msg = sprintf(
+                'Given value must be a number: "%s" was given',
+                gettype($value)
+            );
+
+            throw new \InvalidArgumentException($msg);
         }
 
         $this->value = $value;

@@ -2,7 +2,7 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\ClassExistenceValidatorConfig;
+use LDL\Validators\Config\BasicValidatorConfig;
 use LDL\Validators\Config\Exception\InvalidConfigException;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
@@ -10,13 +10,13 @@ use LDL\Validators\Exception\TypeMismatchException;
 class ClassExistenceValidator implements ValidatorInterface, HasValidatorConfigInterface
 {
     /**
-     * @var ClassExistenceValidatorConfig
+     * @var BasicValidatorConfig
      */
     private $config;
 
     public function __construct(bool $strict=true)
     {
-        $this->config = ClassExistenceValidatorConfig::fromArray([
+        $this->config = BasicValidatorConfig::fromArray([
             'strict' => $strict
         ]);
     }

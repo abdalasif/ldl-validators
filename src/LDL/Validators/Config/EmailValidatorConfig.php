@@ -4,7 +4,7 @@ namespace LDL\Validators\Config;
 
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 
-class ObjectValidatorConfig implements ValidatorConfigInterface
+class EmailValidatorConfig implements ValidatorConfigInterface
 {
     use ValidatorConfigInterfaceTrait;
 

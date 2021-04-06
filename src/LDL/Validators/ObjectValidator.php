@@ -2,21 +2,21 @@
 
 namespace LDL\Validators;
 
+use LDL\Validators\Config\BasicValidatorConfig;
 use LDL\Validators\Config\Exception\InvalidConfigException;
-use LDL\Validators\Config\ObjectValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 
 class ObjectValidator implements ValidatorInterface, HasValidatorConfigInterface
 {
     /**
-     * @var ObjectValidatorConfig
+     * @var BasicValidatorConfig
      */
     private $config;
 
     public function __construct(bool $strict=true)
     {
-        $this->config = new ObjectValidatorConfig($strict);
+        $this->config = new BasicValidatorConfig($strict);
     }
 
     /**
@@ -45,7 +45,7 @@ class ObjectValidator implements ValidatorInterface, HasValidatorConfigInterface
      */
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
     {
-        if(false === $config instanceof ObjectValidatorConfig){
+        if(false === $config instanceof BasicValidatorConfig){
             $msg = sprintf(
                 'Config expected to be %s, config of class %s was given',
                 __CLASS__,
@@ -55,15 +55,15 @@ class ObjectValidator implements ValidatorInterface, HasValidatorConfigInterface
         }
 
         /**
-         * @var ObjectValidatorConfig $config
+         * @var BasicValidatorConfig $config
          */
         return new self($config->isStrict());
     }
 
     /**
-     * @return ObjectValidatorConfig
+     * @return BasicValidatorConfig
      */
-    public function getConfig(): ObjectValidatorConfig
+    public function getConfig(): BasicValidatorConfig
     {
         return $this->config;
     }

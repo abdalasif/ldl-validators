@@ -2,21 +2,21 @@
 
 namespace LDL\Validators;
 
+use LDL\Validators\Config\BasicValidatorConfig;
 use LDL\Validators\Config\Exception\InvalidConfigException;
-use LDL\Validators\Config\IntegerValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 
 class IntegerValidator implements ValidatorInterface, HasValidatorConfigInterface
 {
     /**
-     * @var IntegerValidatorConfig
+     * @var BasicValidatorConfig
      */
     private $config;
 
     public function __construct(bool $strict=true)
     {
-        $this->config = new IntegerValidatorConfig($strict);
+        $this->config = new BasicValidatorConfig($strict);
     }
 
     /**
@@ -45,7 +45,7 @@ class IntegerValidator implements ValidatorInterface, HasValidatorConfigInterfac
      */
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
     {
-        if(false === $config instanceof IntegerValidatorConfig){
+        if(false === $config instanceof BasicValidatorConfig){
             $msg = sprintf(
                 'Config expected to be %s, config of class %s was given',
                 __CLASS__,
@@ -55,15 +55,15 @@ class IntegerValidator implements ValidatorInterface, HasValidatorConfigInterfac
         }
 
         /**
-         * @var IntegerValidatorConfig $config
+         * @var BasicValidatorConfig $config
          */
         return new self($config->isStrict());
     }
 
     /**
-     * @return IntegerValidatorConfig
+     * @return BasicValidatorConfig
      */
-    public function getConfig(): IntegerValidatorConfig
+    public function getConfig(): BasicValidatorConfig
     {
         return $this->config;
     }
