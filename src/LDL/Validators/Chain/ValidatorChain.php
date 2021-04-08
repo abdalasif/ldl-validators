@@ -27,8 +27,8 @@ class ValidatorChain implements ValidatorChainInterface
     use AppendableInterfaceTrait {append as private _append;}
     use AppendManyTrait;
     use LockAppendInterfaceTrait;
-    use RemovableInterfaceTrait;
     use BeforeRemoveInterfaceTrait;
+    use RemovableInterfaceTrait;
     use TruncateInterfaceTrait {truncate as private _truncate;}
     use FilterByInterfaceTrait;
     use FilterByClassInterfaceTrait;
