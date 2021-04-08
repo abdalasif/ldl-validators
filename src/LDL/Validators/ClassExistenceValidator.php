@@ -47,7 +47,7 @@ class ClassExistenceValidator implements ValidatorInterface, HasValidatorConfigI
      */
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
     {
-        if(false === $config instanceof ClassExistenceValidatorConfig){
+        if(false === $config instanceof BasicValidatorConfig){
             $msg = sprintf(
                 'Config expected to be %s, config of class %s was given',
                 __CLASS__,
@@ -57,15 +57,15 @@ class ClassExistenceValidator implements ValidatorInterface, HasValidatorConfigI
         }
 
         /**
-         * @var ClassExistenceValidatorConfig $config
+         * @var BasicValidatorConfig $config
          */
         return new self($config->isStrict());
     }
 
     /**
-     * @return ClassExistenceValidatorConfig
+     * @return BasicValidatorConfig
      */
-    public function getConfig(): ClassExistenceValidatorConfig
+    public function getConfig(): BasicValidatorConfig
     {
         return $this->config;
     }
