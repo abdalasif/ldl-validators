@@ -19,4 +19,10 @@ interface ValidatorChainInterface extends CollectionInterface, LockableObjectInt
     public function append($item, $key = null, bool $dumpable = true): CollectionInterface;
 
     public function filterDumpableItems() : ValidatorChainInterface;
+
+    public function getSucceeded() : ValidatorChainInterface;
+
+    public function getFailed() : ValidatorChainInterface;
+
+    public function getLastExecuted(): ?ValidatorInterface;
 }

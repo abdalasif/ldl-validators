@@ -38,6 +38,21 @@ class ValidatorChain implements ValidatorChainInterface
      */
     private $dumpable = [];
 
+    /**
+     * @var array
+     */
+    private $succeeded = [];
+
+    /**
+     * @var array
+     */
+    private $failed = [];
+
+    /**
+     * @var ValidatorInterface
+     */
+    private $lastExecuted;
+
     public function __construct(iterable $validators=null)
     {
         $this->getBeforeAppend()->append(static function ($collection, $item, $key){
@@ -51,6 +66,9 @@ class ValidatorChain implements ValidatorChainInterface
 
     public function validate($value, ...$params) : void
     {
+        $this->succeeded = [];
+        $this->failed = [];
+
         if(0 === $this->count){
             return;
         }
@@ -65,19 +83,28 @@ class ValidatorChain implements ValidatorChainInterface
          * @var ValidatorInterface $validator
          */
         foreach($this as $validator){
+            $this->lastExecuted = $validator;
             $isStrict = $validator instanceof HasValidatorConfigInterface ? $validator->getConfig()->isStrict() : true;
 
             if(true === $isStrict){
-                $validator->validate($value, ...$params);
-                $atLeastOneValid=true;
-                continue;
+                try{
+                    $validator->validate($value, ...$params);
+                    $atLeastOneValid=true;
+                    $this->succeeded[] = $validator;
+                    continue;
+                }catch(\Exception $e){
+                    $this->failed[] = $validator;
+                    throw $e;
+                }
             }
 
             try{
                 $validator->validate($value, ...$params);
                 $atLeastOneValid = true;
+                $this->succeeded[] = $validator;
             }catch(\Exception $e){
                 $combinedException->append($e);
+                $this->failed[] = $validator;
             }
         }
 
@@ -118,4 +145,18 @@ class ValidatorChain implements ValidatorChainInterface
         return $self;
     }
 
+    public function getSucceeded() : ValidatorChainInterface
+    {
+        return new self($this->succeeded);
+    }
+
+    public function getFailed() : ValidatorChainInterface
+    {
+        return new self($this->failed);
+    }
+
+    public function getLastExecuted(): ?ValidatorInterface
+    {
+        return $this->lastExecuted;
+    }
 }
