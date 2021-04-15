@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- feature/1200200918895360 - Get succeded, error and lastExecuted validators in ValidatorChain
 - feature/1200117701811974 - Add more validators
 - feature/1200112468837882 - ValidatorChain uses filter traits
 - feature/1200099491334038 - Add more examples

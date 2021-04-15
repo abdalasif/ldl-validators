@@ -38,6 +38,21 @@ class ValidatorChain implements ValidatorChainInterface
      */
     private $dumpable = [];
 
+    /**
+     * @var ValidatorChainInterface
+     */
+    private $successChain;
+
+    /**
+     * @var ValidatorChainInterface
+     */
+    private $errorChain;
+
+    /**
+     * @var ValidatorInterface
+     */
+    private $lastExecuted;
+
     public function __construct(iterable $validators=null)
     {
         $this->getBeforeAppend()->append(static function ($collection, $item, $key){
@@ -59,25 +74,31 @@ class ValidatorChain implements ValidatorChainInterface
          * @var \Exception[]
          */
         $combinedException = new CombinedException();
+        $this->successChain = new ValidatorChain();
+        $this->errorChain = new ValidatorChain();
         $atLeastOneValid = false;
 
         /**
          * @var ValidatorInterface $validator
          */
         foreach($this as $validator){
+            $this->lastExecuted = $validator;
             $isStrict = $validator instanceof HasValidatorConfigInterface ? $validator->getConfig()->isStrict() : true;
 
             if(true === $isStrict){
                 $validator->validate($value, ...$params);
                 $atLeastOneValid=true;
+                $this->successChain->append($validator);
                 continue;
             }
 
             try{
                 $validator->validate($value, ...$params);
                 $atLeastOneValid = true;
+                $this->successChain->append($validator);
             }catch(\Exception $e){
                 $combinedException->append($e);
+                $this->errorChain->append($validator);
             }
         }
 
@@ -118,4 +139,26 @@ class ValidatorChain implements ValidatorChainInterface
         return $self;
     }
 
+    public function getSuccededValidators() : ValidatorChainInterface
+    {
+        if(null === $this->successChain){
+            $this->successChain = new ValidatorChain();
+        }
+
+        return $this->successChain;
+    }
+
+    public function getErrorValidators() : ValidatorChainInterface
+    {
+        if(null === $this->errorChain){
+            $this->errorChain = new ValidatorChain();
+        }
+
+        return $this->errorChain;
+    }
+
+    public function getLastExecuted(): ?ValidatorInterface
+    {
+        return $this->lastExecuted;
+    }
 }

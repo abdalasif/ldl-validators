@@ -17,15 +17,33 @@ $chain = new ValidatorChain([]);
 
 echo "Append RegexValidator\n";
 
-$chain->append(new RegexValidator('#[0-9]+#'));
+$chain->append(new RegexValidator('#[0-9]+#', false));
 
 echo "Append InterfaceComplianceValidator\n";
 
-$chain->append(new InterfaceComplianceValidator(ValidatorChainInterface::class));
+$chain->append(new InterfaceComplianceValidator(ValidatorChainInterface::class, false));
 
 echo "Append ClassComplianceValidator (NOT dumpable)\n";
 
-$chain->append(new ClassComplianceValidator(ValidatorChain::class), null, false);
+$chain->append(new ClassComplianceValidator(ValidatorChain::class, false), null, false);
+
+echo "Validate: 123\n";
+
+$chain->validate('123');
+
+echo "Check succeded validators\n";
+
+$chain->getSuccededValidators()->map(static function($item){
+    var_dump(get_class($item));
+    return $item;
+});
+
+echo "Check error validators\n";
+
+$chain->getErrorValidators()->map(static function($item){
+    var_dump(get_class($item));
+    return $item;
+});
 
 echo "Try to append a class that is not a Validator, exception must be thrown\n";
 
