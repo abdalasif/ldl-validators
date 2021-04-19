@@ -6,29 +6,44 @@ use LDL\Validators\Config\Exception\InvalidConfigException;
 use LDL\Validators\Config\RegexValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 
-class RegexValidator implements ValidatorInterface, HasValidatorConfigInterface
+class RegexValidator implements ValidatorInterface
 {
     /**
      * @var RegexValidatorConfig
      */
     private $config;
 
-    public function __construct(string $regex, bool $strict=false)
+    public function __construct(string $regex, bool $negated=false, bool $dumpable=true)
     {
-        $this->config = new RegexValidatorConfig($regex, $strict);
+        $this->config = new RegexValidatorConfig($regex, $negated, $dumpable);
     }
 
-    /**
-     * @param mixed $value
-     * @throws Exception\RegexValidatorException
-     */
     public function validate($value): void
+    {
+        if(!is_scalar($value)){
+            throw new \LogicException(sprintf('Validator %s only accepts scalar values', __CLASS__));
+        }
+
+        $this->config->isNegated() ? $this->assertFalse($value) : $this->assertTrue($value);
+    }
+
+    public function assertTrue($value): void
     {
         if(preg_match($this->config->getRegex(), (string) $value)) {
             return;
         }
 
         $msg = "Given value: \"$value\" does not matches regex: \"{$this->config->getRegex()}\"";
+        throw new Exception\RegexValidatorException($msg);
+    }
+
+    public function assertFalse($value): void
+    {
+        if(!preg_match($this->config->getRegex(), (string) $value)) {
+            return;
+        }
+
+        $msg = "Given value: \"$value\" matches regex: \"{$this->config->getRegex()}\"";
         throw new Exception\RegexValidatorException($msg);
     }
 
@@ -51,13 +66,13 @@ class RegexValidator implements ValidatorInterface, HasValidatorConfigInterface
         /**
          * @var RegexValidatorConfig $config
          */
-        return new self($config->getRegex(), $config->isStrict());
+        return new self($config->getRegex(), $config->isNegated(), $config->isDumpable());
     }
 
     /**
      * @return RegexValidatorConfig
      */
-    public function getConfig(): RegexValidatorConfig
+    public function getConfig(): ValidatorConfigInterface
     {
         return $this->config;
     }

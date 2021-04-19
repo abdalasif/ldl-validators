@@ -2,35 +2,48 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\BasicValidatorConfig;
-use LDL\Validators\Config\Exception\InvalidConfigException;
-use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 
-class ObjectValidator implements ValidatorInterface, HasValidatorConfigInterface
+class ObjectValidator implements ValidatorInterface
 {
     /**
-     * @var BasicValidatorConfig
+     * @var Config\BasicValidatorConfig
      */
     private $config;
 
-    public function __construct(bool $strict=true)
+    public function __construct(bool $negated=false, bool $dumpable=true)
     {
-        $this->config = new BasicValidatorConfig($strict);
+        $this->config = new Config\BasicValidatorConfig($negated, $dumpable);
     }
 
-    /**
-     * @param mixed $value
-     * @throws TypeMismatchException
-     */
     public function validate($value) : void
+    {
+        $this->config->isNegated() ? $this->assertFalse($value) : $this->assertTrue($value);
+    }
+
+    public function assertTrue($value): void
     {
         if(is_object($value)){
             return;
         }
 
         $msg = sprintf(
-            'Value expected for "%s", must be an Object, %s was given',
+            'Value expected for "%s", must be an Object, "%s" was given',
+            __CLASS__,
+            gettype($value)
+        );
+
+        throw new TypeMismatchException($msg);
+    }
+
+    public function assertFalse($value): void
+    {
+        if(!is_object($value)){
+            return;
+        }
+
+        $msg = sprintf(
+            'Value expected for "%s", must NOT be an Object, "%s" was given',
             __CLASS__,
             gettype($value)
         );
@@ -39,31 +52,31 @@ class ObjectValidator implements ValidatorInterface, HasValidatorConfigInterface
     }
 
     /**
-     * @param ValidatorConfigInterface $config
+     * @param Config\ValidatorConfigInterface $config
      * @return ValidatorInterface
-     * @throws InvalidConfigException
+     * @throws \InvalidArgumentException
      */
-    public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
+    public static function fromConfig(Config\ValidatorConfigInterface $config): ValidatorInterface
     {
-        if(false === $config instanceof BasicValidatorConfig){
+        if(false === $config instanceof Config\BasicValidatorConfig){
             $msg = sprintf(
                 'Config expected to be %s, config of class %s was given',
                 __CLASS__,
                 get_class($config)
             );
-            throw new InvalidConfigException($msg);
+            throw new \InvalidArgumentException($msg);
         }
 
         /**
-         * @var BasicValidatorConfig $config
+         * @var Config\ValidatorConfigInterface $config
          */
-        return new self($config->isStrict());
+        return new self($config->isNegated(), $config->isDumpable());
     }
 
     /**
-     * @return BasicValidatorConfig
+     * @return Config\BasicValidatorConfig
      */
-    public function getConfig(): BasicValidatorConfig
+    public function getConfig(): Config\BasicValidatorConfig
     {
         return $this->config;
     }

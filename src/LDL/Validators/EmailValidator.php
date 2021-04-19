@@ -2,28 +2,26 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\BasicValidatorConfig;
-use LDL\Validators\Config\ClassComplianceValidatorConfig;
-use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 
-class EmailValidator implements ValidatorInterface, HasValidatorConfigInterface
+class EmailValidator implements ValidatorInterface
 {
     /**
-     * @var BasicValidatorConfig
+     * @var Config\BasicValidatorConfig
      */
     private $config;
 
-    public function __construct(string $class, bool $strict=true)
+    public function __construct(bool $negated=false, bool $dumpable=true)
     {
-        $this->config = new BasicValidatorConfig($strict);
+        $this->config = new Config\BasicValidatorConfig($negated, $dumpable);
     }
 
-    /**
-     * @param mixed $value
-     * @throws TypeMismatchException
-     */
     public function validate($value): void
+    {
+        $this->config->isNegated() ? $this->assertFalse($value) : $this->assertTrue($value);
+    }
+
+    public function assertTrue($value): void
     {
         if(filter_var($value, \FILTER_VALIDATE_EMAIL)) {
             return;
@@ -37,28 +35,46 @@ class EmailValidator implements ValidatorInterface, HasValidatorConfigInterface
         throw new TypeMismatchException($msg);
     }
 
-    public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
+    public function assertFalse($value): void
     {
-        if(false === $config instanceof BasicValidatorConfig){
+        if(!filter_var($value, \FILTER_VALIDATE_EMAIL)) {
+            return;
+        }
+
+        $msg = sprintf(
+            'Value expected for "%s", can not be an email address',
+            __CLASS__
+        );
+
+        throw new TypeMismatchException($msg);
+    }
+
+    /**
+     * @param Config\ValidatorConfigInterface $config
+     * @return ValidatorInterface
+     * @throws \InvalidArgumentException
+     */
+    public static function fromConfig(Config\ValidatorConfigInterface $config): ValidatorInterface
+    {
+        if(false === $config instanceof Config\BasicValidatorConfig){
             $msg = sprintf(
                 'Config expected to be %s, config of class %s was given',
                 __CLASS__,
                 get_class($config)
             );
-
-            throw new TypeMismatchException($msg);
+            throw new \InvalidArgumentException($msg);
         }
 
         /**
-         * @var ClassComplianceValidatorConfig $config
+         * @var Config\ValidatorConfigInterface $config
          */
-        return new self($config->getClass(), $config->isStrict());
+        return new self($config->isNegated(), $config->isDumpable());
     }
 
     /**
-     * @return BasicValidatorConfig
+     * @return Config\BasicValidatorConfig
      */
-    public function getConfig(): BasicValidatorConfig
+    public function getConfig(): Config\BasicValidatorConfig
     {
         return $this->config;
     }

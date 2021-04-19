@@ -4,7 +4,7 @@ namespace LDL\Validators;
 
 use LDL\Validators\Exception\TypeMismatchException;
 
-class IntegerValidator implements ValidatorInterface
+class ArrayTypeValidator implements ValidatorInterface
 {
     /**
      * @var Config\BasicValidatorConfig
@@ -23,12 +23,12 @@ class IntegerValidator implements ValidatorInterface
 
     public function assertTrue($value): void
     {
-        if(is_int($value)){
+        if(is_array($value)){
             return;
         }
 
         $msg = sprintf(
-            'Value expected for "%s", must be of type integer, "%s" was given',
+            'Value expected for "%s", must be of type array, "%s" was given',
             __CLASS__,
             gettype($value)
         );
@@ -38,12 +38,12 @@ class IntegerValidator implements ValidatorInterface
 
     public function assertFalse($value): void
     {
-        if(!is_int($value)){
+        if(!is_array($value)){
             return;
         }
 
         $msg = sprintf(
-            'Value expected for "%s", must NOT be of type integer, "%s" was given',
+            'Value expected for "%s", must NOT be of type array, "%s" was given',
             __CLASS__,
             gettype($value)
         );

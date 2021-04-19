@@ -2,14 +2,14 @@
 
 namespace LDL\Validators\Chain\Loader;
 
-use LDL\Validators\Chain\ValidatorChain;
+use LDL\Validators\Chain\AndValidatorChain;
 use LDL\Validators\Chain\ValidatorChainInterface;
 
 class ValidatorChainLoader
 {
     public static function load(array $data) : ValidatorChainInterface
     {
-        $chain = new ValidatorChain([]);
+        $chain = new AndValidatorChain([]);
 
         foreach($data as $item){
             if(false === array_key_exists('config', $item)){

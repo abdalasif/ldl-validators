@@ -2,41 +2,28 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\Exception\InvalidConfigException;
-use LDL\Validators\Config\ScalarValidatorConfig;
-use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 
-class ScalarValidator implements ValidatorInterface, HasValidatorConfigInterface
+class ScalarValidator implements ValidatorInterface
 {
     /**
-     * @var ScalarValidatorConfig
+     * @var Config\BasicValidatorConfig
      */
     private $config;
 
-    public function __construct(bool $acceptToStringObjects=true, bool $strict = false)
+    public function __construct(bool $negated=false, bool $dumpable=true)
     {
-        $this->config = new ScalarValidatorConfig($acceptToStringObjects, $strict);
+        $this->config = new Config\BasicValidatorConfig($negated, $dumpable);
     }
 
-    /**
-     * @param mixed $value
-     * @throws TypeMismatchException
-     */
     public function validate($value): void
     {
-        if(is_scalar($value)){
-            return;
-        }
+        $this->config->isNegated() ? $this->assertFalse($value) : $this->assertTrue($value);
+    }
 
-        /**
-         * Object with __toString method
-         */
-        if(
-            $this->config->isAcceptToStringObjects() &&
-            is_object($value) &&
-            in_array('__tostring', array_map('strtolower', get_class_methods($value)), true)
-        ){
+    public function assertTrue($value): void
+    {
+        if(is_scalar($value)){
             return;
         }
 
@@ -49,32 +36,47 @@ class ScalarValidator implements ValidatorInterface, HasValidatorConfigInterface
         throw new TypeMismatchException($msg);
     }
 
-    /**
-     * @param ValidatorConfigInterface $config
-     * @return ValidatorInterface
-     * @throws InvalidConfigException
-     */
-    public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
+    public function assertFalse($value): void
     {
-        if(false === $config instanceof ScalarValidatorConfig){
+        if(!is_scalar($value)){
+            return;
+        }
+
+        $msg = sprintf(
+            'Value expected for "%s", must NOT be of type scalar, "%s" was given',
+            __CLASS__,
+            gettype($value)
+        );
+
+        throw new TypeMismatchException($msg);
+    }
+
+    /**
+     * @param Config\ValidatorConfigInterface $config
+     * @return ValidatorInterface
+     * @throws \InvalidArgumentException
+     */
+    public static function fromConfig(Config\ValidatorConfigInterface $config): ValidatorInterface
+    {
+        if(false === $config instanceof Config\BasicValidatorConfig){
             $msg = sprintf(
                 'Config expected to be %s, config of class %s was given',
                 __CLASS__,
                 get_class($config)
             );
-            throw new InvalidConfigException($msg);
+            throw new \InvalidArgumentException($msg);
         }
 
         /**
-         * @var ScalarValidatorConfig $config
+         * @var Config\ValidatorConfigInterface $config
          */
-        return new self($config->isAcceptToStringObjects(), $config->isStrict());
+        return new self($config->isNegated(), $config->isDumpable());
     }
 
     /**
-     * @return ScalarValidatorConfig
+     * @return Config\BasicValidatorConfig
      */
-    public function getConfig(): ScalarValidatorConfig
+    public function getConfig(): Config\BasicValidatorConfig
     {
         return $this->config;
     }

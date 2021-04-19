@@ -7,5 +7,13 @@ use LDL\Framework\Base\Contracts\ToArrayInterface;
 
 interface ValidatorConfigInterface extends ArrayFactoryInterface, ToArrayInterface, \JsonSerializable
 {
-    public function isStrict() : bool;
+    /**
+     * @return bool
+     */
+    public function isNegated() : bool;
+
+    /**
+     * @return bool
+     */
+    public function isDumpable() : bool;
 }
