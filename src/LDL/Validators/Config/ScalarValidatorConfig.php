@@ -3,10 +3,11 @@
 namespace LDL\Validators\Config;
 
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
+use LDL\Validators\Config\Traits\ValidatorConfigTrait;
 
 class ScalarValidatorConfig implements ValidatorConfigInterface
 {
-    use ValidatorConfigInterfaceTrait;
+    use ValidatorConfigTrait;
 
     /**
      * @var bool
@@ -14,12 +15,14 @@ class ScalarValidatorConfig implements ValidatorConfigInterface
     private $acceptToStringObjects;
 
     public function __construct(
-        bool $strict = false,
-        bool $acceptToStringObjects=true
+        bool $acceptToStringObjects=true,
+        bool $negated=false,
+        bool $dumpable=true
     )
     {
-        $this->_isStrict = $strict;
         $this->acceptToStringObjects = $acceptToStringObjects;
+        $this->_tNegated = $negated;
+        $this->_tDumpable = $dumpable;
     }
 
     /**
@@ -44,10 +47,11 @@ class ScalarValidatorConfig implements ValidatorConfigInterface
      */
     public static function fromArray(array $data = []): ArrayFactoryInterface
     {
-        $value = array_key_exists('acceptToStringObjects', $data) ? (bool) $data['acceptToStringObjects'] : true;
-        $strict = array_key_exists('strict', $data) ? (bool) $data['strict'] : false;
-
-        return new self($strict, $value);
+        return new self(
+            array_key_exists('acceptToStringObjects', $data) ? (bool) $data['acceptToStringObjects'] : true,
+            array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
+            array_key_exists('dumpable', $data) ? (bool)$data['dumpable'] : true
+        );
     }
 
     /**
@@ -56,8 +60,9 @@ class ScalarValidatorConfig implements ValidatorConfigInterface
     public function toArray(): array
     {
         return [
-            'strict' => $this->_isStrict,
-            'acceptToStringObjects' => $this->acceptToStringObjects
+            'acceptToStringObjects' => $this->acceptToStringObjects,
+            'negated' => $this->_tNegated,
+            'dumpable' => $this->_tDumpable
         ];
     }
 }

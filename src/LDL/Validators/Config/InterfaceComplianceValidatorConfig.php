@@ -4,24 +4,26 @@ namespace LDL\Validators\Config;
 
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 use LDL\Framework\Base\Exception\ArrayFactoryException;
+use LDL\Validators\Config\Traits\ValidatorConfigTrait;
 
 class InterfaceComplianceValidatorConfig implements ValidatorConfigInterface
 {
-    use ValidatorConfigInterfaceTrait;
+    use ValidatorConfigTrait;
 
     /**
      * @var string
      */
     private $interface;
 
-    public function __construct(string $interface, bool $strict=true)
+    public function __construct(string $interface, bool $negated=false, bool $dumpable=true)
     {
         if(!interface_exists($interface)){
             throw new \LogicException("$interface interface does not exists");
         }
 
-        $this->_isStrict = $strict;
         $this->interface = $interface;
+        $this->_tNegated = $negated;
+        $this->_tDumpable = $dumpable;
     }
 
     /**
@@ -30,14 +32,6 @@ class InterfaceComplianceValidatorConfig implements ValidatorConfigInterface
     public function getInterface(): string
     {
         return $this->interface;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize() : array
-    {
-        return $this->toArray();
     }
 
     /**
@@ -53,7 +47,11 @@ class InterfaceComplianceValidatorConfig implements ValidatorConfigInterface
         }
 
         try{
-            return new self((string) $data['interface'], array_key_exists('strict', $data) ? (bool)$data['strict'] : true);
+            return new self(
+                (string) $data['interface'],
+                array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
+                array_key_exists('dumpable', $data) ? (bool)$data['dumpable'] : true
+            );
         }catch(\Exception $e){
             throw new ArrayFactoryException($e->getMessage());
         }
@@ -66,7 +64,8 @@ class InterfaceComplianceValidatorConfig implements ValidatorConfigInterface
     {
         return [
             'interface' => $this->interface,
-            'strict' => $this->_isStrict
+            'negated' => $this->_tNegated,
+            'dumpable' => $this->_tDumpable
         ];
     }
 }

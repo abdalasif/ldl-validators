@@ -2,30 +2,26 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\BasicValidatorConfig;
-use LDL\Validators\Config\Exception\InvalidConfigException;
-use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 
-class ClassExistenceValidator implements ValidatorInterface, HasValidatorConfigInterface
+class ClassExistenceValidator implements ValidatorInterface
 {
     /**
-     * @var BasicValidatorConfig
+     * @var Config\BasicValidatorConfig
      */
     private $config;
 
-    public function __construct(bool $strict=true)
+    public function __construct(bool $negated=false, bool $dumpable=true)
     {
-        $this->config = BasicValidatorConfig::fromArray([
-            'strict' => $strict
-        ]);
+        $this->config = new Config\BasicValidatorConfig($negated, $dumpable);
     }
 
-    /**
-     * @param mixed $value
-     * @throws TypeMismatchException
-     */
     public function validate($value): void
+    {
+        $this->config->isNegated() ? $this->assertFalse($value) : $this->assertTrue($value);
+    }
+
+    public function assertTrue($value): void
     {
         if(class_exists($value)){
             return;
@@ -41,31 +37,54 @@ class ClassExistenceValidator implements ValidatorInterface, HasValidatorConfigI
     }
 
     /**
-     * @param ValidatorConfigInterface $config
-     * @return ValidatorInterface
-     * @throws InvalidConfigException
+     * Might sound awkward, but who am I to state anything about use cases ¯\_(ツ)_/¯
+     *
+     * @TODO Perhaps format validation for the parameter would be necessary ?
+     *
+     * @param $value
+     * @throws TypeMismatchException
      */
-    public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
+    public function assertFalse($value): void
     {
-        if(false === $config instanceof BasicValidatorConfig){
+        if(!class_exists($value)){
+            return;
+        }
+
+        $msg = sprintf(
+            'Value expected for "%s", must be a string representing a NON existing class, "%s" was given.',
+            __CLASS__,
+            gettype($value)
+        );
+
+        throw new TypeMismatchException($msg);
+    }
+
+    /**
+     * @param Config\ValidatorConfigInterface $config
+     * @return ValidatorInterface
+     * @throws \InvalidArgumentException
+     */
+    public static function fromConfig(Config\ValidatorConfigInterface $config): ValidatorInterface
+    {
+        if(false === $config instanceof Config\BasicValidatorConfig){
             $msg = sprintf(
                 'Config expected to be %s, config of class %s was given',
                 __CLASS__,
                 get_class($config)
             );
-            throw new InvalidConfigException($msg);
+            throw new \InvalidArgumentException($msg);
         }
 
         /**
-         * @var BasicValidatorConfig $config
+         * @var Config\ValidatorConfigInterface $config
          */
-        return new self($config->isStrict());
+        return new self($config->isNegated(), $config->isDumpable());
     }
 
     /**
-     * @return BasicValidatorConfig
+     * @return Config\BasicValidatorConfig
      */
-    public function getConfig(): BasicValidatorConfig
+    public function getConfig(): Config\BasicValidatorConfig
     {
         return $this->config;
     }

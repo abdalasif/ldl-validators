@@ -2,36 +2,33 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\BasicValidatorConfig;
-use LDL\Validators\Config\DoubleValidatorConfig;
-use LDL\Validators\Config\Exception\InvalidConfigException;
-use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 
-class DoubleValidator implements ValidatorInterface, HasValidatorConfigInterface
+class DoubleValidator implements ValidatorInterface
 {
     /**
-     * @var DoubleValidatorConfig
+     * @var Config\BasicValidatorConfig
      */
     private $config;
 
-    public function __construct(bool $strict=true)
+    public function __construct(bool $negated=false, bool $dumpable=true)
     {
-        $this->config = new BasicValidatorConfig($strict);
+        $this->config = new Config\BasicValidatorConfig($negated, $dumpable);
     }
 
-    /**
-     * @param mixed $value
-     * @throws TypeMismatchException
-     */
     public function validate($value): void
+    {
+        $this->config->isNegated() ? $this->assertFalse($value) : $this->assertTrue($value);
+    }
+
+    public function assertTrue($value): void
     {
         if(is_float($value)){
             return;
         }
 
         $msg = sprintf(
-          'Value expected for "%s", must be of type double, "%s" given',
+            'Value expected for "%s", must be of type double, "%s" given',
             __CLASS__,
             gettype($value)
         );
@@ -39,32 +36,46 @@ class DoubleValidator implements ValidatorInterface, HasValidatorConfigInterface
         throw new TypeMismatchException($msg);
     }
 
-    /**
-     * @param ValidatorConfigInterface $config
-     * @return ValidatorInterface
-     * @throws InvalidConfigException
-     */
-    public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
+    public function assertFalse($value): void
     {
-        if(false === $config instanceof DoubleValidatorConfig){
+        if(!is_float($value)){
+            return;
+        }
+
+        $msg = sprintf(
+            'Value expected for "%s", must NOT be of type double',
+            __CLASS__
+        );
+
+        throw new TypeMismatchException($msg);
+    }
+
+    /**
+     * @param Config\ValidatorConfigInterface $config
+     * @return ValidatorInterface
+     * @throws \InvalidArgumentException
+     */
+    public static function fromConfig(Config\ValidatorConfigInterface $config): ValidatorInterface
+    {
+        if(false === $config instanceof Config\BasicValidatorConfig){
             $msg = sprintf(
                 'Config expected to be %s, config of class %s was given',
                 __CLASS__,
                 get_class($config)
             );
-            throw new InvalidConfigException($msg);
+            throw new \InvalidArgumentException($msg);
         }
 
         /**
-         * @var DoubleValidatorConfig $config
+         * @var Config\ValidatorConfigInterface $config
          */
-        return new self($config->isStrict());
+        return new self($config->isNegated(), $config->isDumpable());
     }
 
     /**
-     * @return DoubleValidatorConfig
+     * @return Config\BasicValidatorConfig
      */
-    public function getConfig(): DoubleValidatorConfig
+    public function getConfig(): Config\BasicValidatorConfig
     {
         return $this->config;
     }

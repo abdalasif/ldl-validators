@@ -6,5 +6,5 @@ use LDL\Validators\Chain\ValidatorChainInterface;
 
 interface ValidatorChainDumperInterface
 {
-    public static function dump(ValidatorChainInterface $collection, string $file) : void;
+    public static function dump(ValidatorChainInterface $collection);
 }

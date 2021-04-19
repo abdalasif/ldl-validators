@@ -4,24 +4,26 @@ namespace LDL\Validators\Config;
 
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 use LDL\Framework\Base\Exception\ArrayFactoryException;
+use LDL\Validators\Config\Traits\ValidatorConfigTrait;
 
 class StrictClassComplianceItemValidatorConfig implements ValidatorConfigInterface
 {
-    use ValidatorConfigInterfaceTrait;
+    use ValidatorConfigTrait;
 
     /**
      * @var string
      */
     private $class;
 
-    public function __construct(string $class, bool $strict=true)
+    public function __construct(string $class, bool $negated=false, bool $dumpable=true)
     {
         if(!class_exists($class)){
             throw new \LogicException("Class \"$class\" does not exists");
         }
 
-        $this->_isStrict = $strict;
         $this->class = $class;
+        $this->_tNegated = $negated;
+        $this->_tDumpable = $dumpable;
     }
 
     /**
@@ -30,14 +32,6 @@ class StrictClassComplianceItemValidatorConfig implements ValidatorConfigInterfa
     public function getClass(): string
     {
         return $this->class;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize() : array
-    {
-        return $this->toArray();
     }
 
     /**
@@ -53,7 +47,11 @@ class StrictClassComplianceItemValidatorConfig implements ValidatorConfigInterfa
         }
 
         try{
-            return new self((string) $data['class'], array_key_exists('strict', $data) ? (bool)$data['strict'] : true);
+            return new self(
+                (string) $data['class'],
+                array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
+                array_key_exists('dumpable', $data) ? (bool)$data['dumpable'] : true
+            );
         }catch(\Exception $e){
             throw new ArrayFactoryException($e->getMessage());
         }
@@ -66,7 +64,8 @@ class StrictClassComplianceItemValidatorConfig implements ValidatorConfigInterfa
     {
         return [
             'class' => $this->class,
-            'strict' => $this->_isStrict
+            'negated' => $this->_tNegated,
+            'dumpable' => $this->_tDumpable
         ];
     }
 }

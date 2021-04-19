@@ -14,10 +14,8 @@ use LDL\Framework\Base\Collection\Contracts\TruncateInterface;
 use LDL\Framework\Base\Contracts\LockableObjectInterface;
 use LDL\Validators\ValidatorInterface;
 
-interface ValidatorChainInterface extends CollectionInterface, LockableObjectInterface, ValidatorInterface, BeforeAppendInterface, AppendableInterface, LockAppendInterface, BeforeRemoveInterface, RemovableInterface, TruncateInterface, FilterByInterface, FilterByClassInterface
+interface ValidatorChainInterface extends ValidatorInterface, CollectionInterface, LockableObjectInterface, BeforeAppendInterface, AppendableInterface, LockAppendInterface, BeforeRemoveInterface, RemovableInterface, TruncateInterface, FilterByInterface, FilterByClassInterface
 {
-    public function append($item, $key = null, bool $dumpable = true): CollectionInterface;
-
     public function filterDumpableItems() : ValidatorChainInterface;
 
     public function getSucceeded() : ValidatorChainInterface;

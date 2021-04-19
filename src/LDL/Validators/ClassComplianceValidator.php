@@ -6,16 +6,21 @@ use LDL\Validators\Config\ClassComplianceValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 
-class ClassComplianceValidator implements ValidatorInterface, HasValidatorConfigInterface
+class ClassComplianceValidator implements ValidatorInterface
 {
     /**
      * @var ClassComplianceValidatorConfig
      */
     private $config;
 
-    public function __construct(string $class, bool $strict=true)
+    public function __construct(
+        string $class,
+        bool $strict=false,
+        bool $negated=false,
+        bool $dumpable=true
+    )
     {
-        $this->config = new ClassComplianceValidatorConfig($class, $strict);
+        $this->config = new ClassComplianceValidatorConfig($class, $strict, $negated, $dumpable);
     }
 
     /**
@@ -33,21 +38,44 @@ class ClassComplianceValidator implements ValidatorInterface, HasValidatorConfig
             throw new TypeMismatchException($msg);
         }
 
-        $class = $this->config->getClass();
+        $this->config->isNegated() ? $this->assertFalse($value) : $this->assertTrue($value);
+    }
 
-        if($value instanceof $class) {
+    public function assertTrue($value) : void
+    {
+        if($this->compare($value)){
             return;
         }
 
         $msg = sprintf(
             'Value of class "%s", does not complies to class: "%s"',
             get_class($value),
-            $class
+            $this->config->getClass()
         );
 
         throw new TypeMismatchException($msg);
     }
 
+    public function assertFalse($value) : void
+    {
+        if(!$this->compare($value)){
+            return;
+        }
+
+        $msg = sprintf(
+            'Value of class "%s", can NOT be of class: "%s"',
+            get_class($value),
+            $this->config->getClass()
+        );
+
+        throw new TypeMismatchException($msg);
+    }
+
+    private function compare($value)
+    {
+        $class = $this->config->getClass();
+        return $this->config->isStrict() ? get_class($value) === $class : is_subclass_of($value, $class);
+    }
 
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
     {
@@ -64,7 +92,7 @@ class ClassComplianceValidator implements ValidatorInterface, HasValidatorConfig
         /**
          * @var ClassComplianceValidatorConfig $config
          */
-        return new self($config->getClass(), $config->isStrict());
+        return new self($config->getClass(), $config->isStrict(), $config->isNegated(), $config->isDumpable());
     }
 
     /**

@@ -4,7 +4,7 @@ require __DIR__.'/../vendor/autoload.php';
 
 use LDL\Validators\Config\ClassComplianceValidatorConfig;
 use LDL\Validators\ClassComplianceValidator;
-use LDL\Validators\ExactStringMatchValidator;
+use LDL\Validators\StringEqualsValidator;
 use LDL\Validators\Exception\ValidatorException;
 use LDL\Validators\RegexValidator;
 use LDL\Validators\Config\RegexValidatorConfig;
@@ -37,7 +37,7 @@ try{
 echo "Validate Exact string match validator, exception must be thrown\n";
 
 try{
-    $validator->validate(new ExactStringMatchValidator('test'));
+    $validator->validate(new StringEqualsValidator('test'));
 }catch(ValidatorException $e){
     echo "EXCEPTION: {$e->getMessage()}\n";
 }

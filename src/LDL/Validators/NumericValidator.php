@@ -4,16 +4,16 @@ namespace LDL\Validators;
 
 use LDL\Validators\Exception\TypeMismatchException;
 
-class IntegerValidator implements ValidatorInterface
+class NumericValidator implements ValidatorInterface
 {
     /**
      * @var Config\BasicValidatorConfig
      */
     private $config;
 
-    public function __construct(bool $negated = false, bool $dumpable=true)
+    public function __construct(bool $negated=false, bool $dumpable=true)
     {
-        $this->config = new Config\BasicValidatorConfig($negated, $dumpable);
+        $this->config = new Config\BasicValidatorConfig($negated);
     }
 
     public function validate($value): void
@@ -23,14 +23,14 @@ class IntegerValidator implements ValidatorInterface
 
     public function assertTrue($value): void
     {
-        if(is_int($value)){
+        if(is_numeric($value)){
             return;
         }
 
         $msg = sprintf(
-            'Value expected for "%s", must be of type integer, "%s" was given',
+            'Value expected for "%s", must be of type numeric; "%s" was given',
             __CLASS__,
-            gettype($value)
+            is_scalar($value) ? var_export($value, true) : gettype($value)
         );
 
         throw new TypeMismatchException($msg);
@@ -38,18 +38,19 @@ class IntegerValidator implements ValidatorInterface
 
     public function assertFalse($value): void
     {
-        if(!is_int($value)){
+        if(!is_numeric($value)){
             return;
         }
 
         $msg = sprintf(
-            'Value expected for "%s", must NOT be of type integer, "%s" was given',
+            'Value expected for "%s", must not be numeric; "%s" was given',
             __CLASS__,
-            gettype($value)
+            is_scalar($value) ? var_export($value, true) : gettype($value)
         );
 
         throw new TypeMismatchException($msg);
     }
+
 
     /**
      * @param Config\ValidatorConfigInterface $config

@@ -4,20 +4,39 @@ namespace LDL\Validators\Config;
 
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 use LDL\Framework\Base\Exception\ArrayFactoryException;
+use LDL\Validators\Config\Traits\ValidatorConfigTrait;
 
-class ExactStringMatchValidatorConfig implements ValidatorConfigInterface
+class StringEqualsValidatorConfig implements ValidatorConfigInterface
 {
-    use ValidatorConfigInterfaceTrait;
+    use ValidatorConfigTrait;
+
+    /**
+     * @var bool
+     */
+    private $strict;
 
     /**
      * @var string
      */
     private $value;
 
-    public function __construct(string $value, bool $strict=true)
+    public function __construct(
+        string $value,
+        bool $strict=true,
+        bool $negated=false,
+        bool $dumpable=true
+    )
     {
+        $this->_tNegated = $negated;
+        $this->_tDumpable = $dumpable;
+
+        $this->strict = $strict;
         $this->value = $value;
-        $this->_isStrict = $strict;
+    }
+
+    public function isStrict() : bool
+    {
+        return $this->strict;
     }
 
     /**
@@ -26,14 +45,6 @@ class ExactStringMatchValidatorConfig implements ValidatorConfigInterface
     public function getValue(): string
     {
         return $this->value;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize() : array
-    {
-        return $this->toArray();
     }
 
     /**
@@ -49,7 +60,11 @@ class ExactStringMatchValidatorConfig implements ValidatorConfigInterface
         }
 
         try{
-            return new self((string) $data['value'], array_key_exists('strict', $data) ? (bool)$data['strict'] : true);
+            return new self(
+                (string) $data['value'],
+                array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
+                array_key_exists('dumpable', $data) ? (bool)$data['dumpable'] : true
+            );
         }catch(\Exception $e){
             throw new ArrayFactoryException($e->getMessage());
         }
@@ -62,7 +77,8 @@ class ExactStringMatchValidatorConfig implements ValidatorConfigInterface
     {
         return [
             'value' => $this->value,
-            'strict' => $this->_isStrict
+            'negated' => $this->_tNegated,
+            'dumpable' => $this->_tDumpable
         ];
     }
 }

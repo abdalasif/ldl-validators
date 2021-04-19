@@ -3,22 +3,16 @@
 namespace LDL\Validators\Config;
 
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
+use LDL\Validators\Config\Traits\ValidatorConfigTrait;
 
 class BasicValidatorConfig implements ValidatorConfigInterface
 {
-    use ValidatorConfigInterfaceTrait;
+    use ValidatorConfigTrait;
 
-    public function __construct(bool $strict=true)
+    public function __construct(bool $negated=false, bool $dumpable=true)
     {
-        $this->_isStrict = $strict;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize() : array
-    {
-        return $this->toArray();
+        $this->_tNegated = $negated;
+        $this->_tDumpable = $dumpable;
     }
 
     /**
@@ -27,7 +21,10 @@ class BasicValidatorConfig implements ValidatorConfigInterface
      */
     public static function fromArray(array $data = []): ArrayFactoryInterface
     {
-        return new self(array_key_exists('strict', $data) ? (bool)$data['strict'] : true);
+        return new self(
+            array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
+            array_key_exists('dumpable', $data) ? (bool)$data['dumpable'] : true,
+        );
     }
 
     /**
@@ -36,7 +33,8 @@ class BasicValidatorConfig implements ValidatorConfigInterface
     public function toArray(): array
     {
         return [
-            'strict' => $this->_isStrict
+            'negated' => $this->_tNegated,
+            'dumpable' => $this->_tDumpable
         ];
     }
 }

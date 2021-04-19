@@ -2,7 +2,7 @@
 
 namespace LDL\Validators\Exception;
 
-class NumericRangeValidatorException extends ValidatorException
+class NumericComparisonValidatorException extends ValidatorException
 {
 
 }

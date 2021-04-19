@@ -6,16 +6,16 @@ use LDL\Validators\Config\InterfaceComplianceValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 
-class InterfaceComplianceValidator implements ValidatorInterface, HasValidatorConfigInterface
+class InterfaceComplianceValidator implements ValidatorInterface
 {
     /**
      * @var InterfaceComplianceValidatorConfig
      */
     private $config;
 
-    public function __construct(string $interface, bool $strict=true)
+    public function __construct(string $interface, bool $negated=false, bool $dumpable=true)
     {
-        $this->config = new InterfaceComplianceValidatorConfig($interface, $strict);
+        $this->config = new InterfaceComplianceValidatorConfig($interface, $negated, $dumpable);
     }
 
     /**
@@ -33,6 +33,11 @@ class InterfaceComplianceValidator implements ValidatorInterface, HasValidatorCo
             throw new TypeMismatchException($msg);
         }
 
+        $this->config->isNegated() ? $this->assertFalse($value) : $this->assertTrue($value);
+    }
+
+    public function assertTrue($value): void
+    {
         $interface = $this->config->getInterface();
 
         if($value instanceof $interface) {
@@ -41,6 +46,23 @@ class InterfaceComplianceValidator implements ValidatorInterface, HasValidatorCo
 
         $msg = sprintf(
             'Value of class "%s", does not complies to interface: "%s"',
+            get_class($value),
+            $interface
+        );
+
+        throw new TypeMismatchException($msg);
+    }
+
+    public function assertFalse($value): void
+    {
+        $interface = $this->config->getInterface();
+
+        if(!$value instanceof $interface) {
+            return;
+        }
+
+        $msg = sprintf(
+            'Value of class "%s", must NOT comply to interface: "%s"',
             get_class($value),
             $interface
         );
@@ -62,7 +84,7 @@ class InterfaceComplianceValidator implements ValidatorInterface, HasValidatorCo
         /**
          * @var InterfaceComplianceValidatorConfig $config
          */
-        return new self($config->getInterface(), $config->isStrict());
+        return new self($config->getInterface(), $config->isNegated(), $config->isDumpable());
     }
 
     /**
