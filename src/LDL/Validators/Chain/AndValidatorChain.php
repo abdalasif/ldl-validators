@@ -34,13 +34,10 @@ class AndValidatorChain extends AbstractValidatorChain
                 $this->succeeded[] = $validator;
             }catch(\Exception $e){
                 $this->failed[] = $validator;
-                break;
+                throw $e;
             }
         }
 
-        if(count($this->failed)){
-            throw new \LogicException("Fail assertTrue");
-        }
     }
 
     public function assertFalse($value, ...$params): void
@@ -56,12 +53,8 @@ class AndValidatorChain extends AbstractValidatorChain
                 $this->succeeded[] = $validator;
             }catch(\Exception $e){
                 $this->failed[] = $validator;
-                break;
+                throw $e;
             }
-        }
-
-        if(!count($this->failed)){
-            throw new \LogicException("Fail assertFalse");
         }
     }
 }

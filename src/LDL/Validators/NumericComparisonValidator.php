@@ -6,6 +6,7 @@ use LDL\Validators\Config\Exception\InvalidConfigException;
 use LDL\Validators\Config\NumericComparisonValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\NumericComparisonValidatorException;
+use LDL\Framework\Helper\ComparisonOperatorHelper;
 
 class NumericComparisonValidator implements ValidatorInterface
 {
@@ -19,18 +20,9 @@ class NumericComparisonValidator implements ValidatorInterface
         $this->config = new NumericComparisonValidatorConfig($value, $operator, $negated, $dumpable);
     }
 
-    /**
-     * @param mixed $value
-     * @throws NumericComparisonValidatorException
-     */
     public function validate($value): void
     {
-        if($value <= $this->config->getValue()){
-            return;
-        }
-
-        $msg = "Value can not be greater than: {$this->config->getValue()}";
-        throw new NumericComparisonValidatorException($msg);
+        $this->config->isNegated() ? $this->assertFalse($value) : $this->assertTrue($value);
     }
 
     public function assertTrue($value): void
@@ -72,22 +64,22 @@ class NumericComparisonValidator implements ValidatorInterface
     private function compare($value) : bool
     {
         switch($this->config->getOperator()){
-            case NumericComparisonValidatorConfig::OPERATOR_SEQ:
+            case ComparisonOperatorHelper::OPERATOR_SEQ:
                 return $value === $this->config->getValue();
 
-            case NumericComparisonValidatorConfig::OPERATOR_EQ:
+            case ComparisonOperatorHelper::OPERATOR_EQ:
                 return $value == $this->config->getValue();
 
-            case NumericComparisonValidatorConfig::OPERATOR_GT:
+            case ComparisonOperatorHelper::OPERATOR_GT:
                 return $value > $this->config->getValue();
 
-            case NumericComparisonValidatorConfig::OPERATOR_GTE:
+            case ComparisonOperatorHelper::OPERATOR_GTE:
                 return $value >= $this->config->getValue();
 
-            case NumericComparisonValidatorConfig::OPERATOR_LT:
+            case ComparisonOperatorHelper::OPERATOR_LT:
                 return $value < $this->config->getValue();
 
-            case NumericComparisonValidatorConfig::OPERATOR_LTE:
+            case ComparisonOperatorHelper::OPERATOR_LTE:
                 return $value <= $this->config->getValue();
 
             default:
@@ -97,10 +89,10 @@ class NumericComparisonValidator implements ValidatorInterface
 
     /**
      * @param ValidatorConfigInterface $config
-     * @return MaxNumericValidator
+     * @return NumericComparisonValidator
      * @throws InvalidConfigException
      */
-    public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
+    public static function fromConfig(ValidatorConfigInterface $config): NumericComparisonValidator
     {
         if(false === $config instanceof NumericComparisonValidatorConfig){
             $msg = sprintf(

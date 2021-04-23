@@ -4,21 +4,12 @@ namespace LDL\Validators\Config;
 
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 use LDL\Framework\Base\Exception\ArrayFactoryException;
+use LDL\Framework\Helper\ComparisonOperatorHelper;
 use LDL\Validators\Config\Traits\ValidatorConfigTrait;
 
 class NumericComparisonValidatorConfig implements ValidatorConfigInterface
 {
     use ValidatorConfigTrait;
-
-    /**
-     * @TODO These constants should be part of an ArithmeticConstants file in ldl-framework-base
-     */
-    public const OPERATOR_EQ='==';
-    public const OPERATOR_SEQ='===';
-    public const OPERATOR_GT='>';
-    public const OPERATOR_GTE='>=';
-    public const OPERATOR_LT='<';
-    public const OPERATOR_LTE='<=';
 
     /**
      * @var number
@@ -42,20 +33,7 @@ class NumericComparisonValidatorConfig implements ValidatorConfigInterface
             throw new \InvalidArgumentException($msg);
         }
 
-        $validOperators = [
-            self::OPERATOR_EQ,
-            self::OPERATOR_SEQ,
-            self::OPERATOR_LT,
-            self::OPERATOR_LTE,
-            self::OPERATOR_GT,
-            self::OPERATOR_GTE
-        ];
-
-        if(!in_array($operator, $validOperators,true)){
-            throw new \InvalidArgumentException(
-                sprintf('Invalid operator "%s", valid operators are: %s', implode(', ', $validOperators))
-            );
-        }
+        ComparisonOperatorHelper::validate($operator);
 
         $this->value = $value;
         $this->operator  = $operator;
@@ -83,14 +61,26 @@ class NumericComparisonValidatorConfig implements ValidatorConfigInterface
      */
     public static function fromArray(array $data = []): ArrayFactoryInterface
     {
-        if(false === array_key_exists('value', $data)){
+        if(!array_key_exists('value', $data)){
             $msg = sprintf("Missing property 'value' in %s", __CLASS__);
             throw new ArrayFactoryException($msg);
+        }
+
+        if(!array_key_exists('operator', $data)){
+            $msg = sprintf("Missing property 'operator' in %s", __CLASS__);
+            throw new ArrayFactoryException($msg);
+        }
+
+        if(!is_string($data['operator'])){
+            throw new \InvalidArgumentException(
+                sprintf('operator must be of type string, "%s" was given',gettype($data['operator']))
+            );
         }
 
         try{
             return new self(
                 $data['value'],
+                array_key_exists('operator', $data) ? $data['operator'] : false,
                 array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
                 array_key_exists('dumpable', $data) ? (bool)$data['dumpable'] : true
             );
@@ -107,6 +97,7 @@ class NumericComparisonValidatorConfig implements ValidatorConfigInterface
     {
         return [
             'value' => $this->value,
+            'operator' => $this->operator,
             'negated' => $this->_tNegated,
             'dumpable' => $this->_tDumpable
         ];

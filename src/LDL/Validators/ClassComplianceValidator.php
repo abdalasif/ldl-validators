@@ -74,7 +74,7 @@ class ClassComplianceValidator implements ValidatorInterface
     private function compare($value)
     {
         $class = $this->config->getClass();
-        return $this->config->isStrict() ? get_class($value) === $class : is_subclass_of($value, $class);
+        return $this->config->isStrict() ? get_class($value) === $class : $value instanceof $class;
     }
 
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface

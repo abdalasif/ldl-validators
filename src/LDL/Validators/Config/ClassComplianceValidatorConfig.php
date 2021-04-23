@@ -29,6 +29,7 @@ class ClassComplianceValidatorConfig implements ValidatorConfigInterface
         $this->_tNegated = $negated;
         $this->_tDumpable = $dumpable;
         $this->class = $class;
+        $this->strict = $strict;
     }
 
     public function isStrict() : bool
