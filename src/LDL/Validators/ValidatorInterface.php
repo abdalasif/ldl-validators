@@ -37,9 +37,8 @@ interface ValidatorInterface
 
     /**
      * @param ValidatorConfigInterface $config
-     * @return ValidatorInterface
      */
-    public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface;
+    public static function fromConfig(ValidatorConfigInterface $config);
 
     /**
      * @return ValidatorConfigInterface

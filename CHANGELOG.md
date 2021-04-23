@@ -18,5 +18,6 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
  
 ### Changed
 
-- fixes/1200159985965825 - Simplify configurations into BasicValidatorConfig
+- fix/1200240987751218 - Fix NumericComparisonValidator, use ComparisonHelper constants from base
+- fix/1200159985965825 - Simplify configurations into BasicValidatorConfig
 
