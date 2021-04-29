@@ -11,7 +11,6 @@ use LDL\Framework\Base\Collection\Traits\FilterByClassInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\FilterByInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\LockAppendInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\RemovableInterfaceTrait;
-use LDL\Framework\Base\Collection\Traits\TruncateInterfaceTrait;
 use LDL\Framework\Base\Traits\LockableObjectInterfaceTrait;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\InterfaceComplianceValidator;
@@ -27,7 +26,6 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
     use LockAppendInterfaceTrait;
     use BeforeRemoveInterfaceTrait;
     use RemovableInterfaceTrait;
-    use TruncateInterfaceTrait {truncate as private _truncate;}
     use FilterByInterfaceTrait;
     use FilterByClassInterfaceTrait;
 
@@ -74,8 +72,7 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
      */
     public function filterDumpableItems(): ValidatorChainInterface
     {
-        $self = clone($this);
-        $self->_truncate();
+        $self = $this->getEmptyInstance();
 
         /**
          * @var ValidatorInterface $validator

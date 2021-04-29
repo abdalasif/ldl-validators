@@ -19,5 +19,5 @@ dump(\LDL\Validators\Chain\Dumper\ValidatorChainExprDumper::dump($chain));
 try{
     $chain->validate([]);
 }catch(\Exception $e){
-    dd($e->getMessage());
+    echo "EXCEPTION: {$e->getMessage()}\n";
 }

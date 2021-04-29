@@ -5,6 +5,7 @@ require __DIR__.'/../vendor/autoload.php';
 
 use LDL\Validators\RegexValidator;
 use LDL\Validators\Chain\OrValidatorChain;
+use LDL\Validators\Chain\Exception\CombinedException;
 
 echo "Create Validator Chain\n";
 
@@ -17,6 +18,6 @@ dump(\LDL\Validators\Chain\Dumper\ValidatorChainExprDumper::dump($chain));
 
 try{
     $chain->validate('a');
-}catch(\Exception $e){
-    dd($e->getCombinedMessage());
+}catch(CombinedException $e){
+    echo "EXCEPTION: {$e->getCombinedMessage()}\n";
 }

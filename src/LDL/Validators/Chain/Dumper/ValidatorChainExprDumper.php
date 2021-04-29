@@ -18,19 +18,18 @@ class ValidatorChainExprDumper implements ValidatorChainDumperInterface
                 return self::dump($validator);
             }
 
-            return $validator->getConfig()->isNegated() ? sprintf('!%s', get_class($validator)) : get_class($validator);
+            $class = get_class($validator);
+            return $validator->getConfig()->isNegated() ? sprintf('!%s', $class) : $class;
         });
 
         $string = implode($collection->getConfig()->getOperator(), $string);
 
         $string = $collection->count() === 1 ? $string : sprintf('(%s)', $string);
 
-
         if($collection->getConfig()->isNegated()){
             $string = sprintf('!%s', $string);
         }
 
         return $string;
-
     }
 }

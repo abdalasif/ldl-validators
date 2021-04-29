@@ -2,6 +2,7 @@
 
 namespace LDL\Validators\Chain;
 
+use LDL\Validators\Chain\Dumper\ValidatorChainExprDumper;
 use LDL\Validators\Chain\Exception\CombinedException;
 use LDL\Validators\ValidatorInterface;
 
@@ -76,6 +77,16 @@ class OrValidatorChain extends AbstractValidatorChain
         }
 
         if(count($this->succeeded)){
+            $combinedException->append(
+                new \LogicException(
+                    sprintf(
+                        'Failed to assert that value "%s" complies to: %s',
+                        var_export($value, true),
+                        ValidatorChainExprDumper::dump($this)
+                    )
+                )
+            );
+
             throw $combinedException;
         }
     }

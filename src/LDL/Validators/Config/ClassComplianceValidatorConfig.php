@@ -60,6 +60,7 @@ class ClassComplianceValidatorConfig implements ValidatorConfigInterface
         try{
             return new self(
                 (string) $data['class'],
+                array_key_exists('strict', $data) ? (bool)$data['strict'] : false,
                 array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
                 array_key_exists('dumpable', $data) ? (bool)$data['dumpable'] : true
             );
@@ -75,6 +76,7 @@ class ClassComplianceValidatorConfig implements ValidatorConfigInterface
     {
         return [
             'class' => $this->class,
+            'strict' => $this->strict,
             'negated' => $this->_tNegated,
             'dumpable' => $this->_tDumpable
         ];

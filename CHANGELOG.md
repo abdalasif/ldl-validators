@@ -18,6 +18,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
  
 ### Changed
 
+- fix/1200266740213973 - Remove old validators, remove truncate from AbstractValidatorChain and his interface, Fix examples, Add strict to ClassComplianceValidatorConfig
 - fix/1200240987751218 - Fix NumericComparisonValidator, use ComparisonHelper constants from base
 - fix/1200159985965825 - Simplify configurations into BasicValidatorConfig
 

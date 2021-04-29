@@ -10,11 +10,10 @@ use LDL\Framework\Base\Collection\Contracts\FilterByClassInterface;
 use LDL\Framework\Base\Collection\Contracts\FilterByInterface;
 use LDL\Framework\Base\Collection\Contracts\LockAppendInterface;
 use LDL\Framework\Base\Collection\Contracts\RemovableInterface;
-use LDL\Framework\Base\Collection\Contracts\TruncateInterface;
 use LDL\Framework\Base\Contracts\LockableObjectInterface;
 use LDL\Validators\ValidatorInterface;
 
-interface ValidatorChainInterface extends ValidatorInterface, CollectionInterface, LockableObjectInterface, BeforeAppendInterface, AppendableInterface, LockAppendInterface, BeforeRemoveInterface, RemovableInterface, TruncateInterface, FilterByInterface, FilterByClassInterface
+interface ValidatorChainInterface extends ValidatorInterface, CollectionInterface, LockableObjectInterface, BeforeAppendInterface, AppendableInterface, LockAppendInterface, BeforeRemoveInterface, RemovableInterface, FilterByInterface, FilterByClassInterface
 {
     public function filterDumpableItems() : ValidatorChainInterface;
 
