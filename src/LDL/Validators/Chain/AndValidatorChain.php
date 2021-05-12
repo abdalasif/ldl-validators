@@ -2,6 +2,7 @@
 
 namespace LDL\Validators\Chain;
 
+use LDL\Validators\Chain\Dumper\ValidatorChainExprDumper;
 use LDL\Validators\ValidatorInterface;
 
 class AndValidatorChain extends AbstractValidatorChain
@@ -53,8 +54,20 @@ class AndValidatorChain extends AbstractValidatorChain
                 $this->succeeded[] = $validator;
             }catch(\Exception $e){
                 $this->failed[] = $validator;
-                throw $e;
+                break;
             }
         }
+
+        if(count($this->failed) > 0){
+            return;
+        }
+
+        throw new \LogicException(
+            sprintf(
+                'Failed to assert that value "%s" complies to: %s',
+                var_export($value, true),
+                ValidatorChainExprDumper::dump($this)
+            )
+        );
     }
 }

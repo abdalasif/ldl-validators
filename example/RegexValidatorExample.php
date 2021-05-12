@@ -15,7 +15,7 @@ $config = RegexValidatorConfig::fromArray([
 
 $validator = RegexValidator::fromConfig($config);
 
-echo "Validate string, exception must be thrown\n";
+echo "Validate: 'string', exception must be thrown\n";
 
 try{
     $validator->validate('string');
@@ -23,6 +23,6 @@ try{
     echo "EXCEPTION: {$e->getMessage()}\n";
 }
 
-echo "Validate number: 123\n";
+echo "Validate: 123\n";
 
 $validator->validate(123);
