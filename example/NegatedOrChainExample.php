@@ -7,7 +7,10 @@ use LDL\Validators\RegexValidator;
 use LDL\Validators\Chain\OrValidatorChain;
 use LDL\Validators\Chain\Exception\CombinedException;
 
-echo "Create Validator Chain\n";
+echo "Create NEGATED OrValidatorChain\n";
+
+echo "Append RegexValidator, with regex: '#[a-z]+#'\n";
+echo "Append RegexValidator, with regex: '#[0-9]+#'\n";
 
 $chain = new OrValidatorChain([
     new RegexValidator('#[a-z]+#'),
@@ -15,6 +18,8 @@ $chain = new OrValidatorChain([
 ], true);
 
 dump(\LDL\Validators\Chain\Dumper\ValidatorChainExprDumper::dump($chain));
+
+echo "Validate: 'a'\n";
 
 try{
     $chain->validate('a');
