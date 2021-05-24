@@ -11,9 +11,9 @@ class NumericValidator implements ValidatorInterface
      */
     private $config;
 
-    public function __construct(bool $negated=false, bool $dumpable=true)
+    public function __construct(bool $negated=false, bool $dumpable=true, string $description=null)
     {
-        $this->config = new Config\BasicValidatorConfig($negated);
+        $this->config = new Config\BasicValidatorConfig($negated, $dumpable, $description);
     }
 
     public function validate($value): void

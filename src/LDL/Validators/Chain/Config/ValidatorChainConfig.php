@@ -16,11 +16,17 @@ class ValidatorChainConfig implements ValidatorConfigInterface
      */
     private $operator;
 
-    public function __construct(string $operator, bool $negated=false, bool $dumpable=true)
+    public function __construct(
+        string $operator,
+        bool $negated=false,
+        bool $dumpable=true,
+        string $description=null
+    )
     {
         $this->operator = $operator;
         $this->_tDumpable = $dumpable;
         $this->_tNegated = $negated;
+        $this->_tDescription = $description;
     }
 
     /**

@@ -17,12 +17,14 @@ class ScalarValidatorConfig implements ValidatorConfigInterface
     public function __construct(
         bool $acceptToStringObjects=true,
         bool $negated=false,
-        bool $dumpable=true
+        bool $dumpable=true,
+        string $description=null
     )
     {
         $this->acceptToStringObjects = $acceptToStringObjects;
         $this->_tNegated = $negated;
         $this->_tDumpable = $dumpable;
+        $this->_tDescription = $description;
     }
 
     /**

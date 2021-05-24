@@ -15,7 +15,12 @@ class InterfaceComplianceValidatorConfig implements ValidatorConfigInterface
      */
     private $interface;
 
-    public function __construct(string $interface, bool $negated=false, bool $dumpable=true)
+    public function __construct(
+        string $interface,
+        bool $negated=false,
+        bool $dumpable=true,
+        string $description=null
+    )
     {
         if(!interface_exists($interface)){
             throw new \LogicException("$interface interface does not exists");
@@ -24,6 +29,7 @@ class InterfaceComplianceValidatorConfig implements ValidatorConfigInterface
         $this->interface = $interface;
         $this->_tNegated = $negated;
         $this->_tDumpable = $dumpable;
+        $this->_tDescription = $description;
     }
 
     /**

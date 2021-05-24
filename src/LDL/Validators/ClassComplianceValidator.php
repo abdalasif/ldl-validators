@@ -17,10 +17,11 @@ class ClassComplianceValidator implements ValidatorInterface
         string $class,
         bool $strict=false,
         bool $negated=false,
-        bool $dumpable=true
+        bool $dumpable=true,
+        string $description = null
     )
     {
-        $this->config = new ClassComplianceValidatorConfig($class, $strict, $negated, $dumpable);
+        $this->config = new ClassComplianceValidatorConfig($class, $strict, $negated, $dumpable, $description);
     }
 
     /**

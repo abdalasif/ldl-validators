@@ -13,9 +13,9 @@ class InterfaceComplianceValidator implements ValidatorInterface
      */
     private $config;
 
-    public function __construct(string $interface, bool $negated=false, bool $dumpable=true)
+    public function __construct(string $interface, bool $negated=false, bool $dumpable=true, string $description=null)
     {
-        $this->config = new InterfaceComplianceValidatorConfig($interface, $negated, $dumpable);
+        $this->config = new InterfaceComplianceValidatorConfig($interface, $negated, $dumpable, $description);
     }
 
     /**

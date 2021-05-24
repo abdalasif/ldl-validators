@@ -6,6 +6,8 @@ use LDL\Validators\Chain\AndValidatorChain;
 use LDL\Validators\IntegerValidator;
 use LDL\Validators\NumericComparisonValidator;
 use LDL\Framework\Helper\ComparisonOperatorHelper;
+use LDL\Validators\Chain\Dumper\ValidatorChainExprDumper;
+use LDL\Validators\Chain\Dumper\ValidatorChainHumanDumper;
 
 echo "Create AndValidatorChain\n";
 
@@ -14,14 +16,17 @@ echo "Append AndValidatorChain with two NumericComparisonValidator'\n";
 echo "Minimum: 100 | Maximum: 599\n";
 
 $chain = new AndValidatorChain([
-    new IntegerValidator(),
+    new IntegerValidator(false, true,'Is an integer'),
     new AndValidatorChain([
-        new NumericComparisonValidator(100, ComparisonOperatorHelper::OPERATOR_GTE),
-        new NumericComparisonValidator(599, ComparisonOperatorHelper::OPERATOR_LTE),
+        new NumericComparisonValidator(100, ComparisonOperatorHelper::OPERATOR_GTE,false,true,'Number is greater or equal than 100'),
+        new NumericComparisonValidator(599, ComparisonOperatorHelper::OPERATOR_LTE, false, true,'Number is lower or equal than 599'),
     ])
-]);
+],
+    false,
+    true);
 
-dump(\LDL\Validators\Chain\Dumper\ValidatorChainExprDumper::dump($chain));
+dump(ValidatorChainExprDumper::dump($chain));
+dump(ValidatorChainHumanDumper::dump($chain));
 
 echo "Validate: 99, exception must be thrown\n";
 

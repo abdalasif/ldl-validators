@@ -15,9 +15,15 @@ class NumericComparisonValidator implements ValidatorInterface
      */
     private $config;
 
-    public function __construct($value, string $operator, bool $negated=false, bool $dumpable=true)
+    public function __construct(
+        $value,
+        string $operator,
+        bool $negated=false,
+        bool $dumpable=true,
+        string $description=null
+    )
     {
-        $this->config = new NumericComparisonValidatorConfig($value, $operator, $negated, $dumpable);
+        $this->config = new NumericComparisonValidatorConfig($value, $operator, $negated, $dumpable, $description);
     }
 
     public function validate($value): void

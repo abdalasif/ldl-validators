@@ -16,4 +16,15 @@ interface ValidatorConfigInterface extends ArrayFactoryInterface, ToArrayInterfa
      * @return bool
      */
     public function isDumpable() : bool;
+
+    /**
+     * @return string|null
+     */
+    public function getDescription() : ?string;
+
+    /**
+     * @return bool
+     */
+    public function hasDescription() : bool;
+
 }

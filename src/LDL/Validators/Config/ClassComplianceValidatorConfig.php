@@ -20,7 +20,13 @@ class ClassComplianceValidatorConfig implements ValidatorConfigInterface
      */
     private $strict;
 
-    public function __construct(string $class, bool $strict=false, bool $negated=false, bool $dumpable=true)
+    public function __construct(
+        string $class,
+        bool $strict=false,
+        bool $negated=false,
+        bool $dumpable=true,
+        string $description = null
+    )
     {
         if(!class_exists($class)){
             throw new \LogicException("Class \"$class\" does not exists");
@@ -28,6 +34,7 @@ class ClassComplianceValidatorConfig implements ValidatorConfigInterface
 
         $this->_tNegated = $negated;
         $this->_tDumpable = $dumpable;
+        $this->_tDescription = $description;
         $this->class = $class;
         $this->strict = $strict;
     }

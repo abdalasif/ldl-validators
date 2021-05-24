@@ -13,9 +13,9 @@ class RegexValidator implements ValidatorInterface
      */
     private $config;
 
-    public function __construct(string $regex, bool $negated=false, bool $dumpable=true)
+    public function __construct(string $regex, bool $negated=false, bool $dumpable=true, string $description=null)
     {
-        $this->config = new RegexValidatorConfig($regex, $negated, $dumpable);
+        $this->config = new RegexValidatorConfig($regex, $negated, $dumpable, $description);
     }
 
     public function validate($value): void

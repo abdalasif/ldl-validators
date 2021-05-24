@@ -9,10 +9,15 @@ class BasicValidatorConfig implements ValidatorConfigInterface
 {
     use ValidatorConfigTrait;
 
-    public function __construct(bool $negated=false, bool $dumpable=true)
+    public function __construct(
+        bool $negated=false,
+        bool $dumpable=true,
+        string $description = null
+    )
     {
         $this->_tNegated = $negated;
         $this->_tDumpable = $dumpable;
+        $this->_tDescription = $description;
     }
 
     /**
@@ -24,6 +29,7 @@ class BasicValidatorConfig implements ValidatorConfigInterface
         return new self(
             array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
             array_key_exists('dumpable', $data) ? (bool)$data['dumpable'] : true,
+            array_key_exists('description', $data) ? (bool)$data['description'] : null,
         );
     }
 
@@ -34,7 +40,8 @@ class BasicValidatorConfig implements ValidatorConfigInterface
     {
         return [
             'negated' => $this->_tNegated,
-            'dumpable' => $this->_tDumpable
+            'dumpable' => $this->_tDumpable,
+            'description' => $this->_tDescription
         ];
     }
 }

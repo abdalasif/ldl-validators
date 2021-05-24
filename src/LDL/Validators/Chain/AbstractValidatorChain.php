@@ -12,6 +12,7 @@ use LDL\Framework\Base\Collection\Traits\FilterByInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\LockAppendInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\RemovableInterfaceTrait;
 use LDL\Framework\Base\Traits\LockableObjectInterfaceTrait;
+use LDL\Validators\Chain\Config\ValidatorChainConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\InterfaceComplianceValidator;
 use LDL\Validators\ValidatorInterface;
@@ -52,7 +53,8 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
     public function __construct(
         iterable $validators=null,
         bool $negated = false,
-        bool $dumpable = true
+        bool $dumpable = true,
+        string $description=null
     )
     {
         $this->getBeforeAppend()->append(static function ($collection, $item, $key){
@@ -63,7 +65,7 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
             $this->appendMany($validators, false);
         }
 
-        $this->config = new Config\ValidatorChainConfig(static::OPERATOR, $negated, $dumpable);
+        $this->config = new Config\ValidatorChainConfig(static::OPERATOR, $negated, $dumpable, $description);
     }
 
     /**
@@ -123,7 +125,7 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
         return new static(null, $config->isDumpable(), $config->isNegated());
     }
 
-    public function getConfig() : ValidatorConfigInterface
+    public function getConfig() : ValidatorChainConfig
     {
         return $this->config;
     }

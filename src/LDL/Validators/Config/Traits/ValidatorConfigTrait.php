@@ -15,6 +15,11 @@ trait ValidatorConfigTrait
      */
     private $_tNegated;
 
+    /**
+     * @var ?string
+     */
+    private $_tDescription;
+
     public function isDumpable() : bool
     {
         return $this->_tDumpable;
@@ -23,6 +28,19 @@ trait ValidatorConfigTrait
     public function isNegated() : bool
     {
         return $this->_tNegated;
+    }
+
+    public function hasDescription() : bool
+    {
+        return null !== $this->_tDescription;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDescription() : ?string
+    {
+        return $this->_tDescription;
     }
 
     public function jsonSerialize() : array

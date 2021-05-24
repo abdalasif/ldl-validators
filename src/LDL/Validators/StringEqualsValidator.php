@@ -13,9 +13,15 @@ class StringEqualsValidator implements ValidatorInterface
      */
     private $config;
 
-    public function __construct(string $name, bool $strict=true, bool $negated=false, bool $dumpable=true)
+    public function __construct(
+        string $name,
+        bool $strict=true,
+        bool $negated=false,
+        bool $dumpable=true,
+        string $description=null
+    )
     {
-        $this->config = new StringEqualsValidatorConfig($name, $strict, $negated, $dumpable);
+        $this->config = new StringEqualsValidatorConfig($name, $strict, $negated, $dumpable, $description);
     }
 
     /**

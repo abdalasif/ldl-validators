@@ -21,7 +21,13 @@ class NumericComparisonValidatorConfig implements ValidatorConfigInterface
      */
     private $operator;
 
-    public function __construct($value, string $operator, bool $negated=false, bool $dumpable=true)
+    public function __construct(
+        $value,
+        string $operator,
+        bool $negated=false,
+        bool $dumpable=true,
+        string $description = null
+    )
     {
 
         if(null !== $value && false === filter_var($value, \FILTER_VALIDATE_INT | \FILTER_VALIDATE_FLOAT)){
@@ -39,6 +45,7 @@ class NumericComparisonValidatorConfig implements ValidatorConfigInterface
         $this->operator  = $operator;
         $this->_tNegated = $negated;
         $this->_tDumpable = $dumpable;
+        $this->_tDescription = $description;
     }
 
     /**

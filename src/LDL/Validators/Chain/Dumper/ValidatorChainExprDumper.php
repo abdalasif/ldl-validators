@@ -4,29 +4,37 @@ namespace LDL\Validators\Chain\Dumper;
 
 use LDL\Framework\Helper\IterableHelper;
 use LDL\Validators\Chain\ValidatorChainInterface;
+use LDL\Validators\ValidatorInterface;
 
 class ValidatorChainExprDumper implements ValidatorChainDumperInterface
 {
-    public static function dump(ValidatorChainInterface $collection) : string
+    public static function dump(ValidatorChainInterface $chain) : string
     {
-        if($collection->count() === 0){
+        if($chain->count() === 0){
             return '';
         }
 
-        $string = IterableHelper::map($collection, static function($validator){
-            if($validator instanceof ValidatorChainInterface){
-                return self::dump($validator);
+        $string = IterableHelper::map(
+            $chain,
+            /**
+             * @var ValidatorInterface $validator
+             * @return string
+             */
+            static function($validator){
+                if($validator instanceof ValidatorChainInterface){
+                    return self::dump($validator);
+                }
+
+                $class = get_class($validator);
+                return $validator->getConfig()->isNegated() ? sprintf('!%s', $class) : $class;
             }
+        );
 
-            $class = get_class($validator);
-            return $validator->getConfig()->isNegated() ? sprintf('!%s', $class) : $class;
-        });
+        $string = implode($chain->getConfig()->getOperator(), $string);
 
-        $string = implode($collection->getConfig()->getOperator(), $string);
+        $string = $chain->count() === 1 ? $string : sprintf('(%s)', $string);
 
-        $string = $collection->count() === 1 ? $string : sprintf('(%s)', $string);
-
-        if($collection->getConfig()->isNegated()){
+        if($chain->getConfig()->isNegated()){
             $string = sprintf('!%s', $string);
         }
 
