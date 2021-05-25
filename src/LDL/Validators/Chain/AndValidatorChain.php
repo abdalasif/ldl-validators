@@ -3,6 +3,7 @@
 namespace LDL\Validators\Chain;
 
 use LDL\Validators\Chain\Dumper\ValidatorChainExprDumper;
+use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\ValidatorInterface;
 
 class AndValidatorChain extends AbstractValidatorChain
@@ -70,4 +71,27 @@ class AndValidatorChain extends AbstractValidatorChain
             )
         );
     }
+
+    public static function fromConfig(
+        ValidatorConfigInterface $config,
+        iterable $validators=null
+    ): ValidatorChainInterface
+    {
+        if(false === $config instanceof Config\ValidatorChainConfig){
+            $msg = sprintf(
+                'Config expected to be %s, config of class %s was given',
+                __CLASS__,
+                get_class($config)
+            );
+            throw new \InvalidArgumentException($msg);
+        }
+
+        return self::factory(
+            $validators,
+            $config->isDumpable(),
+            $config->isNegated(),
+            $config->getDescription()
+        );
+    }
+
 }

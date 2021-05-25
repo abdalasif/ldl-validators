@@ -68,6 +68,11 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
         $this->config = new Config\ValidatorChainConfig(static::OPERATOR, $negated, $dumpable, $description);
     }
 
+    public static function factory(iterable $validators=null, ...$params) : ValidatorChainInterface
+    {
+        return new static($validators, ...$params);
+    }
+
     /**
      * @return ValidatorChainInterface
      * @throws \Exception
@@ -101,28 +106,6 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
     public function getLastExecuted(): ?ValidatorInterface
     {
         return $this->lastExecuted;
-    }
-
-    /**
-     * @param ValidatorConfigInterface $config
-     * @return ValidatorInterface
-     * @throws \InvalidArgumentException
-     */
-    public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
-    {
-        if(false === $config instanceof Config\ValidatorChainConfig){
-            $msg = sprintf(
-                'Config expected to be %s, config of class %s was given',
-                __CLASS__,
-                get_class($config)
-            );
-            throw new \InvalidArgumentException($msg);
-        }
-
-        /**
-         * @var Config\ValidatorChainConfig $config
-         */
-        return new static(null, $config->isDumpable(), $config->isNegated());
     }
 
     public function getConfig() : ValidatorChainConfig
