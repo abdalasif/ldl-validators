@@ -50,9 +50,10 @@ class ValidatorChainConfig implements ValidatorConfigInterface
         }
 
         return new self(
-            $data['operator'],
+            (string) $data['operator'],
             array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
             array_key_exists('dumpable', $data) ? (bool)$data['dumpable'] : true,
+            array_key_exists('description', $data) ? (string)$data['description'] : null
         );
     }
 
@@ -64,7 +65,8 @@ class ValidatorChainConfig implements ValidatorConfigInterface
         return [
             'operator' => $this->operator,
             'negated' => $this->_tNegated,
-            'dumpable' => $this->_tDumpable
+            'dumpable' => $this->_tDumpable,
+            'description' => $this->_tDescription
         ];
     }
 }

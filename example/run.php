@@ -34,7 +34,9 @@ foreach($dp as $file){
         exit(1);
     }
 
-    sleep($sleep);
+    if($sleep > 0) {
+        sleep($sleep);
+    }
 }
 
 echo "\n\n****************************************************\n";

@@ -13,6 +13,8 @@ use LDL\Framework\Base\Collection\Traits\LockAppendInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\RemovableInterfaceTrait;
 use LDL\Framework\Base\Traits\LockableObjectInterfaceTrait;
 use LDL\Validators\Chain\Config\ValidatorChainConfig;
+use LDL\Validators\Collection\ValidatorCollection;
+use LDL\Validators\Collection\ValidatorCollectionInterface;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\InterfaceComplianceValidator;
 use LDL\Validators\ValidatorInterface;
@@ -68,6 +70,11 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
         $this->config = new Config\ValidatorChainConfig(static::OPERATOR, $negated, $dumpable, $description);
     }
 
+    public static function factory(iterable $validators=null, ...$params) : ValidatorChainInterface
+    {
+        return new static($validators, ...$params);
+    }
+
     /**
      * @return ValidatorChainInterface
      * @throws \Exception
@@ -103,31 +110,14 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
         return $this->lastExecuted;
     }
 
-    /**
-     * @param ValidatorConfigInterface $config
-     * @return ValidatorInterface
-     * @throws \InvalidArgumentException
-     */
-    public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
-    {
-        if(false === $config instanceof Config\ValidatorChainConfig){
-            $msg = sprintf(
-                'Config expected to be %s, config of class %s was given',
-                __CLASS__,
-                get_class($config)
-            );
-            throw new \InvalidArgumentException($msg);
-        }
-
-        /**
-         * @var Config\ValidatorChainConfig $config
-         */
-        return new static(null, $config->isDumpable(), $config->isNegated());
-    }
-
     public function getConfig() : ValidatorChainConfig
     {
         return $this->config;
+    }
+
+    public function getCollection() : ValidatorCollectionInterface
+    {
+        return new ValidatorCollection(\iterator_to_array($this));
     }
 
 }
