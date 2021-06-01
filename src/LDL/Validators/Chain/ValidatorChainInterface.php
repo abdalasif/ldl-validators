@@ -10,13 +10,14 @@ use LDL\Framework\Base\Collection\Contracts\FilterByClassInterface;
 use LDL\Framework\Base\Collection\Contracts\FilterByInterface;
 use LDL\Framework\Base\Collection\Contracts\LockAppendInterface;
 use LDL\Framework\Base\Collection\Contracts\RemovableInterface;
+use LDL\Framework\Base\Collection\Contracts\UnshiftInterface;
 use LDL\Framework\Base\Contracts\LockableObjectInterface;
 use LDL\Validators\Chain\Config\ValidatorChainConfig;
 use LDL\Validators\Collection\ValidatorCollectionInterface;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\ValidatorInterface;
 
-interface ValidatorChainInterface extends ValidatorInterface, CollectionInterface, LockableObjectInterface, BeforeAppendInterface, AppendableInterface, LockAppendInterface, BeforeRemoveInterface, RemovableInterface, FilterByInterface, FilterByClassInterface
+interface ValidatorChainInterface extends ValidatorInterface, CollectionInterface, LockableObjectInterface, BeforeAppendInterface, AppendableInterface, LockAppendInterface, BeforeRemoveInterface, RemovableInterface, FilterByInterface, FilterByClassInterface, UnshiftInterface
 {
     /**
      * Validator chain Factory method.
