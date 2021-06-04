@@ -3,11 +3,13 @@
 namespace LDL\Validators\Config;
 
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
+use LDL\Validators\Config\Traits\NegatedValidatorConfigTrait;
 use LDL\Validators\Config\Traits\ValidatorConfigTrait;
 
-class ScalarValidatorConfig implements ValidatorConfigInterface
+class ScalarValidatorConfig implements ValidatorConfigInterface, NegatedValidatorConfigInterface
 {
     use ValidatorConfigTrait;
+    use NegatedValidatorConfigTrait;
 
     /**
      * @var bool

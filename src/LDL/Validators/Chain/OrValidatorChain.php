@@ -5,27 +5,18 @@ namespace LDL\Validators\Chain;
 use LDL\Validators\Chain\Dumper\ValidatorChainExprDumper;
 use LDL\Validators\Chain\Exception\CombinedException;
 use LDL\Validators\Config\ValidatorConfigInterface;
+use LDL\Validators\Traits\ValidatorValidateTrait;
 use LDL\Validators\ValidatorInterface;
 
 class OrValidatorChain extends AbstractValidatorChain
 {
-    public const OPERATOR = ' || ';
+    use ValidatorValidateTrait;
 
-    public function validate($value, ...$params) : void
-    {
-        $this->config->isNegated() ? $this->assertFalse($value, ...$params) : $this->assertTrue($value, ...$params);
-    }
+    public const OPERATOR = ' || ';
 
     public function assertTrue($value, ...$params): void
     {
-        $this->lastExecuted = null;
-        $this->failed = [];
-        $this->succeeded = [];
-
-        if(0 === $this->count()){
-            return;
-        }
-
+        $this->reset();
         $combinedException = new CombinedException();
 
         /**
@@ -51,14 +42,7 @@ class OrValidatorChain extends AbstractValidatorChain
 
     public function assertFalse($value, ...$params): void
     {
-        $this->lastExecuted = null;
-        $this->failed = [];
-        $this->succeeded = [];
-
-        if(0 === $this->count()){
-            return;
-        }
-
+        $this->reset();
         $combinedException = new CombinedException();
 
         /**
@@ -97,7 +81,7 @@ class OrValidatorChain extends AbstractValidatorChain
         iterable $validators=null
     ): ValidatorChainInterface
     {
-        if(false === $config instanceof Config\ValidatorChainConfig){
+        if(!$config instanceof Config\ValidatorChainConfig){
             $msg = sprintf(
                 'Config expected to be %s, config of class %s was given',
                 __CLASS__,
@@ -114,4 +98,14 @@ class OrValidatorChain extends AbstractValidatorChain
         );
     }
 
+    private function reset(): void
+    {
+        $this->lastExecuted = null;
+        $this->failed = [];
+        $this->succeeded = [];
+
+        if(0 === $this->count()){
+            return;
+        }
+    }
 }

@@ -7,9 +7,12 @@ use LDL\Validators\Config\NumericComparisonValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\NumericComparisonValidatorException;
 use LDL\Framework\Helper\ComparisonOperatorHelper;
+use LDL\Validators\Traits\ValidatorValidateTrait;
 
-class NumericComparisonValidator implements ValidatorInterface
+class NumericComparisonValidator implements ValidatorInterface, NegatedValidatorInterface
 {
+    use ValidatorValidateTrait;
+
     /**
      * @var NumericComparisonValidatorConfig
      */
@@ -24,11 +27,6 @@ class NumericComparisonValidator implements ValidatorInterface
     )
     {
         $this->config = new NumericComparisonValidatorConfig($value, $operator, $negated, $dumpable, $description);
-    }
-
-    public function validate($value): void
-    {
-        $this->config->isNegated() ? $this->assertFalse($value) : $this->assertTrue($value);
     }
 
     public function assertTrue($value): void

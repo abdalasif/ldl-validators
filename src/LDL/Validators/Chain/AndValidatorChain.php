@@ -4,27 +4,19 @@ namespace LDL\Validators\Chain;
 
 use LDL\Validators\Chain\Dumper\ValidatorChainExprDumper;
 use LDL\Validators\Config\ValidatorConfigInterface;
+use LDL\Validators\Traits\ValidatorValidateTrait;
 use LDL\Validators\ValidatorInterface;
 
 class AndValidatorChain extends AbstractValidatorChain
 {
+    use ValidatorValidateTrait;
+
     public const OPERATOR = ' && ';
-
-    public function validate($value, ...$params) : void
-    {
-        $this->lastExecuted = null;
-        $this->failed = [];
-        $this->succeeded = [];
-
-        if(0 === $this->count()){
-            return;
-        }
-
-        $this->config->isNegated() ? $this->assertFalse($value, ...$params) : $this->assertTrue($value, ...$params);
-    }
 
     public function assertTrue($value, ...$params): void
     {
+        $this->reset();
+
         /**
          * @var ValidatorInterface $validator
          */
@@ -44,6 +36,8 @@ class AndValidatorChain extends AbstractValidatorChain
 
     public function assertFalse($value, ...$params): void
     {
+        $this->reset();
+
         /**
          * @var ValidatorInterface $validator
          */
@@ -77,7 +71,7 @@ class AndValidatorChain extends AbstractValidatorChain
         iterable $validators=null
     ): ValidatorChainInterface
     {
-        if(false === $config instanceof Config\ValidatorChainConfig){
+        if(!$config instanceof Config\ValidatorChainConfig){
             $msg = sprintf(
                 'Config expected to be %s, config of class %s was given',
                 __CLASS__,
@@ -94,4 +88,14 @@ class AndValidatorChain extends AbstractValidatorChain
         );
     }
 
+    private function reset(): void
+    {
+        $this->lastExecuted = null;
+        $this->failed = [];
+        $this->succeeded = [];
+
+        if(0 === $this->count()){
+            return;
+        }
+    }
 }

@@ -3,11 +3,13 @@
 namespace LDL\Validators\Config;
 
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
+use LDL\Validators\Config\Traits\NegatedValidatorConfigTrait;
 use LDL\Validators\Config\Traits\ValidatorConfigTrait;
 
-class BasicValidatorConfig implements ValidatorConfigInterface
+class BasicValidatorConfig implements ValidatorConfigInterface, NegatedValidatorConfigInterface
 {
     use ValidatorConfigTrait;
+    use NegatedValidatorConfigTrait;
 
     public function __construct(
         bool $negated=false,

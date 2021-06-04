@@ -36,13 +36,14 @@ $chain = new OrValidatorChain([
     ])
 ],false);
 
-echo "Validate: abc\n";
+echo "Validate: 'abc'\n";
 
 $chain->validate('abc');
 
 echo "Validate: 123\n";
 $chain->validate(123);
 
+echo "Validate: '@@@'\n";
 try{
     $chain->validate('@@@');
 }catch(CombinedException $e){
