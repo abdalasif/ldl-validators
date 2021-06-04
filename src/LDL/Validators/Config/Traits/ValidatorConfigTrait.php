@@ -11,11 +11,6 @@ trait ValidatorConfigTrait
     private $_tDumpable;
 
     /**
-     * @var bool
-     */
-    private $_tNegated;
-
-    /**
      * @var ?string
      */
     private $_tDescription;
@@ -23,11 +18,6 @@ trait ValidatorConfigTrait
     public function isDumpable() : bool
     {
         return $this->_tDumpable;
-    }
-
-    public function isNegated() : bool
-    {
-        return $this->_tNegated;
     }
 
     public function hasDescription() : bool

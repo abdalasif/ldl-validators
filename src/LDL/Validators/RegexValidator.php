@@ -5,9 +5,12 @@ namespace LDL\Validators;
 use LDL\Validators\Config\Exception\InvalidConfigException;
 use LDL\Validators\Config\RegexValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
+use LDL\Validators\Traits\ValidatorValidateTrait;
 
-class RegexValidator implements ValidatorInterface
+class RegexValidator implements ValidatorInterface, NegatedValidatorInterface
 {
+    use ValidatorValidateTrait {validate as _validate;}
+
     /**
      * @var RegexValidatorConfig
      */
@@ -24,7 +27,7 @@ class RegexValidator implements ValidatorInterface
             throw new \LogicException(sprintf('Validator %s only accepts scalar values', __CLASS__));
         }
 
-        $this->config->isNegated() ? $this->assertFalse($value) : $this->assertTrue($value);
+        $this->_validate($value);
     }
 
     public function assertTrue($value): void

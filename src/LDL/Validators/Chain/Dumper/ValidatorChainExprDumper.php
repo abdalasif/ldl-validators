@@ -4,6 +4,7 @@ namespace LDL\Validators\Chain\Dumper;
 
 use LDL\Framework\Helper\IterableHelper;
 use LDL\Validators\Chain\ValidatorChainInterface;
+use LDL\Validators\Config\NegatedValidatorConfigInterface;
 use LDL\Validators\ValidatorInterface;
 
 class ValidatorChainExprDumper implements ValidatorChainDumperInterface
@@ -26,7 +27,13 @@ class ValidatorChainExprDumper implements ValidatorChainDumperInterface
                 }
 
                 $class = get_class($validator);
-                return $validator->getConfig()->isNegated() ? sprintf('!%s', $class) : $class;
+                $config = $validator->getConfig();
+
+                if($config instanceof NegatedValidatorConfigInterface){
+                    return $config->isNegated() ? sprintf('!%s', $class) : $class;
+                }
+
+                return $class;
             }
         );
 

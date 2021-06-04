@@ -27,15 +27,6 @@ interface ValidatorInterface
     public function assertTrue($value) : void;
 
     /**
-     * Assert negative (false) condition, for example in an integer validator, assert that the value is NOT of
-     * integer type.
-     *
-     * @param $value
-     * @throws \Exception
-     */
-    public function assertFalse($value) : void;
-
-    /**
      * @param ValidatorConfigInterface $config
      * @return ValidatorConfigInterface
      */

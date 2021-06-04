@@ -5,9 +5,12 @@ namespace LDL\Validators;
 use LDL\Validators\Config\Exception\InvalidConfigException;
 use LDL\Validators\Config\StringEqualsValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
+use LDL\Validators\Traits\ValidatorValidateTrait;
 
-class StringEqualsValidator implements ValidatorInterface
+class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInterface
 {
+    use ValidatorValidateTrait;
+
     /**
      * @var StringEqualsValidatorConfig
      */
@@ -22,18 +25,6 @@ class StringEqualsValidator implements ValidatorInterface
     )
     {
         $this->config = new StringEqualsValidatorConfig($name, $strict, $negated, $dumpable, $description);
-    }
-
-    /**
-     * @param mixed $value
-     */
-    public function validate($value): void
-    {
-        if($value === $this->config->getValue()){
-            return;
-        }
-
-        throw new \LogicException('No match');
     }
 
     public function assertTrue($value): void

@@ -10,11 +10,6 @@ interface ValidatorConfigInterface extends ArrayFactoryInterface, ToArrayInterfa
     /**
      * @return bool
      */
-    public function isNegated() : bool;
-
-    /**
-     * @return bool
-     */
     public function isDumpable() : bool;
 
     /**

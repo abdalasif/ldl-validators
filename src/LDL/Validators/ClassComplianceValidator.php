@@ -5,9 +5,12 @@ namespace LDL\Validators;
 use LDL\Validators\Config\ClassComplianceValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
+use LDL\Validators\Traits\ValidatorValidateTrait;
 
-class ClassComplianceValidator implements ValidatorInterface
+class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorInterface
 {
+    use ValidatorValidateTrait {validate as _validate;}
+
     /**
      * @var ClassComplianceValidatorConfig
      */
@@ -39,7 +42,7 @@ class ClassComplianceValidator implements ValidatorInterface
             throw new TypeMismatchException($msg);
         }
 
-        $this->config->isNegated() ? $this->assertFalse($value) : $this->assertTrue($value);
+        $this->_validate($value);
     }
 
     public function assertTrue($value) : void

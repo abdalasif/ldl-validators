@@ -3,9 +3,12 @@
 namespace LDL\Validators;
 
 use LDL\Validators\Exception\TypeMismatchException;
+use LDL\Validators\Traits\ValidatorValidateTrait;
 
-class ArrayTypeValidator implements ValidatorInterface
+class ArrayTypeValidator implements ValidatorInterface, NegatedValidatorInterface
 {
+    use ValidatorValidateTrait;
+
     /**
      * @var Config\BasicValidatorConfig
      */
@@ -18,11 +21,6 @@ class ArrayTypeValidator implements ValidatorInterface
     )
     {
         $this->config = new Config\BasicValidatorConfig($negated, $dumpable, $description);
-    }
-
-    public function validate($value): void
-    {
-        $this->config->isNegated() ? $this->assertFalse($value) : $this->assertTrue($value);
     }
 
     public function assertTrue($value): void
