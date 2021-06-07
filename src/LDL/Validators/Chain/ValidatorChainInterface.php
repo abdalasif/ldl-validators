@@ -38,14 +38,14 @@ interface ValidatorChainInterface extends ValidatorInterface, CollectionInterfac
     public function filterDumpableItems() : ValidatorChainInterface;
 
     /**
-     * @return ValidatorChainInterface
+     * @return ValidatorCollectionInterface
      */
-    public function getSucceeded() : ValidatorChainInterface;
+    public function getSucceeded() : ValidatorCollectionInterface;
 
     /**
-     * @return ValidatorChainInterface
+     * @return ValidatorCollectionInterface
      */
-    public function getFailed() : ValidatorChainInterface;
+    public function getFailed() : ValidatorCollectionInterface;
 
     /**
      * @return ValidatorInterface|null

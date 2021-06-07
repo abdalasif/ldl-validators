@@ -17,17 +17,21 @@ class AndValidatorChain extends AbstractValidatorChain
     {
         $this->reset();
 
+        if(0 === $this->count()){
+            return;
+        }
+
         /**
          * @var ValidatorInterface $validator
          */
         foreach($this as $validator){
-            $this->lastExecuted = $validator;
+            $this->setLastExecuted($validator);
 
             try {
                 $validator->validate($value, ...$params);
-                $this->succeeded[] = $validator;
+                $this->getSucceeded()->append($validator);
             }catch(\Exception $e){
-                $this->failed[] = $validator;
+                $this->getFailed()->append($validator);
                 throw $e;
             }
         }
@@ -38,22 +42,26 @@ class AndValidatorChain extends AbstractValidatorChain
     {
         $this->reset();
 
+        if(0 === $this->count()){
+            return;
+        }
+
         /**
          * @var ValidatorInterface $validator
          */
         foreach($this as $validator){
-            $this->lastExecuted = $validator;
+            $this->setLastExecuted($validator);
 
             try {
                 $validator->validate($value, ...$params);
-                $this->succeeded[] = $validator;
+                $this->getSucceeded()->append($validator);
             }catch(\Exception $e){
-                $this->failed[] = $validator;
+                $this->getFailed()->append($validator);
                 break;
             }
         }
 
-        if(count($this->failed) > 0){
+        if($this->getFailed()->count() > 0){
             return;
         }
 
@@ -86,16 +94,5 @@ class AndValidatorChain extends AbstractValidatorChain
             $config->isNegated(),
             $config->getDescription()
         );
-    }
-
-    private function reset(): void
-    {
-        $this->lastExecuted = null;
-        $this->failed = [];
-        $this->succeeded = [];
-
-        if(0 === $this->count()){
-            return;
-        }
     }
 }

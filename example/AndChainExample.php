@@ -46,3 +46,4 @@ try{
 
 echo "Validate: 100\n";
 $chain->validate(100);
+echo "OK!\n";

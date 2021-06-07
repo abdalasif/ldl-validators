@@ -43,5 +43,5 @@ try{
 }
 
 echo "Validate regex validator\n";
-
 $validator->validate(new RegexValidator('#[0-9]+#'));
+echo "OK!\n";

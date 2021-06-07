@@ -2,7 +2,6 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
