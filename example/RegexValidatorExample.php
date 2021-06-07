@@ -24,5 +24,6 @@ try{
 }
 
 echo "Validate: 123\n";
-
 $validator->validate(123);
+
+echo "OK!\n";

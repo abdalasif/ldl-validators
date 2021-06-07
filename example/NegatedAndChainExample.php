@@ -19,6 +19,7 @@ dump(\LDL\Validators\Chain\Dumper\ValidatorChainExprDumper::dump($chain));
 
 echo "Validate: 'a'\n";
 $chain->validate('a');
+echo "OK!\n";
 
 echo "Validate: '@' (exception must be thrown)\n";
 
@@ -57,6 +58,7 @@ echo "Validate: '@'\n";
 
 try{
     $nChain->validate('@');
+    echo "OK!\n";
 }catch(\Exception $e){
     echo "EXCEPTION: {$e->getMessage()}\n";
 }
@@ -65,6 +67,7 @@ echo "Validate: 0\n";
 
 try{
     $nChain->validate(0);
+    echo "OK!\n";
 }catch(\Exception $e){
     echo "EXCEPTION: {$e->getMessage()}\n";
 }
@@ -81,6 +84,7 @@ echo "Validate: 'a'\n";
 
 try{
     $nChain->validate('a');
+    echo "OK!\n";
 }catch(\Exception $e){
     echo "EXCEPTION: {$e->getMessage()}\n";
 }
@@ -89,6 +93,7 @@ echo "Validate: '@'\n";
 
 try{
     $nChain->validate('@');
+    echo "OK!\n";
 }catch(\Exception $e){
     echo "EXCEPTION: {$e->getMessage()}\n";
 }
@@ -97,6 +102,7 @@ echo "Validate: 0\n";
 
 try{
     $nChain->validate(0);
+    echo "OK!\n";
 }catch(\Exception $e){
     echo "EXCEPTION: {$e->getMessage()}\n";
 }

@@ -17,25 +17,30 @@ class OrValidatorChain extends AbstractValidatorChain
     public function assertTrue($value, ...$params): void
     {
         $this->reset();
+
+        if(0 === $this->count()){
+            return;
+        }
+
         $combinedException = new CombinedException();
 
         /**
          * @var ValidatorInterface $validator
          */
         foreach($this as $validator){
-            $this->lastExecuted = $validator;
+            $this->setLastExecuted($validator);
 
             try {
                 $validator->validate($value, ...$params);
-                $this->succeeded[] = $validator;
+                $this->getSucceeded()->append($validator);
                 break;
             }catch(\Exception $e){
-                $this->failed[] = $validator;
+                $this->getFailed()->append($validator);
                 $combinedException->append($e);
             }
         }
 
-        if(!count($this->succeeded)){
+        if(!$this->getSucceeded()->count()){
             throw $combinedException;
         }
     }
@@ -43,25 +48,30 @@ class OrValidatorChain extends AbstractValidatorChain
     public function assertFalse($value, ...$params): void
     {
         $this->reset();
+
+        if(0 === $this->count()){
+            return;
+        }
+
         $combinedException = new CombinedException();
 
         /**
          * @var ValidatorInterface $validator
          */
         foreach($this as $validator){
-            $this->lastExecuted = $validator;
+            $this->setLastExecuted($validator);
 
             try {
                 $validator->validate($value, ...$params);
-                $this->succeeded[] = $validator;
+                $this->getSucceeded()->append($validator);
                 break;
             }catch(\Exception $e){
-                $this->failed[] = $validator;
+                $this->getFailed()->append($validator);
                 $combinedException->append($e);
             }
         }
 
-        if(count($this->succeeded)){
+        if($this->getSucceeded()->count()){
             $combinedException->append(
                 new \LogicException(
                     sprintf(
@@ -96,16 +106,5 @@ class OrValidatorChain extends AbstractValidatorChain
             $config->isNegated(),
             $config->getDescription()
         );
-    }
-
-    private function reset(): void
-    {
-        $this->lastExecuted = null;
-        $this->failed = [];
-        $this->succeeded = [];
-
-        if(0 === $this->count()){
-            return;
-        }
     }
 }
