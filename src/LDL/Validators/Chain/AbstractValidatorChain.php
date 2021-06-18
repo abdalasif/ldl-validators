@@ -160,7 +160,7 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
 
     protected function isChanged(): bool
     {
-        return $this->changed;
+        return (bool) $this->changed;
     }
 
     protected function setChanged(bool $changed): ValidatorChainInterface
@@ -178,6 +178,10 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
 
     protected function resetValidators(): void
     {
+        if(!$this->resetValidatorsCollection){
+            return;
+        }
+
         foreach($this->resetValidatorsCollection as $validator){
             $validator->reset();
         }

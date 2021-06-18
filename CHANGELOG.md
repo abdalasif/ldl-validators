@@ -22,6 +22,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
  
 ### Changed
 
+- fix/1200492312944670 - Fix AbstractValidatorChain
 - fix/1200410494797360 - Fix getCollection and add UnshiftInterfaceTrait on AbstractValidatorChain
 - fix/1200323198982798 - Fix assertFalse on AndValidatorChain
 - fix/1200266740213973 - Remove old validators, remove truncate from AbstractValidatorChain and his interface, Fix examples, Add strict to ClassComplianceValidatorConfig
