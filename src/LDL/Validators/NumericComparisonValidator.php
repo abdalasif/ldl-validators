@@ -7,16 +7,13 @@ use LDL\Validators\Config\NumericComparisonValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\NumericComparisonValidatorException;
 use LDL\Framework\Helper\ComparisonOperatorHelper;
+use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
-class NumericComparisonValidator implements ValidatorInterface, NegatedValidatorInterface
+class NumericComparisonValidator implements ValidatorInterface, NegatedValidatorInterface, ValidatorHasConfigInterface
 {
     use ValidatorValidateTrait;
-
-    /**
-     * @var NumericComparisonValidatorConfig
-     */
-    private $config;
+    use ValidatorHasConfigInterfaceTrait;
 
     public function __construct(
         $value,
@@ -26,7 +23,7 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
         string $description=null
     )
     {
-        $this->config = new NumericComparisonValidatorConfig($value, $operator, $negated, $dumpable, $description);
+        $this->_tConfig = new NumericComparisonValidatorConfig($value, $operator, $negated, $dumpable, $description);
     }
 
     public function assertTrue($value): void
@@ -39,8 +36,8 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
 
         $msg = sprintf(
             'Value must be "%s" than "%s"; "%s" was given.',
-            $this->config->getOperator(),
-            $this->config->getValue(),
+            $this->_tConfig->getOperator(),
+            $this->_tConfig->getValue(),
             $value
         );
 
@@ -57,8 +54,8 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
 
         $msg = sprintf(
             'Value can NOT be "%s" than "%s"; "%s" was given.',
-            $this->config->getOperator(),
-            $this->config->getValue(),
+            $this->_tConfig->getOperator(),
+            $this->_tConfig->getValue(),
             $value
         );
 
@@ -67,24 +64,24 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
 
     private function compare($value) : bool
     {
-        switch($this->config->getOperator()){
+        switch($this->_tConfig->getOperator()){
             case ComparisonOperatorHelper::OPERATOR_SEQ:
-                return $value === $this->config->getValue();
+                return $value === $this->_tConfig->getValue();
 
             case ComparisonOperatorHelper::OPERATOR_EQ:
-                return $value == $this->config->getValue();
+                return $value == $this->_tConfig->getValue();
 
             case ComparisonOperatorHelper::OPERATOR_GT:
-                return $value > $this->config->getValue();
+                return $value > $this->_tConfig->getValue();
 
             case ComparisonOperatorHelper::OPERATOR_GTE:
-                return $value >= $this->config->getValue();
+                return $value >= $this->_tConfig->getValue();
 
             case ComparisonOperatorHelper::OPERATOR_LT:
-                return $value < $this->config->getValue();
+                return $value < $this->_tConfig->getValue();
 
             case ComparisonOperatorHelper::OPERATOR_LTE:
-                return $value <= $this->config->getValue();
+                return $value <= $this->_tConfig->getValue();
 
             default:
                 throw new \RuntimeException('Given operator is invalid (WTF?)');
@@ -111,13 +108,5 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
          * @var NumericComparisonValidatorConfig $config
          */
         return new self($config->getValue(), $config->getOperator(), $config->isNegated(), $config->isDumpable());
-    }
-
-    /**
-     * @return NumericComparisonValidatorConfig
-     */
-    public function getConfig(): NumericComparisonValidatorConfig
-    {
-        return $this->config;
     }
 }

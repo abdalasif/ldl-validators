@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- feature/1200573159945611 - Add config interface and trait for validators
 - feature/1200435476702581 - Add ResetValidatorInterface
 - feature/1200427327628889 - Add a negated interface for validators
 - feature/1200379001241309 - Add factory method to ValidatorChainInterface, create generic ValidatorInterface collection

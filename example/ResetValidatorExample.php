@@ -77,7 +77,7 @@ $chain->validate('hello');
 echo "Validate: 'world'\n";
 $chain->validate('world');
 
-echo "Append new ResetValidatorExample\n";
+echo "Append ResetValidatorExample\n";
 $chain->append(new ResetValidatorExample());
 
 echo "Validate: 123\n";
