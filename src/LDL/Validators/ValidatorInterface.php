@@ -3,7 +3,6 @@
 namespace LDL\Validators;
 
 use LDL\Validators\Config\ValidatorConfigInterface;
-use LDL\Validators\Exception\ValidatorException;
 
 interface ValidatorInterface
 {
@@ -25,15 +24,4 @@ interface ValidatorInterface
      * @throws \Exception
      */
     public function assertTrue($value) : void;
-
-    /**
-     * @param ValidatorConfigInterface $config
-     * @return ValidatorConfigInterface
-     */
-    public static function fromConfig(ValidatorConfigInterface $config);
-
-    /**
-     * @return ValidatorConfigInterface
-     */
-    public function getConfig();
 }

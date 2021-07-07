@@ -5,20 +5,17 @@ namespace LDL\Validators;
 use LDL\Validators\Config\Exception\InvalidConfigException;
 use LDL\Validators\Config\RegexValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
+use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
-class RegexValidator implements ValidatorInterface, NegatedValidatorInterface
+class RegexValidator implements ValidatorInterface, NegatedValidatorInterface, ValidatorHasConfigInterface
 {
     use ValidatorValidateTrait {validate as _validate;}
-
-    /**
-     * @var RegexValidatorConfig
-     */
-    private $config;
+    use ValidatorHasConfigInterfaceTrait;
 
     public function __construct(string $regex, bool $negated=false, bool $dumpable=true, string $description=null)
     {
-        $this->config = new RegexValidatorConfig($regex, $negated, $dumpable, $description);
+        $this->_tConfig = new RegexValidatorConfig($regex, $negated, $dumpable, $description);
     }
 
     public function validate($value): void
@@ -32,21 +29,21 @@ class RegexValidator implements ValidatorInterface, NegatedValidatorInterface
 
     public function assertTrue($value): void
     {
-        if(preg_match($this->config->getRegex(), (string) $value)) {
+        if(preg_match($this->_tConfig->getRegex(), (string) $value)) {
             return;
         }
 
-        $msg = "Given value: \"$value\" does not matches regex: \"{$this->config->getRegex()}\"";
+        $msg = "Given value: \"$value\" does not matches regex: \"{$this->_tConfig->getRegex()}\"";
         throw new Exception\RegexValidatorException($msg);
     }
 
     public function assertFalse($value): void
     {
-        if(!preg_match($this->config->getRegex(), (string) $value)) {
+        if(!preg_match($this->_tConfig->getRegex(), (string) $value)) {
             return;
         }
 
-        $msg = "Given value: \"$value\" matches regex: \"{$this->config->getRegex()}\"";
+        $msg = "Given value: \"$value\" matches regex: \"{$this->_tConfig->getRegex()}\"";
         throw new Exception\RegexValidatorException($msg);
     }
 
@@ -70,13 +67,5 @@ class RegexValidator implements ValidatorInterface, NegatedValidatorInterface
          * @var RegexValidatorConfig $config
          */
         return new self($config->getRegex(), $config->isNegated(), $config->isDumpable());
-    }
-
-    /**
-     * @return RegexValidatorConfig
-     */
-    public function getConfig(): ValidatorConfigInterface
-    {
-        return $this->config;
     }
 }

@@ -5,16 +5,13 @@ namespace LDL\Validators;
 use LDL\Validators\Config\Exception\InvalidConfigException;
 use LDL\Validators\Config\StringEqualsValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
+use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
-class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInterface
+class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInterface, ValidatorHasConfigInterface
 {
     use ValidatorValidateTrait;
-
-    /**
-     * @var StringEqualsValidatorConfig
-     */
-    private $config;
+    use ValidatorHasConfigInterfaceTrait;
 
     public function __construct(
         string $name,
@@ -24,12 +21,12 @@ class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInter
         string $description=null
     )
     {
-        $this->config = new StringEqualsValidatorConfig($name, $strict, $negated, $dumpable, $description);
+        $this->_tConfig = new StringEqualsValidatorConfig($name, $strict, $negated, $dumpable, $description);
     }
 
     public function assertTrue($value): void
     {
-        $comparison = $this->config->isStrict() ? $this->config->getValue() === $value : $this->config->getValue() == $value;
+        $comparison = $this->_tConfig->isStrict() ? $this->_tConfig->getValue() === $value : $this->_tConfig->getValue() == $value;
 
         if($comparison){
             return;
@@ -39,15 +36,15 @@ class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInter
             sprintf(
                 'Given value "%s" is not%sequal to %s',
                 is_scalar($value) ? var_export($value, true) : gettype($value),
-                $this->config->isStrict() ? ' strictly ' : ' ',
-                $this->config->getValue()
+                $this->_tConfig->isStrict() ? ' strictly ' : ' ',
+                $this->_tConfig->getValue()
             )
         );
     }
 
     public function assertFalse($value): void
     {
-        $comparison = $this->config->isStrict() ? $this->config->getValue() === $value : $this->config->getValue() == $value;
+        $comparison = $this->_tConfig->isStrict() ? $this->_tConfig->getValue() === $value : $this->_tConfig->getValue() == $value;
 
         if(!$comparison){
             return;
@@ -57,8 +54,8 @@ class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInter
             sprintf(
                 'Given value "%s" must NOT be%sequal to "%s"',
                 is_scalar($value) ? var_export($value, true) : gettype($value),
-                $this->config->isStrict() ? ' strictly ' : ' ',
-                $this->config->getValue()
+                $this->_tConfig->isStrict() ? ' strictly ' : ' ',
+                $this->_tConfig->getValue()
             )
         );
     }
@@ -83,13 +80,5 @@ class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInter
          * @var StringEqualsValidatorConfig $config
          */
         return new self($config->getValue(), $config->isNegated());
-    }
-
-    /**
-     * @return StringEqualsValidatorConfig
-     */
-    public function getConfig(): StringEqualsValidatorConfig
-    {
-        return $this->config;
     }
 }

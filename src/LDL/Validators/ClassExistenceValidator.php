@@ -3,20 +3,17 @@
 namespace LDL\Validators;
 
 use LDL\Validators\Exception\TypeMismatchException;
+use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
-class ClassExistenceValidator implements ValidatorInterface, NegatedValidatorInterface
+class ClassExistenceValidator implements ValidatorInterface, NegatedValidatorInterface, ValidatorHasConfigInterface
 {
     use ValidatorValidateTrait;
-
-    /**
-     * @var Config\BasicValidatorConfig
-     */
-    private $config;
+    use ValidatorHasConfigInterfaceTrait;
 
     public function __construct(bool $negated=false, bool $dumpable=true, string $description=null)
     {
-        $this->config = new Config\BasicValidatorConfig($negated, $dumpable, $description);
+        $this->_tConfig = new Config\BasicValidatorConfig($negated, $dumpable, $description);
     }
 
     public function assertTrue($value): void
@@ -77,13 +74,5 @@ class ClassExistenceValidator implements ValidatorInterface, NegatedValidatorInt
          * @var Config\ValidatorConfigInterface $config
          */
         return new self($config->isNegated(), $config->isDumpable());
-    }
-
-    /**
-     * @return Config\BasicValidatorConfig
-     */
-    public function getConfig(): Config\BasicValidatorConfig
-    {
-        return $this->config;
     }
 }

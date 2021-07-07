@@ -5,20 +5,17 @@ namespace LDL\Validators;
 use LDL\Validators\Config\InterfaceComplianceValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
+use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
-class InterfaceComplianceValidator implements ValidatorInterface, NegatedValidatorInterface
+class InterfaceComplianceValidator implements ValidatorInterface, NegatedValidatorInterface, ValidatorHasConfigInterface
 {
     use ValidatorValidateTrait {validate as _validate;}
-
-    /**
-     * @var InterfaceComplianceValidatorConfig
-     */
-    private $config;
+    use ValidatorHasConfigInterfaceTrait;
 
     public function __construct(string $interface, bool $negated=false, bool $dumpable=true, string $description=null)
     {
-        $this->config = new InterfaceComplianceValidatorConfig($interface, $negated, $dumpable, $description);
+        $this->_tConfig = new InterfaceComplianceValidatorConfig($interface, $negated, $dumpable, $description);
     }
 
     /**
@@ -41,7 +38,7 @@ class InterfaceComplianceValidator implements ValidatorInterface, NegatedValidat
 
     public function assertTrue($value): void
     {
-        $interface = $this->config->getInterface();
+        $interface = $this->_tConfig->getInterface();
 
         if($value instanceof $interface) {
             return;
@@ -58,7 +55,7 @@ class InterfaceComplianceValidator implements ValidatorInterface, NegatedValidat
 
     public function assertFalse($value): void
     {
-        $interface = $this->config->getInterface();
+        $interface = $this->_tConfig->getInterface();
 
         if(!$value instanceof $interface) {
             return;
@@ -88,13 +85,5 @@ class InterfaceComplianceValidator implements ValidatorInterface, NegatedValidat
          * @var InterfaceComplianceValidatorConfig $config
          */
         return new self($config->getInterface(), $config->isNegated(), $config->isDumpable());
-    }
-
-    /**
-     * @return InterfaceComplianceValidatorConfig
-     */
-    public function getConfig(): InterfaceComplianceValidatorConfig
-    {
-        return $this->config;
     }
 }

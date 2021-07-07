@@ -5,16 +5,13 @@ namespace LDL\Validators;
 use LDL\Validators\Config\ClassComplianceValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
+use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
-class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorInterface
+class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorInterface, ValidatorHasConfigInterface
 {
     use ValidatorValidateTrait {validate as _validate;}
-
-    /**
-     * @var ClassComplianceValidatorConfig
-     */
-    private $config;
+    use ValidatorHasConfigInterfaceTrait;
 
     public function __construct(
         string $class,
@@ -24,7 +21,7 @@ class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorIn
         string $description = null
     )
     {
-        $this->config = new ClassComplianceValidatorConfig($class, $strict, $negated, $dumpable, $description);
+        $this->_tConfig = new ClassComplianceValidatorConfig($class, $strict, $negated, $dumpable, $description);
     }
 
     /**
@@ -54,7 +51,7 @@ class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorIn
         $msg = sprintf(
             'Value of class "%s", does not complies to class: "%s"',
             get_class($value),
-            $this->config->getClass()
+            $this->_tConfig->getClass()
         );
 
         throw new TypeMismatchException($msg);
@@ -69,7 +66,7 @@ class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorIn
         $msg = sprintf(
             'Value of class "%s", can NOT be of class: "%s"',
             get_class($value),
-            $this->config->getClass()
+            $this->_tConfig->getClass()
         );
 
         throw new TypeMismatchException($msg);
@@ -77,8 +74,8 @@ class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorIn
 
     private function compare($value)
     {
-        $class = $this->config->getClass();
-        return $this->config->isStrict() ? get_class($value) === $class : $value instanceof $class;
+        $class = $this->_tConfig->getClass();
+        return $this->_tConfig->isStrict() ? get_class($value) === $class : $value instanceof $class;
     }
 
     public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
@@ -97,13 +94,5 @@ class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorIn
          * @var ClassComplianceValidatorConfig $config
          */
         return new self($config->getClass(), $config->isStrict(), $config->isNegated(), $config->isDumpable());
-    }
-
-    /**
-     * @return ClassComplianceValidatorConfig
-     */
-    public function getConfig(): ClassComplianceValidatorConfig
-    {
-        return $this->config;
     }
 }
