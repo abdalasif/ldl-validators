@@ -20,8 +20,7 @@ class InterfaceComplianceValidatorConfig implements ValidatorConfigInterface, Ne
     public function __construct(
         string $interface,
         bool $negated=false,
-        bool $dumpable=true,
-        string $description=null
+        bool $dumpable=true
     )
     {
         if(!interface_exists($interface)){
@@ -31,7 +30,6 @@ class InterfaceComplianceValidatorConfig implements ValidatorConfigInterface, Ne
         $this->interface = $interface;
         $this->_tNegated = $negated;
         $this->_tDumpable = $dumpable;
-        $this->_tDescription = $description;
     }
 
     /**

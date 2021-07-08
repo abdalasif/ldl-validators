@@ -22,14 +22,12 @@ class ValidatorChainConfig implements ValidatorConfigInterface, NegatedValidator
     public function __construct(
         string $operator,
         bool $negated=false,
-        bool $dumpable=true,
-        string $description=null
+        bool $dumpable=true
     )
     {
         $this->operator = $operator;
         $this->_tDumpable = $dumpable;
         $this->_tNegated = $negated;
-        $this->_tDescription = $description;
     }
 
     /**
@@ -68,8 +66,7 @@ class ValidatorChainConfig implements ValidatorConfigInterface, NegatedValidator
         return [
             'operator' => $this->operator,
             'negated' => $this->_tNegated,
-            'dumpable' => $this->_tDumpable,
-            'description' => $this->_tDescription
+            'dumpable' => $this->_tDumpable
         ];
     }
 }

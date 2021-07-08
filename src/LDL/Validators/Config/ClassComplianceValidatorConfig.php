@@ -26,8 +26,7 @@ class ClassComplianceValidatorConfig implements ValidatorConfigInterface, Negate
         string $class,
         bool $strict=false,
         bool $negated=false,
-        bool $dumpable=true,
-        string $description = null
+        bool $dumpable=true
     )
     {
         if(!class_exists($class)){
@@ -36,7 +35,6 @@ class ClassComplianceValidatorConfig implements ValidatorConfigInterface, Negate
 
         $this->_tNegated = $negated;
         $this->_tDumpable = $dumpable;
-        $this->_tDescription = $description;
         $this->class = $class;
         $this->strict = $strict;
     }

@@ -60,9 +60,14 @@ interface ValidatorChainInterface extends ValidatorInterface, CollectionInterfac
     /**
      * @param ValidatorConfigInterface $config
      * @param iterable $validators
+     * @param string|null $description
      * @return ValidatorChainInterface
      */
-    public static function fromConfig(ValidatorConfigInterface $config, iterable $validators=null) : ValidatorChainInterface;
+    public static function fromConfig(
+        ValidatorConfigInterface $config,
+        iterable $validators=null,
+        string $description=null
+    ) : ValidatorChainInterface;
 
     /**
      * @return ValidatorCollectionInterface

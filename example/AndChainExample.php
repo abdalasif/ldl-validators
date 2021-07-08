@@ -16,10 +16,10 @@ echo "Append AndValidatorChain with two NumericComparisonValidator'\n";
 echo "Minimum: 100 | Maximum: 599\n";
 
 $chain = new AndValidatorChain([
-    new IntegerValidator(false, true,'Is an integer'),
+    new IntegerValidator(false, true),
     new AndValidatorChain([
-        new NumericComparisonValidator(100, ComparisonOperatorHelper::OPERATOR_GTE,false,true,'Number is greater or equal than 100'),
-        new NumericComparisonValidator(599, ComparisonOperatorHelper::OPERATOR_LTE, false, true,'Number is lower or equal than 599'),
+        new NumericComparisonValidator(100, ComparisonOperatorHelper::OPERATOR_GTE,false,true),
+        new NumericComparisonValidator(599, ComparisonOperatorHelper::OPERATOR_LTE, false, true),
     ])
 ],
     false,

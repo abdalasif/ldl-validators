@@ -19,14 +19,12 @@ class ScalarValidatorConfig implements ValidatorConfigInterface, NegatedValidato
     public function __construct(
         bool $acceptToStringObjects=true,
         bool $negated=false,
-        bool $dumpable=true,
-        string $description=null
+        bool $dumpable=true
     )
     {
         $this->acceptToStringObjects = $acceptToStringObjects;
         $this->_tNegated = $negated;
         $this->_tDumpable = $dumpable;
-        $this->_tDescription = $description;
     }
 
     /**
@@ -35,14 +33,6 @@ class ScalarValidatorConfig implements ValidatorConfigInterface, NegatedValidato
     public function isAcceptToStringObjects(): bool
     {
         return $this->acceptToStringObjects;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize() : array
-    {
-        return $this->toArray();
     }
 
     /**

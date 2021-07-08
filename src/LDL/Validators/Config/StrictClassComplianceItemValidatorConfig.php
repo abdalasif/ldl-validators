@@ -20,8 +20,7 @@ class StrictClassComplianceItemValidatorConfig implements ValidatorConfigInterfa
     public function __construct(
         string $class,
         bool $negated=false,
-        bool $dumpable=true,
-        string $description=null
+        bool $dumpable=true
     )
     {
         if(!class_exists($class)){
@@ -31,7 +30,6 @@ class StrictClassComplianceItemValidatorConfig implements ValidatorConfigInterfa
         $this->class = $class;
         $this->_tNegated = $negated;
         $this->_tDumpable = $dumpable;
-        $this->_tDescription = $description;
     }
 
     /**

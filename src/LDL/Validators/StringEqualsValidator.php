@@ -5,6 +5,7 @@ namespace LDL\Validators;
 use LDL\Validators\Config\Exception\InvalidConfigException;
 use LDL\Validators\Config\StringEqualsValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
+use LDL\Validators\Traits\ValidatorDescriptionTrait;
 use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
@@ -12,6 +13,9 @@ class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInter
 {
     use ValidatorValidateTrait;
     use ValidatorHasConfigInterfaceTrait;
+    use ValidatorDescriptionTrait;
+
+    private const DESCRIPTION = 'Validate equals strings';
 
     public function __construct(
         string $name,
@@ -21,7 +25,8 @@ class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInter
         string $description=null
     )
     {
-        $this->_tConfig = new StringEqualsValidatorConfig($name, $strict, $negated, $dumpable, $description);
+        $this->_tConfig = new StringEqualsValidatorConfig($name, $strict, $negated, $dumpable);
+        $this->_tDescription = $description ?? self::DESCRIPTION;
     }
 
     public function assertTrue($value): void
@@ -62,10 +67,11 @@ class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInter
 
     /**
      * @param ValidatorConfigInterface $config
-     * @return StringEqualsValidator
+     * @param string|null $description
+     * @return ValidatorInterface
      * @throws InvalidConfigException
      */
-    public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
+    public static function fromConfig(ValidatorConfigInterface $config, string $description=null): ValidatorInterface
     {
         if(false === $config instanceof StringEqualsValidatorConfig){
             $msg = sprintf(
@@ -79,6 +85,12 @@ class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInter
         /**
          * @var StringEqualsValidatorConfig $config
          */
-        return new self($config->getValue(), $config->isNegated());
+        return new self(
+            $config->getValue(),
+            $config->isStrict(),
+            $config->isNegated(),
+            $config->isDumpable(),
+            $description
+        );
     }
 }

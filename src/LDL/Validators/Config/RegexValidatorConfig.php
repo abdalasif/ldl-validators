@@ -21,8 +21,7 @@ class RegexValidatorConfig implements ValidatorConfigInterface, NegatedValidator
     public function __construct(
         string $regex,
         bool $negated=false,
-        bool $dumpable=true,
-        string $description=null
+        bool $dumpable=true
     )
     {
         RegexHelper::validate($regex);
@@ -30,7 +29,6 @@ class RegexValidatorConfig implements ValidatorConfigInterface, NegatedValidator
         $this->regex = $regex;
         $this->_tNegated = $negated;
         $this->_tDumpable = $dumpable;
-        $this->_tDescription = $description;
     }
 
     /**

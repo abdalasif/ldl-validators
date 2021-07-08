@@ -3,6 +3,7 @@
 namespace LDL\Validators\Chain\Dumper;
 
 use LDL\Validators\Chain\ValidatorChainInterface;
+use LDL\Validators\ValidatorHasConfigInterface;
 
 class ValidatorChainPhpDumper implements ValidatorChainDumperInterface
 {
@@ -26,7 +27,9 @@ class ValidatorChainPhpDumper implements ValidatorChainDumperInterface
                 continue;
             }
 
-            $temp['config'] = $validator->getConfig()->toArray();
+            $config = $validator instanceof ValidatorHasConfigInterface ? $validator->getConfig()->toArray() : [];
+
+            $temp['config'] = $config;
             $data['children'][] = $temp;
         }
 

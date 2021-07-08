@@ -19,6 +19,7 @@ use LDL\Validators\Collection\ValidatorCollection;
 use LDL\Validators\Collection\ValidatorCollectionInterface;
 use LDL\Validators\InterfaceComplianceValidator;
 use LDL\Validators\ResetValidatorInterface;
+use LDL\Validators\Traits\ValidatorDescriptionTrait;
 use LDL\Validators\ValidatorInterface;
 
 abstract class AbstractValidatorChain implements ValidatorChainInterface
@@ -34,6 +35,9 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
     use FilterByInterfaceTrait;
     use FilterByClassInterfaceTrait;
     use UnshiftInterfaceTrait;
+    use ValidatorDescriptionTrait;
+
+    private const DESCRIPTION = 'Abstract Validator chain';
 
     /**
      * @var ValidatorCollectionInterface
@@ -80,9 +84,10 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
             $this->appendMany($validators, false);
         }
 
-        $this->config = new Config\ValidatorChainConfig(static::OPERATOR, $negated, $dumpable, $description);
+        $this->config = new Config\ValidatorChainConfig(static::OPERATOR, $negated, $dumpable);
         $this->succeeded = new ValidatorCollection();
         $this->failed = new ValidatorCollection();
+        $this->_tDescription = $description ?? self::DESCRIPTION;
     }
 
     public function append($item, $key = null): CollectionInterface
