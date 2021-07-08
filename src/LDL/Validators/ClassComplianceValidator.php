@@ -5,6 +5,7 @@ namespace LDL\Validators;
 use LDL\Validators\Config\ClassComplianceValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
+use LDL\Validators\Traits\ValidatorDescriptionTrait;
 use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
@@ -12,6 +13,9 @@ class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorIn
 {
     use ValidatorValidateTrait {validate as _validate;}
     use ValidatorHasConfigInterfaceTrait;
+    use ValidatorDescriptionTrait;
+
+    private const DESCRIPTION = 'Validate class';
 
     public function __construct(
         string $class,
@@ -21,7 +25,8 @@ class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorIn
         string $description = null
     )
     {
-        $this->_tConfig = new ClassComplianceValidatorConfig($class, $strict, $negated, $dumpable, $description);
+        $this->_tConfig = new ClassComplianceValidatorConfig($class, $strict, $negated, $dumpable);
+        $this->_tDescription = $description ?? self::DESCRIPTION;
     }
 
     /**
@@ -78,7 +83,13 @@ class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorIn
         return $this->_tConfig->isStrict() ? get_class($value) === $class : $value instanceof $class;
     }
 
-    public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
+    /**
+     * @param ValidatorConfigInterface $config
+     * @param string|null $description
+     * @return ValidatorInterface
+     * @throws TypeMismatchException
+     */
+    public static function fromConfig(ValidatorConfigInterface $config, string $description=null): ValidatorInterface
     {
         if(false === $config instanceof ClassComplianceValidatorConfig){
             $msg = sprintf(
@@ -93,6 +104,12 @@ class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorIn
         /**
          * @var ClassComplianceValidatorConfig $config
          */
-        return new self($config->getClass(), $config->isStrict(), $config->isNegated(), $config->isDumpable());
+        return new self(
+            $config->getClass(),
+            $config->isStrict(),
+            $config->isNegated(),
+            $config->isDumpable(),
+            $description
+        );
     }
 }

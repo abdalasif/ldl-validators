@@ -26,14 +26,11 @@ class StringEqualsValidatorConfig implements ValidatorConfigInterface, NegatedVa
         string $value,
         bool $strict=true,
         bool $negated=false,
-        bool $dumpable=true,
-        string $description=null
+        bool $dumpable=true
     )
     {
         $this->_tNegated = $negated;
         $this->_tDumpable = $dumpable;
-        $this->_tDescription = $description;
-
         $this->strict = $strict;
         $this->value = $value;
     }

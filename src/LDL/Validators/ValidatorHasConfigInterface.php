@@ -8,9 +8,10 @@ interface ValidatorHasConfigInterface
 {
     /**
      * @param ValidatorConfigInterface $config
+     * @param string|null $description
      * @return ValidatorConfigInterface
      */
-    public static function fromConfig(ValidatorConfigInterface $config);
+    public static function fromConfig(ValidatorConfigInterface $config, string $description=null);
 
     /**
      * @return ValidatorConfigInterface

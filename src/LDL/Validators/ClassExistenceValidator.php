@@ -3,6 +3,7 @@
 namespace LDL\Validators;
 
 use LDL\Validators\Exception\TypeMismatchException;
+use LDL\Validators\Traits\ValidatorDescriptionTrait;
 use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
@@ -10,10 +11,14 @@ class ClassExistenceValidator implements ValidatorInterface, NegatedValidatorInt
 {
     use ValidatorValidateTrait;
     use ValidatorHasConfigInterfaceTrait;
+    use ValidatorDescriptionTrait;
+
+    private const DESCRIPTION = 'Validate if class exist';
 
     public function __construct(bool $negated=false, bool $dumpable=true, string $description=null)
     {
-        $this->_tConfig = new Config\BasicValidatorConfig($negated, $dumpable, $description);
+        $this->_tConfig = new Config\BasicValidatorConfig($negated, $dumpable);
+        $this->_tDescription = $description ?? self::DESCRIPTION;
     }
 
     public function assertTrue($value): void
@@ -56,10 +61,11 @@ class ClassExistenceValidator implements ValidatorInterface, NegatedValidatorInt
 
     /**
      * @param Config\ValidatorConfigInterface $config
+     * @param string|null $description
      * @return ValidatorInterface
      * @throws \InvalidArgumentException
      */
-    public static function fromConfig(Config\ValidatorConfigInterface $config): ValidatorInterface
+    public static function fromConfig(Config\ValidatorConfigInterface $config, string $description=null): ValidatorInterface
     {
         if(false === $config instanceof Config\BasicValidatorConfig){
             $msg = sprintf(
@@ -73,6 +79,6 @@ class ClassExistenceValidator implements ValidatorInterface, NegatedValidatorInt
         /**
          * @var Config\ValidatorConfigInterface $config
          */
-        return new self($config->isNegated(), $config->isDumpable());
+        return new self($config->isNegated(), $config->isDumpable(), $description);
     }
 }

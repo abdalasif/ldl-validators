@@ -10,15 +10,14 @@ use LDL\Validators\ValidatorInterface;
 use LDL\Validators\ResetValidatorInterface;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 use LDL\Validators\HasValidatorResultInterface;
+use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
+use LDL\Validators\Traits\ValidatorDescriptionTrait;
 
 class ResetValidatorExample implements ValidatorInterface, HasValidatorResultInterface, ResetValidatorInterface
 {
     use ValidatorValidateTrait;
-
-    /**
-     * @var BasicValidatorConfig
-     */
-    private $config;
+    use ValidatorHasConfigInterfaceTrait;
+    use ValidatorDescriptionTrait;
 
     /**
      * @var int
@@ -27,7 +26,8 @@ class ResetValidatorExample implements ValidatorInterface, HasValidatorResultInt
 
     public function __construct(bool $negated=false, bool $dumpable=true, string $description=null)
     {
-        $this->config = new BasicValidatorConfig($negated, $dumpable, $description);
+        $this->_tConfig = new BasicValidatorConfig($negated, $dumpable);
+        $this->_tDescription = $description;
     }
 
     public function reset()
@@ -53,14 +53,9 @@ class ResetValidatorExample implements ValidatorInterface, HasValidatorResultInt
     {
     }
 
-    public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
+    public static function fromConfig(ValidatorConfigInterface $config, string $description=null): ValidatorInterface
     {
-        return new self($config->isNegated());
-    }
-
-    public function getConfig(): BasicValidatorConfig
-    {
-        return $this->config;
+        return new self($config->isNegated(), $config->isDumpable(), $description);
     }
 }
 

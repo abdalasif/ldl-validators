@@ -13,13 +13,11 @@ class BasicValidatorConfig implements ValidatorConfigInterface, NegatedValidator
 
     public function __construct(
         bool $negated=false,
-        bool $dumpable=true,
-        string $description = null
+        bool $dumpable=true
     )
     {
         $this->_tNegated = $negated;
         $this->_tDumpable = $dumpable;
-        $this->_tDescription = $description;
     }
 
     /**
@@ -42,8 +40,7 @@ class BasicValidatorConfig implements ValidatorConfigInterface, NegatedValidator
     {
         return [
             'negated' => $this->_tNegated,
-            'dumpable' => $this->_tDumpable,
-            'description' => $this->_tDescription
+            'dumpable' => $this->_tDumpable
         ];
     }
 }

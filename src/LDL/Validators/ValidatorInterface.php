@@ -24,4 +24,9 @@ interface ValidatorInterface
      * @throws \Exception
      */
     public function assertTrue($value) : void;
+
+    /**
+     * @return string
+     */
+    public function getDescription() : string;
 }

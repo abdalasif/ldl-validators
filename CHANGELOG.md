@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- feature/1200577334210948 - Move description from config to validators itself
 - feature/1200573159945611 - Add config interface and trait for validators
 - feature/1200435476702581 - Add ResetValidatorInterface
 - feature/1200427327628889 - Add a negated interface for validators

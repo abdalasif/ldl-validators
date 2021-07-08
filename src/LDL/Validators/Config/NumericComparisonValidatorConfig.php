@@ -27,8 +27,7 @@ class NumericComparisonValidatorConfig implements ValidatorConfigInterface, Nega
         $value,
         string $operator,
         bool $negated=false,
-        bool $dumpable=true,
-        string $description = null
+        bool $dumpable=true
     )
     {
 
@@ -47,7 +46,6 @@ class NumericComparisonValidatorConfig implements ValidatorConfigInterface, Nega
         $this->operator  = $operator;
         $this->_tNegated = $negated;
         $this->_tDumpable = $dumpable;
-        $this->_tDescription = $description;
     }
 
     /**

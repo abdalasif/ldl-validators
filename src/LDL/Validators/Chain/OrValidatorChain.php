@@ -88,7 +88,8 @@ class OrValidatorChain extends AbstractValidatorChain
 
     public static function fromConfig(
         ValidatorConfigInterface $config,
-        iterable $validators=null
+        iterable $validators=null,
+        string $description=null
     ): ValidatorChainInterface
     {
         if(!$config instanceof Config\ValidatorChainConfig){
@@ -104,7 +105,7 @@ class OrValidatorChain extends AbstractValidatorChain
             $validators,
             $config->isDumpable(),
             $config->isNegated(),
-            $config->getDescription()
+            $description
         );
     }
 }

@@ -5,6 +5,7 @@ namespace LDL\Validators;
 use LDL\Validators\Config\Exception\InvalidConfigException;
 use LDL\Validators\Config\RegexValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
+use LDL\Validators\Traits\ValidatorDescriptionTrait;
 use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
@@ -12,10 +13,14 @@ class RegexValidator implements ValidatorInterface, NegatedValidatorInterface, V
 {
     use ValidatorValidateTrait {validate as _validate;}
     use ValidatorHasConfigInterfaceTrait;
+    use ValidatorDescriptionTrait;
+
+    private const DESCRIPTION = 'Validate regex';
 
     public function __construct(string $regex, bool $negated=false, bool $dumpable=true, string $description=null)
     {
-        $this->_tConfig = new RegexValidatorConfig($regex, $negated, $dumpable, $description);
+        $this->_tConfig = new RegexValidatorConfig($regex, $negated, $dumpable);
+        $this->_tDescription = $description ?? self::DESCRIPTION;
     }
 
     public function validate($value): void
@@ -49,10 +54,11 @@ class RegexValidator implements ValidatorInterface, NegatedValidatorInterface, V
 
     /**
      * @param ValidatorConfigInterface $config
-     * @return RegexValidator
+     * @param string|null $description
+     * @return ValidatorInterface
      * @throws InvalidConfigException
      */
-    public static function fromConfig(ValidatorConfigInterface $config): ValidatorInterface
+    public static function fromConfig(ValidatorConfigInterface $config, string $description=null): ValidatorInterface
     {
         if(false === $config instanceof RegexValidatorConfig){
             $msg = sprintf(
@@ -66,6 +72,6 @@ class RegexValidator implements ValidatorInterface, NegatedValidatorInterface, V
         /**
          * @var RegexValidatorConfig $config
          */
-        return new self($config->getRegex(), $config->isNegated(), $config->isDumpable());
+        return new self($config->getRegex(), $config->isNegated(), $config->isDumpable(), $description);
     }
 }

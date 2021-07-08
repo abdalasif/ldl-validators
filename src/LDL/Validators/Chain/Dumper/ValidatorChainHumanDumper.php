@@ -5,6 +5,7 @@ namespace LDL\Validators\Chain\Dumper;
 use LDL\Framework\Helper\IterableHelper;
 use LDL\Validators\Chain\ValidatorChainInterface;
 use LDL\Validators\Config\NegatedValidatorConfigInterface;
+use LDL\Validators\ValidatorHasConfigInterface;
 use LDL\Validators\ValidatorInterface;
 
 class ValidatorChainHumanDumper implements ValidatorChainDumperInterface
@@ -27,24 +28,26 @@ class ValidatorChainHumanDumper implements ValidatorChainDumperInterface
                     return self::dump($validator);
                 }
 
-                $config = $validator->getConfig();
+                $msg = sprintf(
+                    '"%s"',
+                    $validator->getDescription()
+                );
 
-                if(!$config->hasDescription()){
-                    return '<NO DESCRIPTION WAS SET>';
+                if(!$validator instanceof ValidatorHasConfigInterface){
+                    return $msg;
                 }
+
+                $config = $validator->getConfig();
 
                 if($config instanceof NegatedValidatorConfigInterface){
                     return sprintf(
                         '%s"%s"',
                         $config->isNegated() ? ' NOT ' : '',
-                        $validator->getConfig()->getDescription()
+                        $validator->getDescription()
                     );
                 }
 
-                return sprintf(
-                    '"%s"',
-                    $validator->getConfig()->getDescription()
-                );
+                return $msg;
         });
 
         $string = implode($collection->getConfig()->getOperator(), $string);

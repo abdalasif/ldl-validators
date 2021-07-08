@@ -15,6 +15,11 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
     use ValidatorValidateTrait;
     use ValidatorHasConfigInterfaceTrait;
 
+    /**
+     * @var string|null
+     */
+    private $description;
+
     public function __construct(
         $value,
         string $operator,
@@ -23,7 +28,24 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
         string $description=null
     )
     {
-        $this->_tConfig = new NumericComparisonValidatorConfig($value, $operator, $negated, $dumpable, $description);
+        $this->_tConfig = new NumericComparisonValidatorConfig($value, $operator, $negated, $dumpable);
+        $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        if(!$this->description){
+            return sprintf(
+                'Number is %s than %s',
+                $this->_tConfig->getOperator(),
+                $this->_tConfig->getValue()
+            );
+        }
+
+        return $this->description;
     }
 
     public function assertTrue($value): void
@@ -90,10 +112,11 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
 
     /**
      * @param ValidatorConfigInterface $config
+     * @param string|null $description
      * @return NumericComparisonValidator
      * @throws InvalidConfigException
      */
-    public static function fromConfig(ValidatorConfigInterface $config): NumericComparisonValidator
+    public static function fromConfig(ValidatorConfigInterface $config, string $description=null): NumericComparisonValidator
     {
         if(false === $config instanceof NumericComparisonValidatorConfig){
             $msg = sprintf(
@@ -107,6 +130,12 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
         /**
          * @var NumericComparisonValidatorConfig $config
          */
-        return new self($config->getValue(), $config->getOperator(), $config->isNegated(), $config->isDumpable());
+        return new self(
+            $config->getValue(),
+            $config->getOperator(),
+            $config->isNegated(),
+            $config->isDumpable(),
+            $description
+        );
     }
 }

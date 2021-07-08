@@ -26,3 +26,7 @@ try{
 }catch(CombinedException $e){
     echo "EXCEPTION: {$e->getCombinedMessage()}\n";
 }
+
+echo "Validate: '@'\n";
+$chain->validate('@');
+echo "OK!\n";
