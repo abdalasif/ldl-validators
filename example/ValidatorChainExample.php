@@ -34,7 +34,7 @@ $chain = new OrValidatorChain([
     new OrValidatorChain([
         new RegexValidator('#[a-z]+#')
     ])
-],false);
+]);
 
 echo "Validate: 'abc'\n";
 $chain->validate('abc');

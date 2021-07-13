@@ -3,10 +3,9 @@
 namespace LDL\Validators\Chain\Dumper;
 
 use LDL\Framework\Helper\IterableHelper;
+use LDL\Validators\Chain\Item\ValidatorChainItemInterface;
 use LDL\Validators\Chain\ValidatorChainInterface;
-use LDL\Validators\Config\NegatedValidatorConfigInterface;
-use LDL\Validators\ValidatorHasConfigInterface;
-use LDL\Validators\ValidatorInterface;
+use LDL\Validators\NegatedValidatorInterface;
 
 class ValidatorChainExprDumper implements ValidatorChainDumperInterface
 {
@@ -16,27 +15,35 @@ class ValidatorChainExprDumper implements ValidatorChainDumperInterface
             return '';
         }
 
+        $validators = IterableHelper::filter($chain, static function($v){
+            if(!$v->isDumpable()){
+                return false;
+            }
+
+            return true;
+        });
+
         $string = IterableHelper::map(
-            $chain,
+            $validators,
             /**
-             * @var ValidatorInterface $validator
+             * @var ValidatorChainItemInterface $chainItem
              * @return string
              */
-            static function($validator){
+            static function($chainItem){
+                if(!$chainItem->isDumpable()){
+                    return false;
+                }
+
+                $validator = $chainItem->getValidator();
+
                 if($validator instanceof ValidatorChainInterface){
                     return self::dump($validator);
                 }
 
                 $class = get_class($validator);
 
-                if(!$validator instanceof ValidatorHasConfigInterface){
-                    return $class;
-                }
-
-                $config = $validator->getConfig();
-
-                if($config instanceof NegatedValidatorConfigInterface){
-                    return $config->isNegated() ? sprintf('!%s', $class) : $class;
+                if($validator instanceof NegatedValidatorInterface){
+                    return $validator->isNegated() ? sprintf('!%s', $class) : $class;
                 }
 
                 return $class;
@@ -47,7 +54,7 @@ class ValidatorChainExprDumper implements ValidatorChainDumperInterface
 
         $string = $chain->count() === 1 ? $string : sprintf('(%s)', $string);
 
-        if($chain->getConfig()->isNegated()){
+        if($chain instanceof NegatedValidatorInterface && $chain->isNegated()){
             $string = sprintf('!%s', $string);
         }
 

@@ -7,12 +7,14 @@ use LDL\Validators\Config\NumericComparisonValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\NumericComparisonValidatorException;
 use LDL\Framework\Helper\ComparisonOperatorHelper;
+use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
 class NumericComparisonValidator implements ValidatorInterface, NegatedValidatorInterface, ValidatorHasConfigInterface
 {
     use ValidatorValidateTrait;
+    use NegatedValidatorTrait;
     use ValidatorHasConfigInterfaceTrait;
 
     /**
@@ -24,11 +26,11 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
         $value,
         string $operator,
         bool $negated=false,
-        bool $dumpable=true,
         string $description=null
     )
     {
-        $this->_tConfig = new NumericComparisonValidatorConfig($value, $operator, $negated, $dumpable);
+        $this->_tConfig = new NumericComparisonValidatorConfig($value, $operator);
+        $this->_tNegated = $negated;
         $this->description = $description;
     }
 
@@ -112,11 +114,12 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
 
     /**
      * @param ValidatorConfigInterface $config
+     * @param bool $negated
      * @param string|null $description
      * @return NumericComparisonValidator
      * @throws InvalidConfigException
      */
-    public static function fromConfig(ValidatorConfigInterface $config, string $description=null): NumericComparisonValidator
+    public static function fromConfig(ValidatorConfigInterface $config, bool $negated = false, string $description=null): NumericComparisonValidator
     {
         if(false === $config instanceof NumericComparisonValidatorConfig){
             $msg = sprintf(
@@ -133,8 +136,7 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
         return new self(
             $config->getValue(),
             $config->getOperator(),
-            $config->isNegated(),
-            $config->isDumpable(),
+            $negated,
             $description
         );
     }

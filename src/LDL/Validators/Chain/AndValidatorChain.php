@@ -2,16 +2,32 @@
 
 namespace LDL\Validators\Chain;
 
+use LDL\Validators\Chain\Dumper\FilterDumpableInterface;
 use LDL\Validators\Chain\Dumper\ValidatorChainExprDumper;
+use LDL\Validators\Chain\Item\ValidatorChainItemInterface;
+use LDL\Validators\Chain\Traits\FilterDumpableInterfaceTrait;
 use LDL\Validators\Config\ValidatorConfigInterface;
+use LDL\Validators\NegatedValidatorInterface;
+use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
-use LDL\Validators\ValidatorInterface;
 
-class AndValidatorChain extends AbstractValidatorChain
+class AndValidatorChain extends AbstractValidatorChain implements NegatedValidatorInterface, FilterDumpableInterface
 {
     use ValidatorValidateTrait;
+    use FilterDumpableInterfaceTrait;
+    use NegatedValidatorTrait;
 
     public const OPERATOR = ' && ';
+
+    public function __construct(
+        iterable $validators=null,
+        string $description=null,
+        bool $negated = null
+    )
+    {
+        parent::__construct($validators, $description);
+        $this->_tNegated = $negated ?? false;
+    }
 
     public function assertTrue($value, ...$params): void
     {
@@ -22,16 +38,16 @@ class AndValidatorChain extends AbstractValidatorChain
         }
 
         /**
-         * @var ValidatorInterface $validator
+         * @var ValidatorChainItemInterface $chainItem
          */
-        foreach($this as $validator){
-            $this->setLastExecuted($validator);
+        foreach($this as $chainItem){
+            $this->setLastExecuted($chainItem);
 
             try {
-                $validator->validate($value, ...$params);
-                $this->getSucceeded()->append($validator);
+                $chainItem->getValidator()->validate($value, ...$params);
+                $this->getSucceeded()->append($chainItem->getValidator());
             }catch(\Exception $e){
-                $this->getFailed()->append($validator);
+                $this->getFailed()->append($chainItem->getValidator());
                 throw $e;
             }
         }
@@ -47,16 +63,16 @@ class AndValidatorChain extends AbstractValidatorChain
         }
 
         /**
-         * @var ValidatorInterface $validator
+         * @var ValidatorChainItemInterface $chainItem
          */
-        foreach($this as $validator){
-            $this->setLastExecuted($validator);
+        foreach($this as $chainItem){
+            $this->setLastExecuted($chainItem);
 
             try {
-                $validator->validate($value, ...$params);
-                $this->getSucceeded()->append($validator);
+                $chainItem->getValidator()->validate($value, ...$params);
+                $this->getSucceeded()->append($chainItem->getValidator());
             }catch(\Exception $e){
-                $this->getFailed()->append($validator);
+                $this->getFailed()->append($chainItem->getValidator());
                 break;
             }
         }
@@ -77,7 +93,8 @@ class AndValidatorChain extends AbstractValidatorChain
     public static function fromConfig(
         ValidatorConfigInterface $config,
         iterable $validators=null,
-        string $description=null
+        string $description=null,
+        bool $negated = null
     ): ValidatorChainInterface
     {
         if(!$config instanceof Config\ValidatorChainConfig){
@@ -89,11 +106,10 @@ class AndValidatorChain extends AbstractValidatorChain
             throw new \InvalidArgumentException($msg);
         }
 
-        return self::factory(
+        return new self(
             $validators,
-            $config->isDumpable(),
-            $config->isNegated(),
-            $description
+            $description,
+            $negated
         );
     }
 }

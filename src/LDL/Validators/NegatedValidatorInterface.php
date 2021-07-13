@@ -2,9 +2,6 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\ValidatorConfigInterface;
-use LDL\Validators\Exception\ValidatorException;
-
 interface NegatedValidatorInterface
 {
     /**
@@ -15,4 +12,9 @@ interface NegatedValidatorInterface
      * @throws \Exception
      */
     public function assertFalse($value) : void;
+
+    /**
+     * @return bool
+     */
+    public function isNegated() : bool;
 }

@@ -4,13 +4,11 @@ namespace LDL\Validators\Config;
 
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 use LDL\Framework\Base\Exception\ArrayFactoryException;
-use LDL\Validators\Config\Traits\NegatedValidatorConfigTrait;
 use LDL\Validators\Config\Traits\ValidatorConfigTrait;
 
-class ClassComplianceValidatorConfig implements ValidatorConfigInterface, NegatedValidatorConfigInterface
+class ClassComplianceValidatorConfig implements ValidatorConfigInterface
 {
     use ValidatorConfigTrait;
-    use NegatedValidatorConfigTrait;
 
     /**
      * @var string
@@ -24,17 +22,13 @@ class ClassComplianceValidatorConfig implements ValidatorConfigInterface, Negate
 
     public function __construct(
         string $class,
-        bool $strict=false,
-        bool $negated=false,
-        bool $dumpable=true
+        bool $strict=false
     )
     {
         if(!class_exists($class)){
             throw new \LogicException("Class \"$class\" does not exists");
         }
 
-        $this->_tNegated = $negated;
-        $this->_tDumpable = $dumpable;
         $this->class = $class;
         $this->strict = $strict;
     }
@@ -67,9 +61,7 @@ class ClassComplianceValidatorConfig implements ValidatorConfigInterface, Negate
         try{
             return new self(
                 (string) $data['class'],
-                array_key_exists('strict', $data) ? (bool)$data['strict'] : false,
-                array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
-                array_key_exists('dumpable', $data) ? (bool)$data['dumpable'] : true
+                array_key_exists('strict', $data) ? (bool)$data['strict'] : false
             );
         }catch(\Exception $e){
             throw new ArrayFactoryException($e->getMessage());
@@ -83,9 +75,7 @@ class ClassComplianceValidatorConfig implements ValidatorConfigInterface, Negate
     {
         return [
             'class' => $this->class,
-            'strict' => $this->strict,
-            'negated' => $this->_tNegated,
-            'dumpable' => $this->_tDumpable
+            'strict' => $this->strict
         ];
     }
 }

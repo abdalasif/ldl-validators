@@ -5,6 +5,7 @@ namespace LDL\Validators;
 use LDL\Validators\Config\Exception\InvalidConfigException;
 use LDL\Validators\Config\StringEqualsValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
+use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorDescriptionTrait;
 use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
@@ -12,6 +13,7 @@ use LDL\Validators\Traits\ValidatorValidateTrait;
 class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInterface, ValidatorHasConfigInterface
 {
     use ValidatorValidateTrait;
+    use NegatedValidatorTrait;
     use ValidatorHasConfigInterfaceTrait;
     use ValidatorDescriptionTrait;
 
@@ -21,11 +23,11 @@ class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInter
         string $name,
         bool $strict=true,
         bool $negated=false,
-        bool $dumpable=true,
         string $description=null
     )
     {
-        $this->_tConfig = new StringEqualsValidatorConfig($name, $strict, $negated, $dumpable);
+        $this->_tConfig = new StringEqualsValidatorConfig($name, $strict);
+        $this->_tNegated = $negated;
         $this->_tDescription = $description ?? self::DESCRIPTION;
     }
 
@@ -67,11 +69,12 @@ class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInter
 
     /**
      * @param ValidatorConfigInterface $config
+     * @param bool $negated
      * @param string|null $description
      * @return ValidatorInterface
      * @throws InvalidConfigException
      */
-    public static function fromConfig(ValidatorConfigInterface $config, string $description=null): ValidatorInterface
+    public static function fromConfig(ValidatorConfigInterface $config, bool $negated = false, string $description=null): ValidatorInterface
     {
         if(false === $config instanceof StringEqualsValidatorConfig){
             $msg = sprintf(
@@ -88,8 +91,7 @@ class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInter
         return new self(
             $config->getValue(),
             $config->isStrict(),
-            $config->isNegated(),
-            $config->isDumpable(),
+            $negated,
             $description
         );
     }

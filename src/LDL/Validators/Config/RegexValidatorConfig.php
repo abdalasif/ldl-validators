@@ -5,13 +5,11 @@ namespace LDL\Validators\Config;
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 use LDL\Framework\Base\Exception\ArrayFactoryException;
 use LDL\Framework\Helper\RegexHelper;
-use LDL\Validators\Config\Traits\NegatedValidatorConfigTrait;
 use LDL\Validators\Config\Traits\ValidatorConfigTrait;
 
-class RegexValidatorConfig implements ValidatorConfigInterface, NegatedValidatorConfigInterface
+class RegexValidatorConfig implements ValidatorConfigInterface
 {
     use ValidatorConfigTrait;
-    use NegatedValidatorConfigTrait;
 
     /**
      * @var string
@@ -19,16 +17,12 @@ class RegexValidatorConfig implements ValidatorConfigInterface, NegatedValidator
     private $regex;
 
     public function __construct(
-        string $regex,
-        bool $negated=false,
-        bool $dumpable=true
+        string $regex
     )
     {
         RegexHelper::validate($regex);
 
         $this->regex = $regex;
-        $this->_tNegated = $negated;
-        $this->_tDumpable = $dumpable;
     }
 
     /**
@@ -53,9 +47,7 @@ class RegexValidatorConfig implements ValidatorConfigInterface, NegatedValidator
 
         try{
             return new self(
-                (string) $data['regex'],
-                array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
-                array_key_exists('dumpable', $data) ? (bool)$data['dumpable'] : true
+                (string) $data['regex']
             );
         }catch(\Exception $e){
             throw new ArrayFactoryException($e->getMessage());
@@ -68,9 +60,7 @@ class RegexValidatorConfig implements ValidatorConfigInterface, NegatedValidator
     public function toArray(): array
     {
         return [
-            'regex' => $this->regex,
-            'negated' => $this->_tNegated,
-            'dumpable' => $this->_tDumpable
+            'regex' => $this->regex
         ];
     }
 }

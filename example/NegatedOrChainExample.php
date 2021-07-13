@@ -2,7 +2,6 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
-
 use LDL\Validators\RegexValidator;
 use LDL\Validators\Chain\OrValidatorChain;
 use LDL\Validators\Chain\Exception\CombinedException;
@@ -15,7 +14,7 @@ echo "Append RegexValidator, with regex: '#[0-9]+#'\n";
 $chain = new OrValidatorChain([
     new RegexValidator('#[a-z]+#'),
     new RegexValidator('#[0-9]+#')
-], true);
+], null, true);
 
 dump(\LDL\Validators\Chain\Dumper\ValidatorChainExprDumper::dump($chain));
 
@@ -28,5 +27,10 @@ try{
 }
 
 echo "Validate: '@'\n";
-$chain->validate('@');
-echo "OK!\n";
+
+try{
+    $chain->validate('@');
+    echo "OK!\n";
+}catch(CombinedException $e){
+    echo "EXCEPTION: {$e->getCombinedMessage()}\n";
+}

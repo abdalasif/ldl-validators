@@ -2,17 +2,33 @@
 
 namespace LDL\Validators\Chain;
 
+use LDL\Validators\Chain\Dumper\FilterDumpableInterface;
 use LDL\Validators\Chain\Dumper\ValidatorChainExprDumper;
 use LDL\Validators\Chain\Exception\CombinedException;
+use LDL\Validators\Chain\Item\ValidatorChainItemInterface;
+use LDL\Validators\Chain\Traits\FilterDumpableInterfaceTrait;
 use LDL\Validators\Config\ValidatorConfigInterface;
+use LDL\Validators\NegatedValidatorInterface;
+use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
-use LDL\Validators\ValidatorInterface;
 
-class OrValidatorChain extends AbstractValidatorChain
+class OrValidatorChain extends AbstractValidatorChain implements NegatedValidatorInterface, FilterDumpableInterface
 {
     use ValidatorValidateTrait;
+    use FilterDumpableInterfaceTrait;
+    use NegatedValidatorTrait;
 
     public const OPERATOR = ' || ';
+
+    public function __construct(
+        iterable $validators=null,
+        string $description=null,
+        bool $negated = null
+    )
+    {
+        parent::__construct($validators, $description);
+        $this->_tNegated = $negated ?? false;
+    }
 
     public function assertTrue($value, ...$params): void
     {
@@ -25,17 +41,17 @@ class OrValidatorChain extends AbstractValidatorChain
         $combinedException = new CombinedException();
 
         /**
-         * @var ValidatorInterface $validator
+         * @var ValidatorChainItemInterface $chainItem
          */
-        foreach($this as $validator){
-            $this->setLastExecuted($validator);
+        foreach($this as $chainItem){
+            $this->setLastExecuted($chainItem);
 
             try {
-                $validator->validate($value, ...$params);
-                $this->getSucceeded()->append($validator);
+                $chainItem->getValidator()->validate($value, ...$params);
+                $this->getSucceeded()->append($chainItem->getValidator());
                 break;
             }catch(\Exception $e){
-                $this->getFailed()->append($validator);
+                $this->getFailed()->append($chainItem->getValidator());
                 $combinedException->append($e);
             }
         }
@@ -56,17 +72,17 @@ class OrValidatorChain extends AbstractValidatorChain
         $combinedException = new CombinedException();
 
         /**
-         * @var ValidatorInterface $validator
+         * @var ValidatorChainItemInterface $chainItem
          */
-        foreach($this as $validator){
-            $this->setLastExecuted($validator);
+        foreach($this as $chainItem){
+            $this->setLastExecuted($chainItem);
 
             try {
-                $validator->validate($value, ...$params);
-                $this->getSucceeded()->append($validator);
+                $chainItem->getValidator()->validate($value, ...$params);
+                $this->getSucceeded()->append($chainItem->getValidator());
                 break;
             }catch(\Exception $e){
-                $this->getFailed()->append($validator);
+                $this->getFailed()->append($chainItem->getValidator());
                 $combinedException->append($e);
             }
         }
@@ -89,7 +105,8 @@ class OrValidatorChain extends AbstractValidatorChain
     public static function fromConfig(
         ValidatorConfigInterface $config,
         iterable $validators=null,
-        string $description=null
+        string $description=null,
+        bool $negated = null
     ): ValidatorChainInterface
     {
         if(!$config instanceof Config\ValidatorChainConfig){
@@ -101,11 +118,10 @@ class OrValidatorChain extends AbstractValidatorChain
             throw new \InvalidArgumentException($msg);
         }
 
-        return self::factory(
+        return new self(
             $validators,
-            $config->isDumpable(),
-            $config->isNegated(),
-            $description
+            $description,
+            $negated
         );
     }
 }

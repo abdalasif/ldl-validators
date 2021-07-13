@@ -2,10 +2,10 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
-
 use LDL\Validators\RegexValidator;
 use LDL\Validators\Chain\AndValidatorChain;
 use LDL\Validators\StringValidator;
+use LDL\Validators\Chain\Item\ValidatorChainItem;
 
 echo "Create AndValidatorChain\n";
 echo "Append StringValidator && RegexValidator(#[a-z]+#)\n";
@@ -43,7 +43,7 @@ echo "Append StringValidator && RegexValidator(#[a-z]+#)\n";
 $nChain = new AndValidatorChain([
     new StringValidator(),
     new RegexValidator('#[a-z]+#')
-], true);
+], null, true);
 
 dump(\LDL\Validators\Chain\Dumper\ValidatorChainExprDumper::dump($nChain));
 
@@ -75,8 +75,8 @@ try{
 echo "Remove StringValidator\n";
 $nChain->remove(0);
 
-echo "Append StringValidator negated\n";
-$nChain->append(new StringValidator(true));
+echo "Append StringValidator negated (NOT dumpable)\n";
+$nChain->append(new ValidatorChainItem(new StringValidator(true), false));
 
 dump(\LDL\Validators\Chain\Dumper\ValidatorChainExprDumper::dump($nChain));
 

@@ -4,13 +4,11 @@ namespace LDL\Validators\Config;
 
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 use LDL\Framework\Base\Exception\ArrayFactoryException;
-use LDL\Validators\Config\Traits\NegatedValidatorConfigTrait;
 use LDL\Validators\Config\Traits\ValidatorConfigTrait;
 
-class StrictClassComplianceItemValidatorConfig implements ValidatorConfigInterface, NegatedValidatorConfigInterface
+class StrictClassComplianceItemValidatorConfig implements ValidatorConfigInterface
 {
     use ValidatorConfigTrait;
-    use NegatedValidatorConfigTrait;
 
     /**
      * @var string
@@ -18,9 +16,7 @@ class StrictClassComplianceItemValidatorConfig implements ValidatorConfigInterfa
     private $class;
 
     public function __construct(
-        string $class,
-        bool $negated=false,
-        bool $dumpable=true
+        string $class
     )
     {
         if(!class_exists($class)){
@@ -28,8 +24,6 @@ class StrictClassComplianceItemValidatorConfig implements ValidatorConfigInterfa
         }
 
         $this->class = $class;
-        $this->_tNegated = $negated;
-        $this->_tDumpable = $dumpable;
     }
 
     /**
@@ -54,9 +48,7 @@ class StrictClassComplianceItemValidatorConfig implements ValidatorConfigInterfa
 
         try{
             return new self(
-                (string) $data['class'],
-                array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
-                array_key_exists('dumpable', $data) ? (bool)$data['dumpable'] : true
+                (string) $data['class']
             );
         }catch(\Exception $e){
             throw new ArrayFactoryException($e->getMessage());
@@ -69,9 +61,7 @@ class StrictClassComplianceItemValidatorConfig implements ValidatorConfigInterfa
     public function toArray(): array
     {
         return [
-            'class' => $this->class,
-            'negated' => $this->_tNegated,
-            'dumpable' => $this->_tDumpable
+            'class' => $this->class
         ];
     }
 }

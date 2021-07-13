@@ -4,13 +4,11 @@ namespace LDL\Validators\Config;
 
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 use LDL\Framework\Base\Exception\ArrayFactoryException;
-use LDL\Validators\Config\Traits\NegatedValidatorConfigTrait;
 use LDL\Validators\Config\Traits\ValidatorConfigTrait;
 
-class InterfaceComplianceValidatorConfig implements ValidatorConfigInterface, NegatedValidatorConfigInterface
+class InterfaceComplianceValidatorConfig implements ValidatorConfigInterface
 {
     use ValidatorConfigTrait;
-    use NegatedValidatorConfigTrait;
 
     /**
      * @var string
@@ -18,9 +16,7 @@ class InterfaceComplianceValidatorConfig implements ValidatorConfigInterface, Ne
     private $interface;
 
     public function __construct(
-        string $interface,
-        bool $negated=false,
-        bool $dumpable=true
+        string $interface
     )
     {
         if(!interface_exists($interface)){
@@ -28,8 +24,6 @@ class InterfaceComplianceValidatorConfig implements ValidatorConfigInterface, Ne
         }
 
         $this->interface = $interface;
-        $this->_tNegated = $negated;
-        $this->_tDumpable = $dumpable;
     }
 
     /**
@@ -54,9 +48,7 @@ class InterfaceComplianceValidatorConfig implements ValidatorConfigInterface, Ne
 
         try{
             return new self(
-                (string) $data['interface'],
-                array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
-                array_key_exists('dumpable', $data) ? (bool)$data['dumpable'] : true
+                (string) $data['interface']
             );
         }catch(\Exception $e){
             throw new ArrayFactoryException($e->getMessage());
@@ -69,9 +61,7 @@ class InterfaceComplianceValidatorConfig implements ValidatorConfigInterface, Ne
     public function toArray(): array
     {
         return [
-            'interface' => $this->interface,
-            'negated' => $this->_tNegated,
-            'dumpable' => $this->_tDumpable
+            'interface' => $this->interface
         ];
     }
 }

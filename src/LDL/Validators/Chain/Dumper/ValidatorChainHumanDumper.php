@@ -3,27 +3,42 @@
 namespace LDL\Validators\Chain\Dumper;
 
 use LDL\Framework\Helper\IterableHelper;
+use LDL\Validators\Chain\Item\ValidatorChainItemInterface;
 use LDL\Validators\Chain\ValidatorChainInterface;
-use LDL\Validators\Config\NegatedValidatorConfigInterface;
-use LDL\Validators\ValidatorHasConfigInterface;
-use LDL\Validators\ValidatorInterface;
+use LDL\Validators\NegatedValidatorInterface;
 
 class ValidatorChainHumanDumper implements ValidatorChainDumperInterface
 {
-    public static function dump(ValidatorChainInterface $collection) : string
+    private const NO_ITEMS_FOUND = '<NO DUMPABLE ITEMS FOUND>';
+
+    public static function dump(ValidatorChainInterface $chain) : string
     {
-        if($collection->count() === 0){
+        if($chain->count() === 0){
             return '';
         }
 
+        $validators = IterableHelper::filter($chain, static function($v){
+            if(!$v->isDumpable()){
+                return false;
+            }
+
+            return true;
+        });
+
+        if(0 === count($validators)){
+            return sprintf('%s', self::NO_ITEMS_FOUND);
+        }
+
         $string = IterableHelper::map(
-            $collection,
+            $validators,
             /**
-             * @var ValidatorInterface $validator
+             * @var ValidatorChainItemInterface $chainItem
              * @return string
              */
-            static function($validator) : string
+            static function($chainItem) : string
             {
+                $validator = $chainItem->getValidator();
+
                 if($validator instanceof ValidatorChainInterface){
                     return self::dump($validator);
                 }
@@ -33,16 +48,10 @@ class ValidatorChainHumanDumper implements ValidatorChainDumperInterface
                     $validator->getDescription()
                 );
 
-                if(!$validator instanceof ValidatorHasConfigInterface){
-                    return $msg;
-                }
-
-                $config = $validator->getConfig();
-
-                if($config instanceof NegatedValidatorConfigInterface){
+                if($validator instanceof NegatedValidatorInterface){
                     return sprintf(
                         '%s"%s"',
-                        $config->isNegated() ? ' NOT ' : '',
+                        $validator->isNegated() ? ' NOT ' : '',
                         $validator->getDescription()
                     );
                 }
@@ -50,11 +59,11 @@ class ValidatorChainHumanDumper implements ValidatorChainDumperInterface
                 return $msg;
         });
 
-        $string = implode($collection->getConfig()->getOperator(), $string);
+        $string = implode($chain->getConfig()->getOperator(), $string);
 
-        $string = $collection->count() === 1 ? $string : sprintf('%s', $string);
+        $string = $chain->count() === 1 ? $string : sprintf('%s', $string);
 
-        if($collection->getConfig()->isNegated()){
+        if($chain instanceof NegatedValidatorInterface && $chain->isNegated()){
             $string = sprintf('NOT: "%s"', $string);
         }
 

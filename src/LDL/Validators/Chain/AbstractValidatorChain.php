@@ -15,6 +15,8 @@ use LDL\Framework\Base\Collection\Traits\RemovableInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\UnshiftInterfaceTrait;
 use LDL\Framework\Base\Traits\LockableObjectInterfaceTrait;
 use LDL\Validators\Chain\Config\ValidatorChainConfig;
+use LDL\Validators\Chain\Item\ValidatorChainItem;
+use LDL\Validators\Chain\Item\ValidatorChainItemInterface;
 use LDL\Validators\Collection\ValidatorCollection;
 use LDL\Validators\Collection\ValidatorCollectionInterface;
 use LDL\Validators\InterfaceComplianceValidator;
@@ -50,7 +52,7 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
     private $failed;
 
     /**
-     * @var ValidatorInterface
+     * @var ValidatorChainItemInterface
      */
     private $lastExecuted;
 
@@ -71,20 +73,18 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
 
     public function __construct(
         iterable $validators=null,
-        bool $negated = false,
-        bool $dumpable = true,
         string $description=null
     )
     {
         $this->getBeforeAppend()->append(static function ($collection, $item, $key){
-            (new InterfaceComplianceValidator(ValidatorInterface::class))->validate($item);
+            (new InterfaceComplianceValidator(ValidatorChainItemInterface::class))->validate($item);
         });
 
         if(null !== $validators) {
             $this->appendMany($validators, false);
         }
 
-        $this->config = new Config\ValidatorChainConfig(static::OPERATOR, $negated, $dumpable);
+        $this->config = new Config\ValidatorChainConfig(static::OPERATOR);
         $this->succeeded = new ValidatorCollection();
         $this->failed = new ValidatorCollection();
         $this->_tDescription = $description ?? self::DESCRIPTION;
@@ -92,6 +92,10 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
 
     public function append($item, $key = null): CollectionInterface
     {
+        if ($item instanceof ValidatorInterface) {
+            $item = new ValidatorChainItem($item, true);
+        }
+
         $this->_append($item, $key);
         $this->changed = true;
 
@@ -111,26 +115,6 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
         return new static($validators, ...$params);
     }
 
-    /**
-     * @return ValidatorChainInterface
-     * @throws \Exception
-     */
-    public function filterDumpableItems(): ValidatorChainInterface
-    {
-        $self = $this->getEmptyInstance();
-
-        /**
-         * @var ValidatorInterface $validator
-         */
-        foreach($this as $key => $validator){
-            if($validator->getConfig()->isDumpable()){
-                $self->append($validator, $key);
-            }
-        }
-
-        return $self;
-    }
-
     public function getSucceeded() : ValidatorCollectionInterface
     {
         return $this->succeeded;
@@ -141,7 +125,7 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
         return $this->failed;
     }
 
-    public function getLastExecuted(): ?ValidatorInterface
+    public function getLastExecuted(): ?ValidatorChainItemInterface
     {
         return $this->lastExecuted;
     }
@@ -157,7 +141,7 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
     }
 
     //<editor-fold desc="Protected methods">
-    protected function setLastExecuted(ValidatorInterface $validator): ValidatorChainInterface
+    protected function setLastExecuted(ValidatorChainItemInterface $validator): ValidatorChainInterface
     {
         $this->lastExecuted = $validator;
         return $this;
