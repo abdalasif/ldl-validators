@@ -4,13 +4,11 @@ namespace LDL\Validators\Config;
 
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 use LDL\Framework\Base\Exception\ArrayFactoryException;
-use LDL\Validators\Config\Traits\NegatedValidatorConfigTrait;
 use LDL\Validators\Config\Traits\ValidatorConfigTrait;
 
-class StringEqualsValidatorConfig implements ValidatorConfigInterface, NegatedValidatorConfigInterface
+class StringEqualsValidatorConfig implements ValidatorConfigInterface
 {
     use ValidatorConfigTrait;
-    use NegatedValidatorConfigTrait;
 
     /**
      * @var bool
@@ -24,13 +22,9 @@ class StringEqualsValidatorConfig implements ValidatorConfigInterface, NegatedVa
 
     public function __construct(
         string $value,
-        bool $strict=true,
-        bool $negated=false,
-        bool $dumpable=true
+        bool $strict=true
     )
     {
-        $this->_tNegated = $negated;
-        $this->_tDumpable = $dumpable;
         $this->strict = $strict;
         $this->value = $value;
     }
@@ -63,8 +57,7 @@ class StringEqualsValidatorConfig implements ValidatorConfigInterface, NegatedVa
         try{
             return new self(
                 (string) $data['value'],
-                array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
-                array_key_exists('dumpable', $data) ? (bool)$data['dumpable'] : true
+                array_key_exists('strict', $data) ? (bool)$data['strict'] : true
             );
         }catch(\Exception $e){
             throw new ArrayFactoryException($e->getMessage());
@@ -78,8 +71,7 @@ class StringEqualsValidatorConfig implements ValidatorConfigInterface, NegatedVa
     {
         return [
             'value' => $this->value,
-            'negated' => $this->_tNegated,
-            'dumpable' => $this->_tDumpable
+            'strict' => $this->strict
         ];
     }
 }

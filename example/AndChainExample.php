@@ -16,14 +16,12 @@ echo "Append AndValidatorChain with two NumericComparisonValidator'\n";
 echo "Minimum: 100 | Maximum: 599\n";
 
 $chain = new AndValidatorChain([
-    new IntegerValidator(false, true),
+    new IntegerValidator(false),
     new AndValidatorChain([
-        new NumericComparisonValidator(100, ComparisonOperatorHelper::OPERATOR_GTE,false,true),
-        new NumericComparisonValidator(599, ComparisonOperatorHelper::OPERATOR_LTE, false, true),
+        new NumericComparisonValidator(100, ComparisonOperatorHelper::OPERATOR_GTE),
+        new NumericComparisonValidator(599, ComparisonOperatorHelper::OPERATOR_LTE),
     ])
-],
-    false,
-    true);
+]);
 
 dump(ValidatorChainExprDumper::dump($chain));
 dump(ValidatorChainHumanDumper::dump($chain));

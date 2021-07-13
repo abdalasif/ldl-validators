@@ -3,13 +3,11 @@
 namespace LDL\Validators\Config;
 
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
-use LDL\Validators\Config\Traits\NegatedValidatorConfigTrait;
 use LDL\Validators\Config\Traits\ValidatorConfigTrait;
 
-class ScalarValidatorConfig implements ValidatorConfigInterface, NegatedValidatorConfigInterface
+class ScalarValidatorConfig implements ValidatorConfigInterface
 {
     use ValidatorConfigTrait;
-    use NegatedValidatorConfigTrait;
 
     /**
      * @var bool
@@ -17,14 +15,10 @@ class ScalarValidatorConfig implements ValidatorConfigInterface, NegatedValidato
     private $acceptToStringObjects;
 
     public function __construct(
-        bool $acceptToStringObjects=true,
-        bool $negated=false,
-        bool $dumpable=true
+        bool $acceptToStringObjects=true
     )
     {
         $this->acceptToStringObjects = $acceptToStringObjects;
-        $this->_tNegated = $negated;
-        $this->_tDumpable = $dumpable;
     }
 
     /**
@@ -42,9 +36,7 @@ class ScalarValidatorConfig implements ValidatorConfigInterface, NegatedValidato
     public static function fromArray(array $data = []): ArrayFactoryInterface
     {
         return new self(
-            array_key_exists('acceptToStringObjects', $data) ? (bool) $data['acceptToStringObjects'] : true,
-            array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
-            array_key_exists('dumpable', $data) ? (bool)$data['dumpable'] : true
+            array_key_exists('acceptToStringObjects', $data) ? (bool) $data['acceptToStringObjects'] : true
         );
     }
 
@@ -54,9 +46,7 @@ class ScalarValidatorConfig implements ValidatorConfigInterface, NegatedValidato
     public function toArray(): array
     {
         return [
-            'acceptToStringObjects' => $this->acceptToStringObjects,
-            'negated' => $this->_tNegated,
-            'dumpable' => $this->_tDumpable
+            'acceptToStringObjects' => $this->acceptToStringObjects
         ];
     }
 }

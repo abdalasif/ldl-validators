@@ -13,6 +13,7 @@ use LDL\Framework\Base\Collection\Contracts\RemovableInterface;
 use LDL\Framework\Base\Collection\Contracts\UnshiftInterface;
 use LDL\Framework\Base\Contracts\LockableObjectInterface;
 use LDL\Validators\Chain\Config\ValidatorChainConfig;
+use LDL\Validators\Chain\Item\ValidatorChainItemInterface;
 use LDL\Validators\Collection\ValidatorCollectionInterface;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\ValidatorInterface;
@@ -33,11 +34,6 @@ interface ValidatorChainInterface extends ValidatorInterface, CollectionInterfac
     public static function factory(iterable $validators=null, ...$params) : ValidatorChainInterface;
 
     /**
-     * @return ValidatorChainInterface
-     */
-    public function filterDumpableItems() : ValidatorChainInterface;
-
-    /**
      * @return ValidatorCollectionInterface
      */
     public function getSucceeded() : ValidatorCollectionInterface;
@@ -48,9 +44,9 @@ interface ValidatorChainInterface extends ValidatorInterface, CollectionInterfac
     public function getFailed() : ValidatorCollectionInterface;
 
     /**
-     * @return ValidatorInterface|null
+     * @return ValidatorChainItemInterface|null
      */
-    public function getLastExecuted(): ?ValidatorInterface;
+    public function getLastExecuted(): ?ValidatorChainItemInterface;
 
     /**
      * @return ValidatorChainConfig

@@ -5,13 +5,11 @@ namespace LDL\Validators\Config;
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 use LDL\Framework\Base\Exception\ArrayFactoryException;
 use LDL\Framework\Helper\ComparisonOperatorHelper;
-use LDL\Validators\Config\Traits\NegatedValidatorConfigTrait;
 use LDL\Validators\Config\Traits\ValidatorConfigTrait;
 
-class NumericComparisonValidatorConfig implements ValidatorConfigInterface, NegatedValidatorConfigInterface
+class NumericComparisonValidatorConfig implements ValidatorConfigInterface
 {
     use ValidatorConfigTrait;
-    use NegatedValidatorConfigTrait;
 
     /**
      * @var number
@@ -25,9 +23,7 @@ class NumericComparisonValidatorConfig implements ValidatorConfigInterface, Nega
 
     public function __construct(
         $value,
-        string $operator,
-        bool $negated=false,
-        bool $dumpable=true
+        string $operator
     )
     {
 
@@ -44,8 +40,6 @@ class NumericComparisonValidatorConfig implements ValidatorConfigInterface, Nega
 
         $this->value = $value;
         $this->operator  = $operator;
-        $this->_tNegated = $negated;
-        $this->_tDumpable = $dumpable;
     }
 
     /**
@@ -87,9 +81,7 @@ class NumericComparisonValidatorConfig implements ValidatorConfigInterface, Nega
         try{
             return new self(
                 $data['value'],
-                array_key_exists('operator', $data) ? $data['operator'] : false,
-                array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
-                array_key_exists('dumpable', $data) ? (bool)$data['dumpable'] : true
+                array_key_exists('operator', $data) ? $data['operator'] : false
             );
         }catch(\Exception $e){
             throw new ArrayFactoryException($e->getMessage());
@@ -104,9 +96,7 @@ class NumericComparisonValidatorConfig implements ValidatorConfigInterface, Nega
     {
         return [
             'value' => $this->value,
-            'operator' => $this->operator,
-            'negated' => $this->_tNegated,
-            'dumpable' => $this->_tDumpable
+            'operator' => $this->operator
         ];
     }
 }

@@ -5,22 +5,41 @@ namespace LDL\Validators;
 use LDL\Validators\Config\InterfaceComplianceValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
-use LDL\Validators\Traits\ValidatorDescriptionTrait;
+use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
 class InterfaceComplianceValidator implements ValidatorInterface, NegatedValidatorInterface, ValidatorHasConfigInterface
 {
     use ValidatorValidateTrait {validate as _validate;}
+    use NegatedValidatorTrait;
     use ValidatorHasConfigInterfaceTrait;
-    use ValidatorDescriptionTrait;
 
-    private const DESCRIPTION = 'Validate interface';
+    /**
+     * @var string
+     */
+    private $description;
 
-    public function __construct(string $interface, bool $negated=false, bool $dumpable=true, string $description=null)
+    public function __construct(string $interface, bool $negated=false, string $description=null)
     {
-        $this->_tConfig = new InterfaceComplianceValidatorConfig($interface, $negated, $dumpable);
-        $this->_tDescription = $description ?? self::DESCRIPTION;
+        $this->_tConfig = new InterfaceComplianceValidatorConfig($interface);
+        $this->_tNegated = $negated;
+        $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        if(!$this->description){
+            return sprintf(
+                'Validate that a given class implements: %s',
+                $this->_tConfig->getInterface()
+            );
+        }
+
+        return $this->description;
     }
 
     /**
@@ -77,11 +96,12 @@ class InterfaceComplianceValidator implements ValidatorInterface, NegatedValidat
 
     /**
      * @param ValidatorConfigInterface $config
+     * @param bool $negated
      * @param string|null $description
      * @return ValidatorInterface
      * @throws TypeMismatchException
      */
-    public static function fromConfig(ValidatorConfigInterface $config, string $description=null): ValidatorInterface
+    public static function fromConfig(ValidatorConfigInterface $config, bool $negated = false, string $description=null): ValidatorInterface
     {
         if(false === $config instanceof InterfaceComplianceValidatorConfig){
             $msg = sprintf(
@@ -95,6 +115,6 @@ class InterfaceComplianceValidator implements ValidatorInterface, NegatedValidat
         /**
          * @var InterfaceComplianceValidatorConfig $config
          */
-        return new self($config->getInterface(), $config->isNegated(), $config->isDumpable(), $description);
+        return new self($config->getInterface(), $negated, $description);
     }
 }

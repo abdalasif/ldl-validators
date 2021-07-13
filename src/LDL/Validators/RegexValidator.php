@@ -5,22 +5,41 @@ namespace LDL\Validators;
 use LDL\Validators\Config\Exception\InvalidConfigException;
 use LDL\Validators\Config\RegexValidatorConfig;
 use LDL\Validators\Config\ValidatorConfigInterface;
-use LDL\Validators\Traits\ValidatorDescriptionTrait;
+use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
 class RegexValidator implements ValidatorInterface, NegatedValidatorInterface, ValidatorHasConfigInterface
 {
     use ValidatorValidateTrait {validate as _validate;}
+    use NegatedValidatorTrait;
     use ValidatorHasConfigInterfaceTrait;
-    use ValidatorDescriptionTrait;
 
-    private const DESCRIPTION = 'Validate regex';
+    /**
+     * @var string
+     */
+    private $description;
 
-    public function __construct(string $regex, bool $negated=false, bool $dumpable=true, string $description=null)
+    public function __construct(string $regex, bool $negated=false, string $description=null)
     {
-        $this->_tConfig = new RegexValidatorConfig($regex, $negated, $dumpable);
-        $this->_tDescription = $description ?? self::DESCRIPTION;
+        $this->_tNegated = $negated;
+        $this->_tConfig = new RegexValidatorConfig($regex);
+        $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        if(!$this->description){
+            return sprintf(
+                'Validate regex with pattern: %s',
+                $this->_tConfig->getRegex(),
+            );
+        }
+
+        return $this->description;
     }
 
     public function validate($value): void
@@ -54,11 +73,12 @@ class RegexValidator implements ValidatorInterface, NegatedValidatorInterface, V
 
     /**
      * @param ValidatorConfigInterface $config
+     * @param bool $negated
      * @param string|null $description
      * @return ValidatorInterface
      * @throws InvalidConfigException
      */
-    public static function fromConfig(ValidatorConfigInterface $config, string $description=null): ValidatorInterface
+    public static function fromConfig(ValidatorConfigInterface $config, bool $negated = false, string $description=null): ValidatorInterface
     {
         if(false === $config instanceof RegexValidatorConfig){
             $msg = sprintf(
@@ -72,6 +92,6 @@ class RegexValidator implements ValidatorInterface, NegatedValidatorInterface, V
         /**
          * @var RegexValidatorConfig $config
          */
-        return new self($config->getRegex(), $config->isNegated(), $config->isDumpable(), $description);
+        return new self($config->getRegex(), $negated, $description);
     }
 }

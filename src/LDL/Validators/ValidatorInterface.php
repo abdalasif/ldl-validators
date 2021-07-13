@@ -2,8 +2,6 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\ValidatorConfigInterface;
-
 interface ValidatorInterface
 {
     /**

@@ -1,17 +1,18 @@
 <?php declare(strict_types=1);
 
-namespace LDL\Validators\Config\Traits;
+namespace LDL\Validators\Traits;
 
-
-trait NegatedValidatorConfigTrait
+trait NegatedValidatorTrait
 {
     /**
      * @var bool
      */
     private $_tNegated;
 
+    //<editor-fold desc="NegatedValidatorInterface methods">
     public function isNegated() : bool
     {
         return $this->_tNegated;
     }
+    //</editor-fold>
 }
