@@ -2,18 +2,24 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\ClassComplianceValidatorConfig;
-use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 use LDL\Validators\Traits\NegatedValidatorTrait;
-use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
 class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorInterface, ValidatorHasConfigInterface
 {
     use ValidatorValidateTrait {validate as _validate;}
     use NegatedValidatorTrait;
-    use ValidatorHasConfigInterfaceTrait;
+
+    /**
+     * @var string
+     */
+    private $class;
+
+    /**
+     * @var boolean
+     */
+    private $strict;
 
     /**
      * @var string
@@ -27,9 +33,30 @@ class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorIn
         string $description = null
     )
     {
-        $this->_tConfig = new ClassComplianceValidatorConfig($class, $strict);
-        $this->_tNegated = $negated;
+        if(!class_exists($class)){
+            throw new \LogicException("Class \"$class\" does not exists");
+        }
+
+        $this->class = $class;
+        $this->strict = $strict;
         $this->description = $description;
+        $this->_tNegated = $negated;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClass(): string
+    {
+        return $this->class;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStrict(): bool
+    {
+        return $this->strict;
     }
 
     /**
@@ -40,8 +67,8 @@ class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorIn
         if(!$this->description){
             return sprintf(
                 'Validate that a given class complies with class: %s in %s mode',
-                $this->_tConfig->getClass(),
-                $this->_tConfig->isStrict() ? 'strict' : 'non-strict'
+                $this->class,
+                $this->strict ? 'strict' : 'non-strict'
             );
         }
 
@@ -75,7 +102,7 @@ class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorIn
         $msg = sprintf(
             'Value of class "%s", does not complies to class: "%s"',
             get_class($value),
-            $this->_tConfig->getClass()
+            $this->class
         );
 
         throw new TypeMismatchException($msg);
@@ -90,7 +117,7 @@ class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorIn
         $msg = sprintf(
             'Value of class "%s", can NOT be of class: "%s"',
             get_class($value),
-            $this->_tConfig->getClass()
+            $this->class
         );
 
         throw new TypeMismatchException($msg);
@@ -98,37 +125,49 @@ class ClassComplianceValidator implements ValidatorInterface, NegatedValidatorIn
 
     private function compare($value)
     {
-        $class = $this->_tConfig->getClass();
-        return $this->_tConfig->isStrict() ? get_class($value) === $class : $value instanceof $class;
+        $class = $this->class;
+        return $this->strict ? get_class($value) === $class : $value instanceof $class;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->getConfig();
     }
 
     /**
-     * @param ValidatorConfigInterface $config
-     * @param bool $negated
-     * @param string|null $description
+     * @param array $data
      * @return ValidatorInterface
-     * @throws TypeMismatchException
+     * @throws Exception\TypeMismatchException
      */
-    public static function fromConfig(ValidatorConfigInterface $config, bool $negated = false, string $description=null): ValidatorInterface
+    public static function fromConfig(array $data = []): ValidatorInterface
     {
-        if(false === $config instanceof ClassComplianceValidatorConfig){
-            $msg = sprintf(
-                'Config expected to be %s, config of class %s was given',
-                __CLASS__,
-                get_class($config)
-            );
-
-            throw new TypeMismatchException($msg);
+        if(false === array_key_exists('class', $data)){
+            $msg = sprintf("Missing property 'class' in %s", __CLASS__);
+            throw new Exception\TypeMismatchException($msg);
         }
 
-        /**
-         * @var ClassComplianceValidatorConfig $config
-         */
-        return new self(
-            $config->getClass(),
-            $config->isStrict(),
-            $negated,
-            $description
-        );
+        try{
+            return new self(
+                (string) $data['class'],
+                array_key_exists('strict', $data) ? (bool)$data['strict'] : false,
+                array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
+                $data['description'] ?? null
+            );
+        }catch(\Exception $e){
+            throw new Exception\TypeMismatchException($e->getMessage());
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig(): array
+    {
+        return [
+            'class' => $this->class,
+            'strict' => $this->strict,
+            'negated' => $this->_tNegated,
+            'description' => $this->getDescription()
+        ];
     }
 }

@@ -6,12 +6,12 @@ use LDL\Validators\Chain\Dumper\FilterDumpableInterface;
 use LDL\Validators\Chain\Dumper\ValidatorChainExprDumper;
 use LDL\Validators\Chain\Item\ValidatorChainItemInterface;
 use LDL\Validators\Chain\Traits\FilterDumpableInterfaceTrait;
-use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\NegatedValidatorInterface;
 use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
+use LDL\Validators\ValidatorHasConfigInterface;
 
-class AndValidatorChain extends AbstractValidatorChain implements NegatedValidatorInterface, FilterDumpableInterface
+class AndValidatorChain extends AbstractValidatorChain implements ValidatorHasConfigInterface, NegatedValidatorInterface, FilterDumpableInterface
 {
     use ValidatorValidateTrait;
     use FilterDumpableInterfaceTrait;
@@ -90,26 +90,28 @@ class AndValidatorChain extends AbstractValidatorChain implements NegatedValidat
         );
     }
 
+    public function jsonSerialize(): array
+    {
+        return $this->getConfig();
+    }
+
     public static function fromConfig(
-        ValidatorConfigInterface $config,
         iterable $validators=null,
         string $description=null,
         bool $negated = null
     ): ValidatorChainInterface
     {
-        if(!$config instanceof Config\ValidatorChainConfig){
-            $msg = sprintf(
-                'Config expected to be %s, config of class %s was given',
-                __CLASS__,
-                get_class($config)
-            );
-            throw new \InvalidArgumentException($msg);
-        }
-
         return new self(
             $validators,
             $description,
             $negated
         );
+    }
+
+    public function getConfig(): array
+    {
+        return [
+            'operator' => self::OPERATOR
+        ];
     }
 }

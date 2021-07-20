@@ -2,24 +2,21 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\ValidatorConfigInterface;
-
-interface ValidatorHasConfigInterface
+interface ValidatorHasConfigInterface extends \JsonSerializable
 {
     /**
-     * @param ValidatorConfigInterface $config
-     * @param bool $negated
-     * @param string|null $description
-     * @return ValidatorConfigInterface
+     * @param array $data
+     * @return ValidatorInterface
      */
-    public static function fromConfig(
-        ValidatorConfigInterface $config,
-        bool $negated = false,
-        string $description=null
-    );
+    public static function fromConfig(array $data=[]);
 
     /**
-     * @return ValidatorConfigInterface
+     * @return array
      */
     public function getConfig();
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize() : array;
 }

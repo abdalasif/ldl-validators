@@ -2,18 +2,19 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\Exception\InvalidConfigException;
-use LDL\Validators\Config\RegexValidatorConfig;
-use LDL\Validators\Config\ValidatorConfigInterface;
+use LDL\Framework\Helper\RegexHelper;
 use LDL\Validators\Traits\NegatedValidatorTrait;
-use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
 class RegexValidator implements ValidatorInterface, NegatedValidatorInterface, ValidatorHasConfigInterface
 {
     use ValidatorValidateTrait {validate as _validate;}
     use NegatedValidatorTrait;
-    use ValidatorHasConfigInterfaceTrait;
+
+    /**
+     * @var string
+     */
+    private $regex;
 
     /**
      * @var string
@@ -22,9 +23,19 @@ class RegexValidator implements ValidatorInterface, NegatedValidatorInterface, V
 
     public function __construct(string $regex, bool $negated=false, string $description=null)
     {
+        RegexHelper::validate($regex);
+
+        $this->regex = $regex;
         $this->_tNegated = $negated;
-        $this->_tConfig = new RegexValidatorConfig($regex);
         $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRegex(): string
+    {
+        return $this->regex;
     }
 
     /**
@@ -35,7 +46,7 @@ class RegexValidator implements ValidatorInterface, NegatedValidatorInterface, V
         if(!$this->description){
             return sprintf(
                 'Validate regex with pattern: %s',
-                $this->_tConfig->getRegex(),
+                $this->regex,
             );
         }
 
@@ -53,45 +64,61 @@ class RegexValidator implements ValidatorInterface, NegatedValidatorInterface, V
 
     public function assertTrue($value): void
     {
-        if(preg_match($this->_tConfig->getRegex(), (string) $value)) {
+        if(preg_match($this->regex, (string) $value)) {
             return;
         }
 
-        $msg = "Given value: \"$value\" does not matches regex: \"{$this->_tConfig->getRegex()}\"";
+        $msg = "Given value: \"$value\" does not matches regex: \"{$this->regex}\"";
         throw new Exception\RegexValidatorException($msg);
     }
 
     public function assertFalse($value): void
     {
-        if(!preg_match($this->_tConfig->getRegex(), (string) $value)) {
+        if(!preg_match($this->regex, (string) $value)) {
             return;
         }
 
-        $msg = "Given value: \"$value\" matches regex: \"{$this->_tConfig->getRegex()}\"";
+        $msg = "Given value: \"$value\" matches regex: \"{$this->regex}\"";
         throw new Exception\RegexValidatorException($msg);
     }
 
-    /**
-     * @param ValidatorConfigInterface $config
-     * @param bool $negated
-     * @param string|null $description
-     * @return ValidatorInterface
-     * @throws InvalidConfigException
-     */
-    public static function fromConfig(ValidatorConfigInterface $config, bool $negated = false, string $description=null): ValidatorInterface
+    public function jsonSerialize(): array
     {
-        if(false === $config instanceof RegexValidatorConfig){
-            $msg = sprintf(
-                'Config expected to be %s, config of class %s was given',
-                __CLASS__,
-                get_class($config)
-            );
-            throw new InvalidConfigException($msg);
+        return $this->getConfig();
+    }
+
+    /**
+     * @param array $data
+     * @return ValidatorInterface
+     * @throws Exception\TypeMismatchException
+     */
+    public static function fromConfig(array $data = []): ValidatorInterface
+    {
+        if(!array_key_exists('regex', $data)){
+            $msg = sprintf("Missing property 'value' in %s", __CLASS__);
+            throw new Exception\TypeMismatchException($msg);
         }
 
-        /**
-         * @var RegexValidatorConfig $config
-         */
-        return new self($config->getRegex(), $negated, $description);
+        try{
+            return new self(
+                (string) $data['regex'],
+                array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
+                $data['description'] ?? null
+            );
+        }catch(\Exception $e){
+            throw new Exception\TypeMismatchException($e->getMessage());
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig(): array
+    {
+        return [
+            'regex' => $this->regex,
+            'negated' => $this->_tNegated,
+            'description' => $this->getDescription()
+        ];
     }
 }

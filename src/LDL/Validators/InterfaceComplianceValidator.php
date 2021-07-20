@@ -2,18 +2,19 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\InterfaceComplianceValidatorConfig;
-use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 use LDL\Validators\Traits\NegatedValidatorTrait;
-use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
 class InterfaceComplianceValidator implements ValidatorInterface, NegatedValidatorInterface, ValidatorHasConfigInterface
 {
     use ValidatorValidateTrait {validate as _validate;}
     use NegatedValidatorTrait;
-    use ValidatorHasConfigInterfaceTrait;
+
+    /**
+     * @var string
+     */
+    private $interface;
 
     /**
      * @var string
@@ -22,9 +23,21 @@ class InterfaceComplianceValidator implements ValidatorInterface, NegatedValidat
 
     public function __construct(string $interface, bool $negated=false, string $description=null)
     {
-        $this->_tConfig = new InterfaceComplianceValidatorConfig($interface);
+        if(!interface_exists($interface)){
+            throw new \LogicException("$interface interface does not exists");
+        }
+
+        $this->interface = $interface;
         $this->_tNegated = $negated;
         $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInterface(): string
+    {
+        return $this->interface;
     }
 
     /**
@@ -35,7 +48,7 @@ class InterfaceComplianceValidator implements ValidatorInterface, NegatedValidat
         if(!$this->description){
             return sprintf(
                 'Validate that a given class implements: %s',
-                $this->_tConfig->getInterface()
+                $this->interface
             );
         }
 
@@ -62,16 +75,14 @@ class InterfaceComplianceValidator implements ValidatorInterface, NegatedValidat
 
     public function assertTrue($value): void
     {
-        $interface = $this->_tConfig->getInterface();
-
-        if($value instanceof $interface) {
+        if($value instanceof $this->interface) {
             return;
         }
 
         $msg = sprintf(
             'Value of class "%s", does not complies to interface: "%s"',
             get_class($value),
-            $interface
+            $this->interface
         );
 
         throw new TypeMismatchException($msg);
@@ -79,42 +90,56 @@ class InterfaceComplianceValidator implements ValidatorInterface, NegatedValidat
 
     public function assertFalse($value): void
     {
-        $interface = $this->_tConfig->getInterface();
-
-        if(!$value instanceof $interface) {
+        if(!$value instanceof $this->interface) {
             return;
         }
 
         $msg = sprintf(
             'Value of class "%s", must NOT comply to interface: "%s"',
             get_class($value),
-            $interface
+            $this->interface
         );
 
         throw new TypeMismatchException($msg);
     }
 
-    /**
-     * @param ValidatorConfigInterface $config
-     * @param bool $negated
-     * @param string|null $description
-     * @return ValidatorInterface
-     * @throws TypeMismatchException
-     */
-    public static function fromConfig(ValidatorConfigInterface $config, bool $negated = false, string $description=null): ValidatorInterface
+    public function jsonSerialize(): array
     {
-        if(false === $config instanceof InterfaceComplianceValidatorConfig){
-            $msg = sprintf(
-                'Config expected to be %s, config of class %s was given',
-                __CLASS__,
-                get_class($config)
-            );
-            throw new TypeMismatchException($msg);
+        return $this->getConfig();
+    }
+
+    /**
+     * @param array $data
+     * @return ValidatorInterface
+     * @throws Exception\TypeMismatchException
+     */
+    public static function fromConfig(array $data = []): ValidatorInterface
+    {
+        if(false === array_key_exists('interface', $data)){
+            $msg = sprintf("Missing property 'interface' in %s", __CLASS__);
+            throw new Exception\TypeMismatchException($msg);
         }
 
-        /**
-         * @var InterfaceComplianceValidatorConfig $config
-         */
-        return new self($config->getInterface(), $negated, $description);
+        try{
+            return new self(
+                (string) $data['interface'],
+                array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
+                $data['description'] ?? null
+            );
+        }catch(\Exception $e){
+            throw new Exception\TypeMismatchException($e->getMessage());
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig(): array
+    {
+        return [
+            'interface' => $this->interface,
+            'negated' => $this->_tNegated,
+            'description' => $this->getDescription()
+        ];
     }
 }

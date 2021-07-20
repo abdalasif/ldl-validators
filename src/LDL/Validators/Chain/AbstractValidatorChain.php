@@ -14,7 +14,6 @@ use LDL\Framework\Base\Collection\Traits\LockAppendInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\RemovableInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\UnshiftInterfaceTrait;
 use LDL\Framework\Base\Traits\LockableObjectInterfaceTrait;
-use LDL\Validators\Chain\Config\ValidatorChainConfig;
 use LDL\Validators\Chain\Item\ValidatorChainItem;
 use LDL\Validators\Chain\Item\ValidatorChainItemInterface;
 use LDL\Validators\Collection\ValidatorCollection;
@@ -57,11 +56,6 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
     private $lastExecuted;
 
     /**
-     * @var Config\ValidatorChainConfig
-     */
-    private $config;
-
-    /**
      * @var ValidatorCollectionInterface
      */
     private $resetValidatorsCollection;
@@ -70,6 +64,11 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
      * @var bool
      */
     private $changed;
+
+    /**
+     * @var string
+     */
+    private $operator;
 
     public function __construct(
         iterable $validators=null,
@@ -84,7 +83,7 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
             $this->appendMany($validators, false);
         }
 
-        $this->config = new Config\ValidatorChainConfig(static::OPERATOR);
+        $this->operator = static::OPERATOR;
         $this->succeeded = new ValidatorCollection();
         $this->failed = new ValidatorCollection();
         $this->_tDescription = $description ?? self::DESCRIPTION;
@@ -130,9 +129,9 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
         return $this->lastExecuted;
     }
 
-    public function getConfig() : ValidatorChainConfig
+    public function getOperator(): string
     {
-        return $this->config;
+        return $this->operator;
     }
 
     public function getCollection() : ValidatorCollectionInterface

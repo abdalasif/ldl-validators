@@ -50,7 +50,7 @@ class ValidatorChainExprDumper implements ValidatorChainDumperInterface
             }
         );
 
-        $string = implode($chain->getConfig()->getOperator(), $string);
+        $string = implode($chain->getOperator(), $string);
 
         $string = $chain->count() === 1 ? $string : sprintf('(%s)', $string);
 

@@ -5,22 +5,34 @@ namespace LDL\Validators;
 use LDL\Validators\Exception\TypeMismatchException;
 use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorDescriptionTrait;
-use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
-class ScalarValidator implements ValidatorInterface, NegatedValidatorInterface
+class ScalarValidator implements ValidatorInterface, NegatedValidatorInterface, ValidatorHasConfigInterface
 {
     use ValidatorValidateTrait;
     use NegatedValidatorTrait;
-    use ValidatorHasConfigInterfaceTrait;
     use ValidatorDescriptionTrait;
 
     private const DESCRIPTION = 'Validate scalar';
 
-    public function __construct(bool $negated=false, string $description=null)
+    /**
+     * @var bool
+     */
+    private $acceptToStringObjects;
+
+    public function __construct(bool $acceptToStringObjects=true, bool $negated=false, string $description=null)
     {
+        $this->acceptToStringObjects = $acceptToStringObjects;
         $this->_tNegated = $negated;
         $this->_tDescription = $description ?? self::DESCRIPTION;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAcceptToStringObjects(): bool
+    {
+        return $this->acceptToStringObjects;
     }
 
     public function assertTrue($value): void
@@ -51,5 +63,35 @@ class ScalarValidator implements ValidatorInterface, NegatedValidatorInterface
         );
 
         throw new TypeMismatchException($msg);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->getConfig();
+    }
+
+    /**
+     * @param array $data
+     * @return ValidatorInterface
+     */
+    public static function fromConfig(array $data = []): ValidatorInterface
+    {
+        return new self(
+            array_key_exists('acceptToStringObjects', $data) ? (bool) $data['acceptToStringObjects'] : true,
+            array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
+            $data['description'] ?? null
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig(): array
+    {
+        return [
+            'acceptToStringObjects' => $this->acceptToStringObjects,
+            'negated' => $this->_tNegated,
+            'description' => $this->getDescription()
+        ];
     }
 }

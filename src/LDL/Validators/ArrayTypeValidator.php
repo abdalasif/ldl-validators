@@ -5,14 +5,12 @@ namespace LDL\Validators;
 use LDL\Validators\Exception\TypeMismatchException;
 use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorDescriptionTrait;
-use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
 class ArrayTypeValidator implements ValidatorInterface, NegatedValidatorInterface
 {
     use ValidatorValidateTrait;
     use NegatedValidatorTrait;
-    use ValidatorHasConfigInterfaceTrait;
     use ValidatorDescriptionTrait;
 
     private const DESCRIPTION = 'Validate array';
