@@ -12,10 +12,8 @@ use LDL\Framework\Base\Collection\Contracts\LockAppendInterface;
 use LDL\Framework\Base\Collection\Contracts\RemovableInterface;
 use LDL\Framework\Base\Collection\Contracts\UnshiftInterface;
 use LDL\Framework\Base\Contracts\LockableObjectInterface;
-use LDL\Validators\Chain\Config\ValidatorChainConfig;
 use LDL\Validators\Chain\Item\ValidatorChainItemInterface;
 use LDL\Validators\Collection\ValidatorCollectionInterface;
-use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\ValidatorInterface;
 
 interface ValidatorChainInterface extends ValidatorInterface, CollectionInterface, LockableObjectInterface, BeforeAppendInterface, AppendableInterface, LockAppendInterface, BeforeRemoveInterface, RemovableInterface, FilterByInterface, FilterByClassInterface, UnshiftInterface
@@ -47,23 +45,6 @@ interface ValidatorChainInterface extends ValidatorInterface, CollectionInterfac
      * @return ValidatorChainItemInterface|null
      */
     public function getLastExecuted(): ?ValidatorChainItemInterface;
-
-    /**
-     * @return ValidatorChainConfig
-     */
-    public function getConfig() : ValidatorChainConfig;
-
-    /**
-     * @param ValidatorConfigInterface $config
-     * @param iterable $validators
-     * @param string|null $description
-     * @return ValidatorChainInterface
-     */
-    public static function fromConfig(
-        ValidatorConfigInterface $config,
-        iterable $validators=null,
-        string $description=null
-    ) : ValidatorChainInterface;
 
     /**
      * @return ValidatorCollectionInterface

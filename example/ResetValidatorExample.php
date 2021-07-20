@@ -5,38 +5,37 @@ require __DIR__.'/../vendor/autoload.php';
 use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 use LDL\Validators\Chain\Item\ValidatorChainItem;
 use LDL\Validators\Chain\OrValidatorChain;
-use LDL\Validators\Config\Traits\ValidatorConfigTrait;
-use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\RegexValidator;
 use LDL\Validators\Traits\NegatedValidatorTrait;
+use LDL\Validators\ValidatorHasConfigInterface;
 use LDL\Validators\ValidatorInterface;
 use LDL\Validators\ResetValidatorInterface;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 use LDL\Validators\HasValidatorResultInterface;
-use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorDescriptionTrait;
 
-class ResetValidatorExampleConfig implements ValidatorConfigInterface
+class ResetValidatorExampleConfig implements ValidatorHasConfigInterface
 {
-    use ValidatorConfigTrait;
-
-    public static function fromArray(array $data = []): ArrayFactoryInterface
+    public static function fromConfig(array $data = []): ValidatorInterface
     {
         return new self();
     }
 
-    public function toArray(): array
+    public function getConfig(): array
     {
         return [];
     }
 
+    public function jsonSerialize(): array
+    {
+        return $this->getConfig();
+    }
 }
 
 class ResetValidatorExample implements ValidatorInterface, HasValidatorResultInterface, ResetValidatorInterface
 {
     use ValidatorValidateTrait;
     use NegatedValidatorTrait;
-    use ValidatorHasConfigInterfaceTrait;
     use ValidatorDescriptionTrait;
 
     private const DESCRIPTION = 'Reset validator';
@@ -50,7 +49,6 @@ class ResetValidatorExample implements ValidatorInterface, HasValidatorResultInt
     {
         $this->_tNegated = $negated;
         $this->_tDescription = $description ?? self::DESCRIPTION;
-        $this->_tConfig = new ResetValidatorExampleConfig();
     }
 
     public function reset()
@@ -76,9 +74,9 @@ class ResetValidatorExample implements ValidatorInterface, HasValidatorResultInt
     {
     }
 
-    public static function fromConfig(ValidatorConfigInterface $config, bool $negated = false, string $description=null): ValidatorInterface
+    public static function fromConfig(array $data = []): ValidatorInterface
     {
-        return new self($negated, $description);
+        return new self($data['negated'], $data['description']);
     }
 }
 

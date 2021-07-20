@@ -2,20 +2,25 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\Exception\InvalidConfigException;
-use LDL\Validators\Config\NumericComparisonValidatorConfig;
-use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Exception\NumericComparisonValidatorException;
 use LDL\Framework\Helper\ComparisonOperatorHelper;
 use LDL\Validators\Traits\NegatedValidatorTrait;
-use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
 class NumericComparisonValidator implements ValidatorInterface, NegatedValidatorInterface, ValidatorHasConfigInterface
 {
     use ValidatorValidateTrait;
     use NegatedValidatorTrait;
-    use ValidatorHasConfigInterfaceTrait;
+
+    /**
+     * @var number
+     */
+    private $value;
+
+    /**
+     * @var string
+     */
+    private $operator;
 
     /**
      * @var string|null
@@ -29,9 +34,37 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
         string $description=null
     )
     {
-        $this->_tConfig = new NumericComparisonValidatorConfig($value, $operator);
+        if(null !== $value && false === filter_var($value, \FILTER_VALIDATE_INT | \FILTER_VALIDATE_FLOAT)){
+            $msg = sprintf(
+                'Given value must be a number: "%s" was given',
+                gettype($value)
+            );
+
+            throw new \InvalidArgumentException($msg);
+        }
+
+        ComparisonOperatorHelper::validate($operator);
+
+        $this->value = $value;
+        $this->operator  = $operator;
         $this->_tNegated = $negated;
         $this->description = $description;
+    }
+
+    /**
+     * @return number
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOperator() : string
+    {
+        return $this->operator;
     }
 
     /**
@@ -42,8 +75,8 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
         if(!$this->description){
             return sprintf(
                 'Number is %s than %s',
-                $this->_tConfig->getOperator(),
-                $this->_tConfig->getValue()
+                $this->operator,
+                $this->value
             );
         }
 
@@ -60,8 +93,8 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
 
         $msg = sprintf(
             'Value must be "%s" than "%s"; "%s" was given.',
-            $this->_tConfig->getOperator(),
-            $this->_tConfig->getValue(),
+            $this->operator,
+            $this->value,
             $value
         );
 
@@ -78,8 +111,8 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
 
         $msg = sprintf(
             'Value can NOT be "%s" than "%s"; "%s" was given.',
-            $this->_tConfig->getOperator(),
-            $this->_tConfig->getValue(),
+            $this->operator,
+            $this->value,
             $value
         );
 
@@ -88,56 +121,80 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
 
     private function compare($value) : bool
     {
-        switch($this->_tConfig->getOperator()){
+        switch($this->operator){
             case ComparisonOperatorHelper::OPERATOR_SEQ:
-                return $value === $this->_tConfig->getValue();
+                return $value === $this->value;
 
             case ComparisonOperatorHelper::OPERATOR_EQ:
-                return $value == $this->_tConfig->getValue();
+                return $value == $this->value;
 
             case ComparisonOperatorHelper::OPERATOR_GT:
-                return $value > $this->_tConfig->getValue();
+                return $value > $this->value;
 
             case ComparisonOperatorHelper::OPERATOR_GTE:
-                return $value >= $this->_tConfig->getValue();
+                return $value >= $this->value;
 
             case ComparisonOperatorHelper::OPERATOR_LT:
-                return $value < $this->_tConfig->getValue();
+                return $value < $this->value;
 
             case ComparisonOperatorHelper::OPERATOR_LTE:
-                return $value <= $this->_tConfig->getValue();
+                return $value <= $this->value;
 
             default:
                 throw new \RuntimeException('Given operator is invalid (WTF?)');
         }
     }
 
-    /**
-     * @param ValidatorConfigInterface $config
-     * @param bool $negated
-     * @param string|null $description
-     * @return NumericComparisonValidator
-     * @throws InvalidConfigException
-     */
-    public static function fromConfig(ValidatorConfigInterface $config, bool $negated = false, string $description=null): NumericComparisonValidator
+    public function jsonSerialize(): array
     {
-        if(false === $config instanceof NumericComparisonValidatorConfig){
-            $msg = sprintf(
-                'Config expected to be %s, config of class %s was given',
-                __CLASS__,
-                get_class($config)
-            );
-            throw new InvalidConfigException($msg);
+        return $this->getConfig();
+    }
+
+    /**
+     * @param array $data
+     * @return ValidatorInterface
+     * @throws Exception\TypeMismatchException
+     */
+    public static function fromConfig(array $data = []): ValidatorInterface
+    {
+        if(!array_key_exists('value', $data)){
+            $msg = sprintf("Missing property 'value' in %s", __CLASS__);
+            throw new Exception\TypeMismatchException($msg);
         }
 
-        /**
-         * @var NumericComparisonValidatorConfig $config
-         */
-        return new self(
-            $config->getValue(),
-            $config->getOperator(),
-            $negated,
-            $description
-        );
+        if(!array_key_exists('operator', $data)){
+            $msg = sprintf("Missing property 'operator' in %s", __CLASS__);
+            throw new Exception\TypeMismatchException($msg);
+        }
+
+        if(!is_string($data['operator'])){
+            throw new \InvalidArgumentException(
+                sprintf('operator must be of type string, "%s" was given',gettype($data['operator']))
+            );
+        }
+
+        try{
+            return new self(
+                $data['value'],
+                $data['operator'],
+                array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
+                $data['description'] ?? null
+            );
+        }catch(\Exception $e){
+            throw new Exception\TypeMismatchException($e->getMessage());
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig(): array
+    {
+        return [
+            'value' => $this->value,
+            'operator' => $this->operator,
+            'negated' => $this->_tNegated,
+            'description' => $this->getDescription()
+        ];
     }
 }

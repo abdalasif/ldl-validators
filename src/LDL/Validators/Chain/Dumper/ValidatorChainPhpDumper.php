@@ -36,7 +36,7 @@ class ValidatorChainPhpDumper implements ValidatorChainDumperInterface
                 continue;
             }
 
-            $config = $validator instanceof ValidatorHasConfigInterface ? $validator->getConfig()->toArray() : [];
+            $config = $validator instanceof ValidatorHasConfigInterface ? $validator->getConfig() : [];
 
             $temp['config'] = $config;
             $data['children'][] = $temp;

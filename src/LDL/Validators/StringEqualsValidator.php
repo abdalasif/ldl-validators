@@ -2,22 +2,27 @@
 
 namespace LDL\Validators;
 
-use LDL\Validators\Config\Exception\InvalidConfigException;
-use LDL\Validators\Config\StringEqualsValidatorConfig;
-use LDL\Validators\Config\ValidatorConfigInterface;
 use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorDescriptionTrait;
-use LDL\Validators\Traits\ValidatorHasConfigInterfaceTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 
 class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInterface, ValidatorHasConfigInterface
 {
     use ValidatorValidateTrait;
     use NegatedValidatorTrait;
-    use ValidatorHasConfigInterfaceTrait;
     use ValidatorDescriptionTrait;
 
     private const DESCRIPTION = 'Validate equals strings';
+
+    /**
+     * @var string
+     */
+    private $value;
+
+    /**
+     * @var bool
+     */
+    private $strict;
 
     public function __construct(
         string $name,
@@ -26,14 +31,31 @@ class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInter
         string $description=null
     )
     {
-        $this->_tConfig = new StringEqualsValidatorConfig($name, $strict);
+        $this->value = $name;
+        $this->strict = $strict;
         $this->_tNegated = $negated;
         $this->_tDescription = $description ?? self::DESCRIPTION;
     }
 
+    /**
+     * @return string
+     */
+    public function getValue(): string
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStrict() : bool
+    {
+        return $this->strict;
+    }
+
     public function assertTrue($value): void
     {
-        $comparison = $this->_tConfig->isStrict() ? $this->_tConfig->getValue() === $value : $this->_tConfig->getValue() == $value;
+        $comparison = $this->strict ? $this->value === $value : $this->value == $value;
 
         if($comparison){
             return;
@@ -43,15 +65,15 @@ class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInter
             sprintf(
                 'Given value "%s" is not%sequal to %s',
                 is_scalar($value) ? var_export($value, true) : gettype($value),
-                $this->_tConfig->isStrict() ? ' strictly ' : ' ',
-                $this->_tConfig->getValue()
+                $this->strict ? ' strictly ' : ' ',
+                $this->value
             )
         );
     }
 
     public function assertFalse($value): void
     {
-        $comparison = $this->_tConfig->isStrict() ? $this->_tConfig->getValue() === $value : $this->_tConfig->getValue() == $value;
+        $comparison = $this->strict ? $this->value === $value : $this->value == $value;
 
         if(!$comparison){
             return;
@@ -61,38 +83,48 @@ class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInter
             sprintf(
                 'Given value "%s" must NOT be%sequal to "%s"',
                 is_scalar($value) ? var_export($value, true) : gettype($value),
-                $this->_tConfig->isStrict() ? ' strictly ' : ' ',
-                $this->_tConfig->getValue()
+                $this->strict ? ' strictly ' : ' ',
+                $this->value
             )
         );
     }
 
-    /**
-     * @param ValidatorConfigInterface $config
-     * @param bool $negated
-     * @param string|null $description
-     * @return ValidatorInterface
-     * @throws InvalidConfigException
-     */
-    public static function fromConfig(ValidatorConfigInterface $config, bool $negated = false, string $description=null): ValidatorInterface
+    public function jsonSerialize(): array
     {
-        if(false === $config instanceof StringEqualsValidatorConfig){
-            $msg = sprintf(
-                'Config expected to be %s, config of class %s was given',
-                __CLASS__,
-                get_class($config)
-            );
-            throw new InvalidConfigException($msg);
+        return $this->getConfig();
+    }
+
+    /**
+     * @param array $data
+     * @return ValidatorInterface
+     * @throws Exception\TypeMismatchException
+     */
+    public static function fromConfig(array $data = []): ValidatorInterface
+    {
+        if(false === array_key_exists('value', $data)){
+            $msg = sprintf("Missing property 'value' in %s", __CLASS__);
+            throw new Exception\TypeMismatchException($msg);
         }
 
-        /**
-         * @var StringEqualsValidatorConfig $config
-         */
-        return new self(
-            $config->getValue(),
-            $config->isStrict(),
-            $negated,
-            $description
-        );
+        try{
+            return new self(
+                (string) $data['value'],
+                array_key_exists('strict', $data) ? (bool)$data['strict'] : true,
+                array_key_exists('negated', $data) ? (bool)$data['negated'] : false,
+                $data['description'] ?? null
+            );
+        }catch(\Exception $e){
+            throw new Exception\TypeMismatchException($e->getMessage());
+        }
+    }
+
+    public function getConfig(): array
+    {
+        return [
+            'value' => $this->value,
+            'strict' => $this->strict,
+            'negated' => $this->_tNegated,
+            'description' => $this->getDescription()
+        ];
     }
 }
