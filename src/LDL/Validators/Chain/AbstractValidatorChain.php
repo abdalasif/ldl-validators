@@ -35,7 +35,7 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
     use RemovableInterfaceTrait {remove as _remove;}
     use FilterByInterfaceTrait;
     use FilterByClassInterfaceTrait;
-    use UnshiftInterfaceTrait;
+    use UnshiftInterfaceTrait {unshift as _unshift;}
     use ValidatorDescriptionTrait;
 
     private const DESCRIPTION = 'Abstract Validator chain';
@@ -96,6 +96,18 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
         }
 
         $this->_append($item, $key);
+        $this->changed = true;
+
+        return $this;
+    }
+
+    public function unshift($item, $key = null): CollectionInterface
+    {
+        if ($item instanceof ValidatorInterface) {
+            $item = new ValidatorChainItem($item, true);
+        }
+
+        $this->_unshift($item, $key);
         $this->changed = true;
 
         return $this;

@@ -25,6 +25,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
  
 ### Changed
 
+- fix/1200636888436614 - Fix unshift from AbstractValidatorChain
 - fix/1200626063657123 - Remove validators config
 - fix/1200492312944670 - Fix AbstractValidatorChain
 - fix/1200410494797360 - Fix getCollection and add UnshiftInterfaceTrait on AbstractValidatorChain
