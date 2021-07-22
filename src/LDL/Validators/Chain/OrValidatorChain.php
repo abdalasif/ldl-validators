@@ -46,12 +46,14 @@ class OrValidatorChain extends AbstractValidatorChain implements ValidatorHasCon
         foreach($this as $chainItem){
             $this->setLastExecuted($chainItem);
 
+            $validator = $chainItem->getValidator();
+
             try {
-                $chainItem->getValidator()->validate($value, ...$params);
-                $this->getSucceeded()->append($chainItem->getValidator());
+                $validator->validate($value, ...$params);
+                $this->getSucceeded()->append($validator);
                 break;
             }catch(\Exception $e){
-                $this->getFailed()->append($chainItem->getValidator());
+                $this->getFailed()->append($validator);
                 $combinedException->append($e);
             }
         }
@@ -77,12 +79,14 @@ class OrValidatorChain extends AbstractValidatorChain implements ValidatorHasCon
         foreach($this as $chainItem){
             $this->setLastExecuted($chainItem);
 
+            $validator = $chainItem->getValidator();
+
             try {
-                $chainItem->getValidator()->validate($value, ...$params);
-                $this->getSucceeded()->append($chainItem->getValidator());
+                $validator->validate($value, ...$params);
+                $this->getSucceeded()->append($validator);
                 break;
             }catch(\Exception $e){
-                $this->getFailed()->append($chainItem->getValidator());
+                $this->getFailed()->append($validator);
                 $combinedException->append($e);
             }
         }

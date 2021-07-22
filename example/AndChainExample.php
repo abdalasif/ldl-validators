@@ -45,3 +45,9 @@ try{
 echo "Validate: 100\n";
 $chain->validate(100);
 echo "OK!\n";
+
+echo "Get Validator collection:\n";
+
+foreach($chain->getCollection() as $validator){
+    echo get_class($validator)."\n";
+}
