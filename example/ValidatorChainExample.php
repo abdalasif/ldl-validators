@@ -63,4 +63,10 @@ echo "\nDump chain as JSON:\n";
 sleep(3);
 echo ValidatorChainJsonDumper::dump($chain)."\n\n";
 
+echo "Get Validator collection:\n";
+
+foreach($chain->getCollection() as $validator){
+    echo get_class($validator)."\n";
+}
+
 //\LDL\Validators\Chain\Loader\ValidatorChainJsonLoader::load(ValidatorChainJsonDumper::dump($chain));

@@ -14,6 +14,7 @@ use LDL\Framework\Base\Collection\Traits\LockAppendInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\RemovableInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\UnshiftInterfaceTrait;
 use LDL\Framework\Base\Traits\LockableObjectInterfaceTrait;
+use LDL\Framework\Helper\IterableHelper;
 use LDL\Validators\Chain\Item\ValidatorChainItem;
 use LDL\Validators\Chain\Item\ValidatorChainItemInterface;
 use LDL\Validators\Collection\ValidatorCollection;
@@ -148,7 +149,19 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
 
     public function getCollection() : ValidatorCollectionInterface
     {
-        return new ValidatorCollection($this->toArray());
+        $collection = new ValidatorCollection();
+
+        IterableHelper::map($this, static function ($item) use ($collection){
+            $validator = $item->getValidator();
+
+            if($validator instanceof ValidatorChainInterface){
+                return $collection->appendMany($validator->getCollection()->toArray());
+            }
+
+            return $collection->append($validator);
+        });
+
+        return $collection;
     }
 
     //<editor-fold desc="Protected methods">
