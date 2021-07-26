@@ -29,6 +29,11 @@ class AndValidatorChain extends AbstractValidatorChain implements ValidatorHasCo
         $this->_tNegated = $negated ?? false;
     }
 
+    public function getOperator(): string
+    {
+        return self::OPERATOR;
+    }
+
     public function assertTrue($value, ...$params): void
     {
         $this->reset();

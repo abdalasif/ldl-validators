@@ -7,6 +7,8 @@ use LDL\Framework\Base\Collection\Contracts\CollectionInterface;
 use LDL\Framework\Base\Collection\Traits\AppendableInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\AppendManyTrait;
 use LDL\Framework\Base\Collection\Traits\CollectionInterfaceTrait;
+use LDL\Framework\Base\Collection\Traits\FilterByClassInterfaceTrait;
+use LDL\Framework\Base\Collection\Traits\FilterByInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\LockAppendInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\LockRemoveInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\RemovableInterfaceTrait;
@@ -23,6 +25,8 @@ class ValidatorCollection implements ValidatorCollectionInterface {
     use LockAppendInterfaceTrait;
     use LockRemoveInterfaceTrait;
     use LockableObjectInterfaceTrait;
+    use FilterByInterfaceTrait;
+    use FilterByClassInterfaceTrait;
 
     public function __construct(iterable $items=null)
     {

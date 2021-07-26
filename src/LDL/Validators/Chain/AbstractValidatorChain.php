@@ -66,30 +66,35 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
      */
     private $changed;
 
-    /**
-     * @var string
-     */
-    private $operator;
-
     public function __construct(
         iterable $validators=null,
         string $description=null
     )
     {
+        /**
+         * Each item within validator chains must be an instance of ValidatorChainItemInterface
+         */
         $this->getBeforeAppend()->append(static function ($collection, $item, $key){
-            (new InterfaceComplianceValidator(ValidatorChainItemInterface::class))->validate($item);
+            (new InterfaceComplianceValidator(ValidatorChainItemInterface::class))
+                ->validate($item);
         });
 
         if(null !== $validators) {
             $this->appendMany($validators, false);
         }
 
-        $this->operator = static::OPERATOR;
         $this->succeeded = new ValidatorCollection();
         $this->failed = new ValidatorCollection();
         $this->_tDescription = $description ?? self::DESCRIPTION;
     }
 
+    /**
+     * Allow appending validators directly, decorate validators through ValidatorChainItem
+     *
+     * @param mixed $item
+     * @param null $key
+     * @return CollectionInterface
+     */
     public function append($item, $key = null): CollectionInterface
     {
         if ($item instanceof ValidatorInterface) {
@@ -140,11 +145,6 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
     public function getLastExecuted(): ?ValidatorChainItemInterface
     {
         return $this->lastExecuted;
-    }
-
-    public function getOperator(): string
-    {
-        return $this->operator;
     }
 
     public function getCollection() : ValidatorCollectionInterface
@@ -202,7 +202,9 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
 
     protected function filterResetValidators(): void
     {
-        $this->resetValidatorsCollection = $this->filterByInterfaceRecursive(ResetValidatorInterface::class);
+        $this->resetValidatorsCollection = $this->getCollection()
+            ->filterByInterfaceRecursive(ResetValidatorInterface::class);
+
         $this->changed = false;
     }
 

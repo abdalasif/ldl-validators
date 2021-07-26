@@ -30,6 +30,11 @@ class OrValidatorChain extends AbstractValidatorChain implements ValidatorHasCon
         $this->_tNegated = $negated ?? false;
     }
 
+    public function getOperator(): string
+    {
+        return self::OPERATOR;
+    }
+
     public function assertTrue($value, ...$params): void
     {
         $this->reset();
