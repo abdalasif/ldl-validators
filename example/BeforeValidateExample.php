@@ -2,43 +2,25 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
-use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
 use LDL\Validators\Chain\Item\ValidatorChainItem;
 use LDL\Validators\Chain\OrValidatorChain;
 use LDL\Validators\RegexValidator;
 use LDL\Validators\Traits\NegatedValidatorTrait;
-use LDL\Validators\ValidatorHasConfigInterface;
 use LDL\Validators\ValidatorInterface;
-use LDL\Validators\ResetValidatorInterface;
 use LDL\Validators\Traits\ValidatorValidateTrait;
 use LDL\Validators\HasValidatorResultInterface;
 use LDL\Validators\Traits\ValidatorDescriptionTrait;
+use LDL\Validators\BeforeValidateInterface;
+use LDL\Validators\Traits\ValidatorBeforeValidateTrait;
 
-class ResetValidatorExampleConfig implements ValidatorHasConfigInterface
-{
-    public static function fromConfig(array $data = []): ValidatorInterface
-    {
-        return new self();
-    }
-
-    public function getConfig(): array
-    {
-        return [];
-    }
-
-    public function jsonSerialize(): array
-    {
-        return $this->getConfig();
-    }
-}
-
-class ResetValidatorExample implements ValidatorInterface, HasValidatorResultInterface, ResetValidatorInterface
+class BeforeValidateValidatorExample implements ValidatorInterface, HasValidatorResultInterface, BeforeValidateInterface
 {
     use ValidatorValidateTrait;
     use NegatedValidatorTrait;
     use ValidatorDescriptionTrait;
+    use ValidatorBeforeValidateTrait;
 
-    private const DESCRIPTION = 'Reset validator';
+    private const DESCRIPTION = 'Before validate validator';
 
     /**
      * @var int
@@ -49,11 +31,10 @@ class ResetValidatorExample implements ValidatorInterface, HasValidatorResultInt
     {
         $this->_tNegated = $negated;
         $this->_tDescription = $description ?? self::DESCRIPTION;
-    }
 
-    public function reset()
-    {
-        $this->internalState = uniqid('', true);
+        $this->onBeforeValidate()->append(function(){
+            $this->internalState = uniqid('', true);
+        });
     }
 
     public function assertTrue($value): void
@@ -61,17 +42,11 @@ class ResetValidatorExample implements ValidatorInterface, HasValidatorResultInt
         if(!is_int($value)){
             throw new \Exception("Invalid value, must be an integer");
         }
-
-        $this->internalState = uniqid('', true);
     }
 
     public function getResult()
     {
         return $this->internalState;
-    }
-
-    public function assertFalse($value): void
-    {
     }
 
     public static function fromConfig(array $data = []): ValidatorInterface
@@ -93,15 +68,19 @@ $chain->validate('hello');
 echo "Validate: 'world'\n";
 $chain->validate('world');
 
-echo "Append ResetValidatorExample\n";
-$chain->append(new ValidatorChainItem(new ResetValidatorExample()));
+echo "Append BeforeValidateExample\n";
+$chain->getChainItems()->append(new ValidatorChainItem(new BeforeValidateValidatorExample()));
 
 echo "Validate: 123\n";
 $chain->validate(123);
+$chain->getChainItems()->lock();
 echo "OK!\n";
 
 echo "Checking internal state\n";
-$firstValue = $chain->getLast()->getValidator()->getResult();
+$firstValue = $chain->getChainItems()
+    ->getLast()
+    ->getValidator()
+    ->getResult();
 echo $firstValue."\n";
 
 echo "Validate: 456\n";
@@ -109,9 +88,13 @@ $chain->validate(456);
 echo "OK!\n";
 
 echo "Checking internal state\n";
-$secondValue = $chain->getLast()->getValidator()->getResult();
+$secondValue = $chain->getChainItems()
+    ->getLast()
+    ->getValidator()
+    ->getResult();
 echo $secondValue."\n";
 
 if($firstValue === $secondValue){
-    echo "EXCEPTION: validator was not reset\n";
+    var_dump("$firstValue === $secondValue");
+    echo "EXCEPTION: validator was not reset!!!\n";
 }

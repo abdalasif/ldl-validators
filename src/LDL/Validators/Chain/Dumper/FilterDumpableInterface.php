@@ -2,12 +2,12 @@
 
 namespace LDL\Validators\Chain\Dumper;
 
-use LDL\Validators\Chain\ValidatorChainInterface;
+use LDL\Validators\Chain\Item\Collection\ValidatorChainItemCollectionInterface;
 
 interface FilterDumpableInterface
 {
     /**
-     * @return ValidatorChainInterface
+     * @return ValidatorChainItemCollectionInterface
      */
-    public function filterDumpableItems() : ValidatorChainInterface;
+    public function filterDumpableItems() : ValidatorChainItemCollectionInterface;
 }

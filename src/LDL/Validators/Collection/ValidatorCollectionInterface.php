@@ -3,6 +3,7 @@
 namespace LDL\Validators\Collection;
 
 use LDL\Framework\Base\Collection\Contracts\AppendableInterface;
+use LDL\Framework\Base\Collection\Contracts\BeforeAppendInterface;
 use LDL\Framework\Base\Collection\Contracts\CollectionInterface;
 use LDL\Framework\Base\Collection\Contracts\FilterByClassInterface;
 use LDL\Framework\Base\Collection\Contracts\FilterByInterface;
@@ -12,7 +13,7 @@ use LDL\Framework\Base\Collection\Contracts\RemovableInterface;
 use LDL\Framework\Base\Contracts\LockableObjectInterface;
 use LDL\Validators\Chain\ValidatorChainInterface;
 
-interface ValidatorCollectionInterface extends CollectionInterface, AppendableInterface, LockAppendInterface, RemovableInterface, LockRemoveInterface, LockableObjectInterface, FilterByInterface, FilterByClassInterface
+interface ValidatorCollectionInterface extends CollectionInterface, AppendableInterface, BeforeAppendInterface,  LockAppendInterface, RemovableInterface, LockRemoveInterface, LockableObjectInterface, FilterByInterface, FilterByClassInterface
 {
     /**
      * @param string $class
@@ -20,4 +21,9 @@ interface ValidatorCollectionInterface extends CollectionInterface, AppendableIn
      * @return ValidatorChainInterface
      */
     public function getChain(string $class, ...$params) : ValidatorChainInterface;
+
+    /**
+     * @param mixed ...$params
+     */
+    public function onBeforeValidate(...$params) : void;
 }

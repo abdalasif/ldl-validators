@@ -2,28 +2,33 @@
 
 namespace LDL\Validators\Chain\Traits;
 
+use LDL\Framework\Helper\ClassRequirementHelperTrait;
+use LDL\Validators\Chain\Item\Collection\ValidatorChainItemCollectionInterface;
 use LDL\Validators\Chain\Item\ValidatorChainItemInterface;
-use LDL\Validators\Chain\ValidatorChainInterface;
 
 trait FilterDumpableInterfaceTrait
 {
+    use ClassRequirementHelperTrait;
+
     /**
-     * @return ValidatorChainInterface
+     * @return ValidatorChainItemCollectionInterface
      * @throws \Exception
      */
-    public function filterDumpableItems(): ValidatorChainInterface
+    public function filterDumpableItems(): ValidatorChainItemCollectionInterface
     {
+        $this->requireImplements([ValidatorChainItemCollectionInterface::class]);
+
         $self = $this->getEmptyInstance();
 
         /**
-         * @var ValidatorChainItemInterface $validator
+         * @var ValidatorChainItemInterface $chainItem
          */
-        foreach($this as $key => $validator){
-            if(!$validator->isDumpable()){
+        foreach($this as $key => $chainItem){
+            if(!$chainItem->isDumpable()){
                 continue;
             }
 
-            $self->append($validator, $key);
+            $self->append($chainItem, $key);
         }
 
         return $self;
