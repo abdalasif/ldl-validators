@@ -18,7 +18,10 @@ $chain = new OrValidatorChain([
 
 dump(\LDL\Validators\Chain\Dumper\ValidatorChainExprDumper::dump($chain));
 
-echo "Validate: 'a'\n";
+echo "Chain is negated?\n";
+dump($chain->isNegated());
+
+echo "Validate: 'a', must throw exception\n";
 
 try{
     $chain->validate('a');
@@ -26,11 +29,7 @@ try{
     echo "EXCEPTION: {$e->getCombinedMessage()}\n";
 }
 
-echo "Validate: '@'\n";
+echo "Validate: '@' must NOT throw exception!\n";
 
-try{
-    $chain->validate('@');
-    echo "OK!\n";
-}catch(CombinedException $e){
-    echo "EXCEPTION: {$e->getCombinedMessage()}\n";
-}
+$chain->validate('@');
+echo "OK!\n";

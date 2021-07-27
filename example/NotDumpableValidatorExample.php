@@ -32,10 +32,10 @@ dump(ValidatorChainExprDumper::dump($nChain));
 dump(ValidatorChainHumanDumper::dump($nChain));
 
 echo "Remove StringValidator\n";
-$nChain->remove(0);
+$nChain->getChainItems()->remove(0);
 
 echo "Append StringValidator negated\n";
-$nChain->append(new StringValidator(true));
+$nChain->getChainItems()->append(new StringValidator(true));
 
 dump(ValidatorChainExprDumper::dump($nChain));
 dump(ValidatorChainHumanDumper::dump($nChain));

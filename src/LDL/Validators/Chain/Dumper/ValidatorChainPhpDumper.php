@@ -10,7 +10,9 @@ class ValidatorChainPhpDumper implements ValidatorChainDumperInterface
 {
     public static function dump(ValidatorChainInterface $chain) : array
     {
-        if(count($chain) === 0){
+        $chainItems = $chain->getChainItems();
+
+        if(count($chainItems) === 0){
             return [];
         }
 
@@ -18,14 +20,14 @@ class ValidatorChainPhpDumper implements ValidatorChainDumperInterface
             'parent' => get_class($chain)
         ];
 
-        if(!$chain instanceof FilterDumpableInterface){
+        if(!$chainItems instanceof FilterDumpableInterface){
             return $data;
         }
 
         /**
          * @var ValidatorChainItemInterface $chainItem
          */
-        foreach($chain->filterDumpableItems() as $chainItem){
+        foreach($chainItems->filterDumpableItems() as $chainItem){
             $validator = $chainItem->getValidator();
             $temp = [
                 'class' => get_class($validator),

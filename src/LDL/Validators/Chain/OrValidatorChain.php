@@ -2,23 +2,18 @@
 
 namespace LDL\Validators\Chain;
 
-use LDL\Validators\Chain\Dumper\FilterDumpableInterface;
 use LDL\Validators\Chain\Dumper\ValidatorChainExprDumper;
 use LDL\Validators\Chain\Exception\CombinedException;
 use LDL\Validators\Chain\Item\ValidatorChainItemInterface;
-use LDL\Validators\Chain\Traits\FilterDumpableInterfaceTrait;
-use LDL\Validators\NegatedValidatorInterface;
 use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
-use LDL\Validators\ValidatorHasConfigInterface;
 
-class OrValidatorChain extends AbstractValidatorChain implements ValidatorHasConfigInterface, NegatedValidatorInterface, FilterDumpableInterface
+class OrValidatorChain extends AbstractValidatorChain implements BooleanValidatorChainInterface
 {
     use ValidatorValidateTrait;
-    use FilterDumpableInterfaceTrait;
     use NegatedValidatorTrait;
 
-    public const OPERATOR = ' || ';
+    private const OPERATOR = ' || ';
 
     public function __construct(
         iterable $validators=null,
@@ -37,9 +32,11 @@ class OrValidatorChain extends AbstractValidatorChain implements ValidatorHasCon
 
     public function assertTrue($value, ...$params): void
     {
-        $this->reset();
+        $chainItems = $this->getChainItems();
+        $chainItems->getValidators()->onBeforeValidate(...$params);
+        $this->onBeforeValidate()->call(...$params);
 
-        if(0 === $this->count()){
+        if(0 === $chainItems->count()){
             return;
         }
 
@@ -48,17 +45,17 @@ class OrValidatorChain extends AbstractValidatorChain implements ValidatorHasCon
         /**
          * @var ValidatorChainItemInterface $chainItem
          */
-        foreach($this as $chainItem){
+        foreach($chainItems as $chainItem){
             $this->setLastExecuted($chainItem);
 
             $validator = $chainItem->getValidator();
 
             try {
                 $validator->validate($value, ...$params);
-                $this->getSucceeded()->append($validator);
+                $this->getSucceeded()->append($chainItem);
                 break;
             }catch(\Exception $e){
-                $this->getFailed()->append($validator);
+                $this->getFailed()->append($chainItem);
                 $combinedException->append($e);
             }
         }
@@ -70,9 +67,11 @@ class OrValidatorChain extends AbstractValidatorChain implements ValidatorHasCon
 
     public function assertFalse($value, ...$params): void
     {
-        $this->reset();
+        $chainItems = $this->getChainItems();
+        $chainItems->getValidators()->onBeforeValidate(...$params);
+        $this->onBeforeValidate()->call(...$params);
 
-        if(0 === $this->count()){
+        if(0 === $chainItems->count()){
             return;
         }
 
@@ -81,17 +80,17 @@ class OrValidatorChain extends AbstractValidatorChain implements ValidatorHasCon
         /**
          * @var ValidatorChainItemInterface $chainItem
          */
-        foreach($this as $chainItem){
+        foreach($chainItems as $chainItem){
             $this->setLastExecuted($chainItem);
 
             $validator = $chainItem->getValidator();
 
             try {
                 $validator->validate($value, ...$params);
-                $this->getSucceeded()->append($validator);
+                $this->getSucceeded()->append($chainItem);
                 break;
             }catch(\Exception $e){
-                $this->getFailed()->append($validator);
+                $this->getFailed()->append($chainItem);
                 $combinedException->append($e);
             }
         }

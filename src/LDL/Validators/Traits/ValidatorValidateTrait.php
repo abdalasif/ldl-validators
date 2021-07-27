@@ -14,8 +14,8 @@ trait ValidatorValidateTrait
     {
         $this->requireImplements([ValidatorInterface::class]);
 
-        if($this instanceof NegatedValidatorInterface){
-            $this->isNegated() ? $this->assertFalse($value, ...$params) : $this->assertTrue($value, ...$params);
+        if($this instanceof NegatedValidatorInterface && $this->isNegated()){
+            $this->assertFalse($value, ...$params);
             return;
         }
 

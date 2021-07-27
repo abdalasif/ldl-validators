@@ -2,21 +2,12 @@
 
 namespace LDL\Validators\Chain;
 
-use LDL\Framework\Base\Collection\Contracts\AppendableInterface;
-use LDL\Framework\Base\Collection\Contracts\BeforeAppendInterface;
-use LDL\Framework\Base\Collection\Contracts\BeforeRemoveInterface;
-use LDL\Framework\Base\Collection\Contracts\CollectionInterface;
-use LDL\Framework\Base\Collection\Contracts\FilterByClassInterface;
-use LDL\Framework\Base\Collection\Contracts\FilterByInterface;
-use LDL\Framework\Base\Collection\Contracts\LockAppendInterface;
-use LDL\Framework\Base\Collection\Contracts\RemovableInterface;
-use LDL\Framework\Base\Collection\Contracts\UnshiftInterface;
-use LDL\Framework\Base\Contracts\LockableObjectInterface;
+use LDL\Validators\BeforeValidateInterface;
+use LDL\Validators\Chain\Item\Collection\ValidatorChainItemCollectionInterface;
 use LDL\Validators\Chain\Item\ValidatorChainItemInterface;
-use LDL\Validators\Collection\ValidatorCollectionInterface;
 use LDL\Validators\ValidatorInterface;
 
-interface ValidatorChainInterface extends ValidatorInterface, CollectionInterface, LockableObjectInterface, BeforeAppendInterface, AppendableInterface, LockAppendInterface, BeforeRemoveInterface, RemovableInterface, FilterByInterface, FilterByClassInterface, UnshiftInterface
+interface ValidatorChainInterface extends ValidatorInterface, BeforeValidateInterface
 {
     /**
      * Validator chain Factory method.
@@ -32,14 +23,14 @@ interface ValidatorChainInterface extends ValidatorInterface, CollectionInterfac
     public static function factory(iterable $validators=null, ...$params) : ValidatorChainInterface;
 
     /**
-     * @return ValidatorCollectionInterface
+     * @return ValidatorChainItemCollectionInterface
      */
-    public function getSucceeded() : ValidatorCollectionInterface;
+    public function getSucceeded() : ValidatorChainItemCollectionInterface;
 
     /**
-     * @return ValidatorCollectionInterface
+     * @return ValidatorChainItemCollectionInterface
      */
-    public function getFailed() : ValidatorCollectionInterface;
+    public function getFailed() : ValidatorChainItemCollectionInterface;
 
     /**
      * @return ValidatorChainItemInterface|null
@@ -47,8 +38,8 @@ interface ValidatorChainInterface extends ValidatorInterface, CollectionInterfac
     public function getLastExecuted(): ?ValidatorChainItemInterface;
 
     /**
-     * @return ValidatorCollectionInterface
+     * @return ValidatorChainItemCollectionInterface
      */
-    public function getCollection() : ValidatorCollectionInterface;
+    public function getChainItems(): ValidatorChainItemCollectionInterface;
 
 }
