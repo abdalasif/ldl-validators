@@ -65,7 +65,7 @@ echo ValidatorChainJsonDumper::dump($chain)."\n\n";
 
 echo "Get Validator collection:\n";
 
-foreach($chain->getCollection() as $validator){
+foreach($chain->getChainItems()->getValidators() as $validator){
     echo get_class($validator)."\n";
 }
 

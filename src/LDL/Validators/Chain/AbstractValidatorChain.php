@@ -2,52 +2,32 @@
 
 namespace LDL\Validators\Chain;
 
-use LDL\Framework\Base\Collection\Contracts\CollectionInterface;
-use LDL\Framework\Base\Collection\Traits\AppendableInterfaceTrait;
-use LDL\Framework\Base\Collection\Traits\AppendManyTrait;
-use LDL\Framework\Base\Collection\Traits\BeforeAppendInterfaceTrait;
-use LDL\Framework\Base\Collection\Traits\BeforeRemoveInterfaceTrait;
-use LDL\Framework\Base\Collection\Traits\CollectionInterfaceTrait;
-use LDL\Framework\Base\Collection\Traits\FilterByClassInterfaceTrait;
-use LDL\Framework\Base\Collection\Traits\FilterByInterfaceTrait;
-use LDL\Framework\Base\Collection\Traits\LockAppendInterfaceTrait;
-use LDL\Framework\Base\Collection\Traits\RemovableInterfaceTrait;
-use LDL\Framework\Base\Collection\Traits\UnshiftInterfaceTrait;
-use LDL\Framework\Base\Traits\LockableObjectInterfaceTrait;
-use LDL\Framework\Helper\IterableHelper;
-use LDL\Validators\Chain\Item\ValidatorChainItem;
+use LDL\Framework\Base\Collection\CallableCollection;
+use LDL\Validators\Chain\Item\Collection\ValidatorChainItemCollection;
+use LDL\Validators\Chain\Item\Collection\ValidatorChainItemCollectionInterface;
 use LDL\Validators\Chain\Item\ValidatorChainItemInterface;
-use LDL\Validators\Collection\ValidatorCollection;
-use LDL\Validators\Collection\ValidatorCollectionInterface;
-use LDL\Validators\InterfaceComplianceValidator;
-use LDL\Validators\ResetValidatorInterface;
+use LDL\Validators\Traits\ValidatorBeforeValidateTrait;
 use LDL\Validators\Traits\ValidatorDescriptionTrait;
-use LDL\Validators\ValidatorInterface;
 
 abstract class AbstractValidatorChain implements ValidatorChainInterface
 {
-    use CollectionInterfaceTrait;
-    use LockableObjectInterfaceTrait;
-    use BeforeAppendInterfaceTrait;
-    use AppendableInterfaceTrait {append as _append;}
-    use AppendManyTrait;
-    use LockAppendInterfaceTrait;
-    use BeforeRemoveInterfaceTrait;
-    use RemovableInterfaceTrait {remove as _remove;}
-    use FilterByInterfaceTrait;
-    use FilterByClassInterfaceTrait;
-    use UnshiftInterfaceTrait {unshift as _unshift;}
     use ValidatorDescriptionTrait;
+    use ValidatorBeforeValidateTrait;
 
     private const DESCRIPTION = 'Abstract Validator chain';
 
     /**
-     * @var ValidatorCollectionInterface
+     * @var ValidatorChainItemCollectionInterface
+     */
+    private $chainItems;
+
+    /**
+     * @var ValidatorChainItemCollectionInterface
      */
     private $succeeded;
 
     /**
-     * @var ValidatorCollectionInterface
+     * @var ValidatorChainItemCollectionInterface
      */
     private $failed;
 
@@ -55,11 +35,6 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
      * @var ValidatorChainItemInterface
      */
     private $lastExecuted;
-
-    /**
-     * @var ValidatorCollectionInterface
-     */
-    private $resetValidatorsCollection;
 
     /**
      * @var bool
@@ -71,60 +46,33 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
         string $description=null
     )
     {
-        /**
-         * Each item within validator chains must be an instance of ValidatorChainItemInterface
-         */
-        $this->getBeforeAppend()->append(static function ($collection, $item, $key){
-            (new InterfaceComplianceValidator(ValidatorChainItemInterface::class))
-                ->validate($item);
-        });
-
-        if(null !== $validators) {
-            $this->appendMany($validators, false);
-        }
-
-        $this->succeeded = new ValidatorCollection();
-        $this->failed = new ValidatorCollection();
+        $this->succeeded = new ValidatorChainItemCollection();
+        $this->failed = new ValidatorChainItemCollection();
         $this->_tDescription = $description ?? self::DESCRIPTION;
-    }
 
-    /**
-     * Allow appending validators directly, decorate validators through ValidatorChainItem
-     *
-     * @param mixed $item
-     * @param null $key
-     * @return CollectionInterface
-     */
-    public function append($item, $key = null): CollectionInterface
-    {
-        if ($item instanceof ValidatorInterface) {
-            $item = new ValidatorChainItem($item, true);
-        }
+        $this->chainItems = new ValidatorChainItemCollection(
+            $validators,
+            new CallableCollection([
+                function(){
+                    $this->changed = true;
+                }
+            ]),
+            new CallableCollection([
+                function(){
+                    $this->changed = true;
+                }
+            ])
+        );
 
-        $this->_append($item, $key);
-        $this->changed = true;
+        $this->onBeforeValidate()->append(function(){
+            $this->lastExecuted = null;
+            $this->failed = new ValidatorChainItemCollection();
+            $this->succeeded = new ValidatorChainItemCollection();
 
-        return $this;
-    }
-
-    public function unshift($item, $key = null): CollectionInterface
-    {
-        if ($item instanceof ValidatorInterface) {
-            $item = new ValidatorChainItem($item, true);
-        }
-
-        $this->_unshift($item, $key);
-        $this->changed = true;
-
-        return $this;
-    }
-
-    public function remove($key): CollectionInterface
-    {
-        $this->_remove($key);
-        $this->changed = true;
-
-        return $this;
+            if($this->isChanged()){
+                $this->changed = false;
+            }
+        });
     }
 
     public static function factory(iterable $validators=null, ...$params) : ValidatorChainInterface
@@ -132,12 +80,12 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
         return new static($validators, ...$params);
     }
 
-    public function getSucceeded() : ValidatorCollectionInterface
+    public function getSucceeded() : ValidatorChainItemCollectionInterface
     {
         return $this->succeeded;
     }
 
-    public function getFailed() : ValidatorCollectionInterface
+    public function getFailed() : ValidatorChainItemCollectionInterface
     {
         return $this->failed;
     }
@@ -147,21 +95,9 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
         return $this->lastExecuted;
     }
 
-    public function getCollection() : ValidatorCollectionInterface
+    public function getChainItems(): ValidatorChainItemCollectionInterface
     {
-        $collection = new ValidatorCollection();
-
-        IterableHelper::map($this, static function ($item) use ($collection){
-            $validator = $item->getValidator();
-
-            if($validator instanceof ValidatorChainInterface){
-                return $collection->appendMany($validator->getCollection()->toArray());
-            }
-
-            return $collection->append($validator);
-        });
-
-        return $collection;
+        return $this->chainItems;
     }
 
     //<editor-fold desc="Protected methods">
@@ -174,49 +110,6 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
     protected function isChanged(): bool
     {
         return (bool) $this->changed;
-    }
-
-    protected function setChanged(bool $changed): ValidatorChainInterface
-    {
-        $this->changed = $changed;
-        return $this;
-    }
-
-    protected function resetTracking(): void
-    {
-        $this->lastExecuted = null;
-        $this->failed = new ValidatorCollection();
-        $this->succeeded = new ValidatorCollection();
-    }
-
-    protected function resetValidators(): void
-    {
-        if(!$this->resetValidatorsCollection){
-            return;
-        }
-
-        foreach($this->resetValidatorsCollection as $validator){
-            $validator->reset();
-        }
-    }
-
-    protected function filterResetValidators(): void
-    {
-        $this->resetValidatorsCollection = $this->getCollection()
-            ->filterByInterfaceRecursive(ResetValidatorInterface::class);
-
-        $this->changed = false;
-    }
-
-    protected function reset(): void
-    {
-        $this->resetTracking();
-
-        if($this->isChanged()){
-            $this->filterResetValidators();
-        }
-
-        $this->resetValidators();
     }
     //</editor-fold>
 }
