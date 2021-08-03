@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- feature/1200713875634271 - Improve performance on validator collection
 - feature/1200707119795755 - Add ValidatorChainItemCollection
 - feature/1200662492262010 - Add filters traits to ValidatorCollection
 - feature/1200590689592046 - Apply decorator pattern for each validator added into a validator chain through the ValidatorChainItem class
