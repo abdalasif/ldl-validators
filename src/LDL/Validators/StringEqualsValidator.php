@@ -12,7 +12,7 @@ class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInter
     use NegatedValidatorTrait;
     use ValidatorDescriptionTrait;
 
-    private const DESCRIPTION = 'Validate equals strings';
+    private const DESCRIPTION = 'Validates equality between strings';
 
     /**
      * @var string
