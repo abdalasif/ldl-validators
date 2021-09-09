@@ -14,7 +14,7 @@ use LDL\Framework\Base\Collection\Traits\CollectionInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\LockAppendInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\LockRemoveInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\LockReplaceInterfaceTrait;
-use LDL\Framework\Base\Collection\Traits\RemovableInterfaceTrait;
+use LDL\Framework\Base\Collection\Traits\RemoveByKeyInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\ReplaceByKeyInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\ReplaceEqualValueInterfaceTrait;
 use LDL\Framework\Base\Traits\LockableObjectInterfaceTrait;
@@ -43,7 +43,7 @@ class ValidatorChainItemCollection implements ValidatorChainItemCollectionInterf
     use LockReplaceInterfaceTrait;
     use LockAppendInterfaceTrait;
     use LockRemoveInterfaceTrait;
-    use RemovableInterfaceTrait;
+    use RemoveByKeyInterfaceTrait;
     use BeforeRemoveInterfaceTrait;
     use FilterDumpableInterfaceTrait;
 

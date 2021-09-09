@@ -14,7 +14,7 @@ use LDL\Framework\Base\Collection\Traits\FilterByClassInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\FilterByInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\LockAppendInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\LockRemoveInterfaceTrait;
-use LDL\Framework\Base\Collection\Traits\RemovableInterfaceTrait;
+use LDL\Framework\Base\Collection\Traits\RemoveByKeyInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\ReplaceByKeyInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\ReplaceEqualValueInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\AppendInPositionInterfaceTrait;
@@ -32,7 +32,7 @@ class ValidatorCollection implements ValidatorCollectionInterface {
     use BeforeReplaceInterfaceTrait;
     use BeforeRemoveInterfaceTrait;
     use AppendManyTrait;
-    use RemovableInterfaceTrait;
+    use RemoveByKeyInterfaceTrait;
     use LockAppendInterfaceTrait;
     use LockRemoveInterfaceTrait;
     use LockableObjectInterfaceTrait;

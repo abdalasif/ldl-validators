@@ -35,8 +35,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - fix/1200492312944670 - Fix AbstractValidatorChain
 - fix/1200410494797360 - Fix getCollection and add UnshiftInterfaceTrait on AbstractValidatorChain
 - fix/1200323198982798 - Fix assertFalse on AndValidatorChain
-- fix/1200266740213973 - Remove old validators, remove truncate from AbstractValidatorChain and his interface, Fix examples, Add strict to ClassComplianceValidatorConfig
+- fix/1200266740213973 - Remove old validators, remove truncate from AbstractValidatorChain + interface, Fix examples, Add strict to ClassComplianceValidatorConfig
 - fix/1200240987751218 - Fix NumericComparisonValidator, use ComparisonHelper constants from base
 - fix/1200159985965825 - Simplify configurations into BasicValidatorConfig
 - fix/1200946118981404 - Small enhancements to comply with changes done in base
+- fix/1200949376247320 - Incorporate separation of Remove interfaces from base lib 
 

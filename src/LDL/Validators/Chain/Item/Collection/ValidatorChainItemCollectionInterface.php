@@ -12,14 +12,13 @@ use LDL\Framework\Base\Collection\Contracts\CollectionInterface;
 use LDL\Framework\Base\Collection\Contracts\LockAppendInterface;
 use LDL\Framework\Base\Collection\Contracts\LockRemoveInterface;
 use LDL\Framework\Base\Collection\Contracts\LockReplaceInterface;
-use LDL\Framework\Base\Collection\Contracts\ReplaceEqualValueInterface;
 use LDL\Framework\Base\Collection\Contracts\ReplaceByKeyInterface;
-use LDL\Framework\Base\Collection\Contracts\RemovableInterface;
+use LDL\Framework\Base\Collection\Contracts\RemoveByKeyInterface;
 use LDL\Framework\Base\Contracts\LockableObjectInterface;
 use LDL\Validators\Chain\Dumper\FilterDumpableInterface;
 use LDL\Validators\Collection\ValidatorCollectionInterface;
 
-interface ValidatorChainItemCollectionInterface extends CollectionInterface, LockableObjectInterface, AppendableInterface, AppendInPositionInterface, BeforeAppendInterface, BeforeResolveKeyInterface, BeforeRemoveInterface, LockAppendInterface, LockReplaceInterface, LockRemoveInterface, RemovableInterface, FilterDumpableInterface, ReplaceByKeyInterface, ReplaceEqualValueInterface, BeforeReplaceInterface
+interface ValidatorChainItemCollectionInterface extends CollectionInterface, LockableObjectInterface, AppendableInterface, AppendInPositionInterface, BeforeAppendInterface, BeforeResolveKeyInterface, BeforeRemoveInterface, LockAppendInterface, LockReplaceInterface, LockRemoveInterface, RemoveByKeyInterface, FilterDumpableInterface, ReplaceByKeyInterface, BeforeReplaceInterface
 {
 
     /**
