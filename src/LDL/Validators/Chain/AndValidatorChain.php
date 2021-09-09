@@ -13,6 +13,7 @@ class AndValidatorChain extends AbstractValidatorChain implements BooleanValidat
     use NegatedValidatorTrait;
 
     private const OPERATOR = ' && ';
+    private const DESCRIPTION = 'AND validator chain';
 
     public function __construct(
         iterable $validators=null,
@@ -20,7 +21,7 @@ class AndValidatorChain extends AbstractValidatorChain implements BooleanValidat
         bool $negated = null
     )
     {
-        parent::__construct($validators, $description);
+        parent::__construct($description ?? self::DESCRIPTION, $validators);
         $this->_tNegated = $negated ?? false;
     }
 

@@ -54,12 +54,12 @@ try{
 echo "\nDump chain as boolean expression:\n";
 echo ValidatorChainExprDumper::dump($chain);
 
-echo "\nDump chain as PHP:\n";
+echo "\nDump chain as PHP (sleep for 3 seconds):\n";
 sleep(3);
 dump(ValidatorChainPhpDumper::dump($chain));
 
 
-echo "\nDump chain as JSON:\n";
+echo "\nDump chain as JSON (sleep for 3 seconds):\n";
 sleep(3);
 echo ValidatorChainJsonDumper::dump($chain)."\n\n";
 

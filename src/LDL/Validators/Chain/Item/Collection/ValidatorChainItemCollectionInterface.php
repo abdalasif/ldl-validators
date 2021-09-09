@@ -3,19 +3,23 @@
 namespace LDL\Validators\Chain\Item\Collection;
 
 use LDL\Framework\Base\Collection\Contracts\AppendableInterface;
+use LDL\Framework\Base\Collection\Contracts\AppendInPositionInterface;
 use LDL\Framework\Base\Collection\Contracts\BeforeAppendInterface;
 use LDL\Framework\Base\Collection\Contracts\BeforeRemoveInterface;
+use LDL\Framework\Base\Collection\Contracts\BeforeReplaceInterface;
+use LDL\Framework\Base\Collection\Contracts\BeforeResolveKeyInterface;
 use LDL\Framework\Base\Collection\Contracts\CollectionInterface;
 use LDL\Framework\Base\Collection\Contracts\LockAppendInterface;
 use LDL\Framework\Base\Collection\Contracts\LockRemoveInterface;
 use LDL\Framework\Base\Collection\Contracts\LockReplaceInterface;
+use LDL\Framework\Base\Collection\Contracts\ReplaceEqualValueInterface;
+use LDL\Framework\Base\Collection\Contracts\ReplaceByKeyInterface;
 use LDL\Framework\Base\Collection\Contracts\RemovableInterface;
-use LDL\Framework\Base\Collection\Contracts\UnshiftInterface;
 use LDL\Framework\Base\Contracts\LockableObjectInterface;
 use LDL\Validators\Chain\Dumper\FilterDumpableInterface;
 use LDL\Validators\Collection\ValidatorCollectionInterface;
 
-interface ValidatorChainItemCollectionInterface extends CollectionInterface, LockableObjectInterface, AppendableInterface, BeforeAppendInterface, BeforeRemoveInterface, LockAppendInterface, LockReplaceInterface, LockRemoveInterface, UnshiftInterface, RemovableInterface, FilterDumpableInterface
+interface ValidatorChainItemCollectionInterface extends CollectionInterface, LockableObjectInterface, AppendableInterface, AppendInPositionInterface, BeforeAppendInterface, BeforeResolveKeyInterface, BeforeRemoveInterface, LockAppendInterface, LockReplaceInterface, LockRemoveInterface, RemovableInterface, FilterDumpableInterface, ReplaceByKeyInterface, ReplaceEqualValueInterface, BeforeReplaceInterface
 {
 
     /**

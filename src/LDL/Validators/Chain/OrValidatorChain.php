@@ -14,6 +14,7 @@ class OrValidatorChain extends AbstractValidatorChain implements BooleanValidato
     use NegatedValidatorTrait;
 
     private const OPERATOR = ' || ';
+    private const DESCRIPTION = 'OR validator chain';
 
     public function __construct(
         iterable $validators=null,
@@ -21,7 +22,7 @@ class OrValidatorChain extends AbstractValidatorChain implements BooleanValidato
         bool $negated = null
     )
     {
-        parent::__construct($validators, $description);
+        parent::__construct($description ?? self::DESCRIPTION, $validators);
         $this->_tNegated = $negated ?? false;
     }
 

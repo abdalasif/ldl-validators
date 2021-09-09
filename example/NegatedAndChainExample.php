@@ -73,7 +73,7 @@ $nChain->validate(0);
 echo "OK!\n";
 
 echo "Remove StringValidator\n";
-$nChain->getChainItems()->remove(0);
+$nChain->getChainItems()->removeByKey(0);
 
 echo "One item (RegexValidator) Must still remain in collection";
 
