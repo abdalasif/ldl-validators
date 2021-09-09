@@ -14,8 +14,6 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
     use ValidatorDescriptionTrait;
     use ValidatorBeforeValidateTrait;
 
-    private const DESCRIPTION = 'Abstract Validator chain';
-
     /**
      * @var ValidatorChainItemCollectionInterface
      */
@@ -42,16 +40,21 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
     private $changed;
 
     public function __construct(
-        iterable $validators=null,
-        string $description=null
+        string $description,
+        iterable $validators=null
     )
     {
         $this->succeeded = new ValidatorChainItemCollection();
         $this->failed = new ValidatorChainItemCollection();
-        $this->_tDescription = $description ?? self::DESCRIPTION;
+        $this->_tDescription = $description;
 
         $this->chainItems = new ValidatorChainItemCollection(
             $validators,
+            new CallableCollection([
+                function(){
+                    $this->changed = true;
+                }
+            ]),
             new CallableCollection([
                 function(){
                     $this->changed = true;
@@ -68,10 +71,7 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
             $this->lastExecuted = null;
             $this->failed = new ValidatorChainItemCollection();
             $this->succeeded = new ValidatorChainItemCollection();
-
-            if($this->isChanged()){
-                $this->changed = false;
-            }
+            $this->changed = false;
         });
     }
 

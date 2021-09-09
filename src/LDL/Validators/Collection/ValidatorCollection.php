@@ -6,14 +6,18 @@ use LDL\Framework\Base\Collection\Contracts\CollectionInterface;
 use LDL\Framework\Base\Collection\Traits\AppendableInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\AppendManyTrait;
 use LDL\Framework\Base\Collection\Traits\BeforeAppendInterfaceTrait;
+use LDL\Framework\Base\Collection\Traits\BeforeRemoveInterfaceTrait;
+use LDL\Framework\Base\Collection\Traits\BeforeReplaceInterfaceTrait;
+use LDL\Framework\Base\Collection\Traits\BeforeResolveKeyInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\CollectionInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\FilterByClassInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\FilterByInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\LockAppendInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\LockRemoveInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\RemovableInterfaceTrait;
-use LDL\Framework\Base\Collection\Traits\ReplaceableInterfaceTrait;
-use LDL\Framework\Base\Collection\Traits\UnshiftInterfaceTrait;
+use LDL\Framework\Base\Collection\Traits\ReplaceByKeyInterfaceTrait;
+use LDL\Framework\Base\Collection\Traits\ReplaceEqualValueInterfaceTrait;
+use LDL\Framework\Base\Collection\Traits\AppendInPositionInterfaceTrait;
 use LDL\Framework\Base\Traits\LockableObjectInterfaceTrait;
 use LDL\Validators\BeforeValidateInterface;
 use LDL\Validators\Chain\ValidatorChainInterface;
@@ -23,17 +27,20 @@ use LDL\Validators\ValidatorInterface;
 class ValidatorCollection implements ValidatorCollectionInterface {
 
     use CollectionInterfaceTrait;
-    use AppendableInterfaceTrait {append as private _append;}
-    use BeforeAppendInterfaceTrait;
+    use AppendableInterfaceTrait;
+    use BeforeResolveKeyInterfaceTrait;
+    use BeforeReplaceInterfaceTrait;
+    use BeforeRemoveInterfaceTrait;
     use AppendManyTrait;
-    use RemovableInterfaceTrait {remove as private _remove;}
+    use RemovableInterfaceTrait;
     use LockAppendInterfaceTrait;
     use LockRemoveInterfaceTrait;
     use LockableObjectInterfaceTrait;
     use FilterByInterfaceTrait;
     use FilterByClassInterfaceTrait;
-    use ReplaceableInterfaceTrait {replace as private _replace;}
-    use UnshiftInterfaceTrait {unshift as private _unshift;}
+    use ReplaceByKeyInterfaceTrait;
+    use AppendInPositionInterfaceTrait;
+    use ReplaceEqualValueInterfaceTrait;
 
     /**
      * @var CollectionInterface
@@ -49,11 +56,24 @@ class ValidatorCollection implements ValidatorCollectionInterface {
     {
         /**
          * Each item within validator chains must be an instance of ValidatorInterface
+         * NOTE: Before resolve key is used instead of before append due to performance
+         * ("before resolve key" happens before "before append" and thus has less overhead)
          */
-        $this->getBeforeAppend()->append(static function ($collection, $item, $key) {
+        $this->getBeforeResolveKey()->append(static function ($collection, $item, $key) {
             (new InterfaceComplianceValidator(ValidatorInterface::class))
                 ->validate($item);
-        });
+        })
+        ->append(function ($collection, $item, $key){
+            $this->changed = true;
+        })->lock();
+
+        $this->getBeforeReplace()->append(function($collection, $item, $key){
+            $this->changed = true;
+        })->lock();
+
+        $this->getBeforeRemove()->append(function($collection, $item, $key){
+            $this->changed = true;
+        })->lock();
 
         if(null !== $items){
             $this->appendMany($items);
@@ -75,38 +95,6 @@ class ValidatorCollection implements ValidatorCollectionInterface {
         }
 
         return $class::factory(\iterator_to_array($this), ...$params);
-    }
-
-    public function append($item, $key = null): CollectionInterface
-    {
-        $this->_append($item, $key);
-        $this->changed = true;
-
-        return $this;
-    }
-
-    public function remove($key): CollectionInterface
-    {
-        $this->_remove($key);
-        $this->changed = true;
-
-        return $this;
-    }
-
-    public function replace($item, $key): CollectionInterface
-    {
-        $this->_replace($item, $key);
-        $this->changed = true;
-
-        return $this;
-    }
-
-    public function unshift($item, $key = null): CollectionInterface
-    {
-        $this->_unshift($item, $key);
-        $this->changed = true;
-
-        return $this;
     }
 
     public function onBeforeValidate(...$params): void
