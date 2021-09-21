@@ -40,4 +40,4 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - fix/1200159985965825 - Simplify configurations into BasicValidatorConfig
 - fix/1200946118981404 - Small enhancements to comply with changes done in base
 - fix/1200949376247320 - Incorporate separation of Remove interfaces from base lib 
-
+- fix/1201030058026870 - Change ReplaceEqualValueInterfaceTrait to ReplaceByValueInterfaceTrait

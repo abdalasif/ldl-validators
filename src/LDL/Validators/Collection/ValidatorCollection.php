@@ -5,7 +5,6 @@ namespace LDL\Validators\Collection;
 use LDL\Framework\Base\Collection\Contracts\CollectionInterface;
 use LDL\Framework\Base\Collection\Traits\AppendableInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\AppendManyTrait;
-use LDL\Framework\Base\Collection\Traits\BeforeAppendInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\BeforeRemoveInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\BeforeReplaceInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\BeforeResolveKeyInterfaceTrait;
@@ -16,8 +15,8 @@ use LDL\Framework\Base\Collection\Traits\LockAppendInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\LockRemoveInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\RemoveByKeyInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\ReplaceByKeyInterfaceTrait;
-use LDL\Framework\Base\Collection\Traits\ReplaceEqualValueInterfaceTrait;
 use LDL\Framework\Base\Collection\Traits\AppendInPositionInterfaceTrait;
+use LDL\Framework\Base\Collection\Traits\ReplaceByValueInterfaceTrait;
 use LDL\Framework\Base\Traits\LockableObjectInterfaceTrait;
 use LDL\Validators\BeforeValidateInterface;
 use LDL\Validators\Chain\ValidatorChainInterface;
@@ -40,7 +39,7 @@ class ValidatorCollection implements ValidatorCollectionInterface {
     use FilterByClassInterfaceTrait;
     use ReplaceByKeyInterfaceTrait;
     use AppendInPositionInterfaceTrait;
-    use ReplaceEqualValueInterfaceTrait;
+    use ReplaceByValueInterfaceTrait;
 
     /**
      * @var CollectionInterface

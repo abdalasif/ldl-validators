@@ -3,7 +3,6 @@
 namespace LDL\Validators\Collection;
 
 use LDL\Framework\Base\Collection\Contracts\AppendableInterface;
-use LDL\Framework\Base\Collection\Contracts\BeforeAppendInterface;
 use LDL\Framework\Base\Collection\Contracts\BeforeRemoveInterface;
 use LDL\Framework\Base\Collection\Contracts\BeforeReplaceInterface;
 use LDL\Framework\Base\Collection\Contracts\BeforeResolveKeyInterface;
@@ -15,10 +14,11 @@ use LDL\Framework\Base\Collection\Contracts\LockRemoveInterface;
 use LDL\Framework\Base\Collection\Contracts\RemoveByKeyInterface;
 use LDL\Framework\Base\Collection\Contracts\ReplaceByKeyInterface;
 use LDL\Framework\Base\Collection\Contracts\AppendInPositionInterface;
+use LDL\Framework\Base\Collection\Contracts\ReplaceByValueInterface;
 use LDL\Framework\Base\Contracts\LockableObjectInterface;
 use LDL\Validators\Chain\ValidatorChainInterface;
 
-interface ValidatorCollectionInterface extends CollectionInterface, AppendableInterface, BeforeReplaceInterface, BeforeResolveKeyInterface, LockAppendInterface, BeforeRemoveInterface, RemoveByKeyInterface, LockRemoveInterface, LockableObjectInterface, FilterByInterface, FilterByClassInterface, ReplaceByKeyInterface, AppendInPositionInterface
+interface ValidatorCollectionInterface extends CollectionInterface, AppendableInterface, BeforeReplaceInterface, BeforeResolveKeyInterface, LockAppendInterface, BeforeRemoveInterface, RemoveByKeyInterface, LockRemoveInterface, LockableObjectInterface, FilterByInterface, FilterByClassInterface, ReplaceByKeyInterface, ReplaceByValueInterface, AppendInPositionInterface
 {
     /**
      * @param string $class
