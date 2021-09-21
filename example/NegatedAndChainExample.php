@@ -7,6 +7,7 @@ use LDL\Validators\Chain\AndValidatorChain;
 use LDL\Validators\StringValidator;
 use LDL\Validators\Chain\Item\ValidatorChainItem;
 use LDL\Validators\Chain\Dumper\ValidatorChainExprDumper;
+use LDL\Framework\Helper\ComparisonOperatorHelper;
 
 echo "Create AndValidatorChain\n";
 echo "Append StringValidator && RegexValidator(#[a-z]+#)\n";
@@ -72,10 +73,18 @@ echo "Validate integer number: 0\n";
 $nChain->validate(0);
 echo "OK!\n";
 
+foreach($nChain->getChainItems() as $key => $chainItem){
+    echo "\nKey: ". $key. " Class: ". get_class($chainItem->getValidator())."\n";
+}
+
 echo "Remove StringValidator\n";
 $nChain->getChainItems()->removeByKey(0);
 
 echo "One item (RegexValidator) Must still remain in collection";
+
+foreach($nChain->getChainItems() as $key => $chainItem){
+    echo "\nKey: ". $key. " Class: ". get_class($chainItem->getValidator())."\n";
+}
 
 if(count($nChain->getChainItems()) !== 1){
     throw new \Exception('Remaining items is not equal to 1!');
