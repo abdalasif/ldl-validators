@@ -26,6 +26,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - feature/1200099491334034 - Create initial validators, validator chain and examples
 - feature/1200203297621230 - Add HasValidatorResultInterface
 - feature/1200836379007029 - Add StringLengthValidator / StringContainsValidator
+- feature/1201055143148093 - Add example outputs. Delete run.php
  
 ### Changed
 

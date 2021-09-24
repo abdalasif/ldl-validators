@@ -1,0 +1,9 @@
+Create ValidatorChainItemCollection
+Append StringValidator (NOT dumpable) && RegexValidator(#[a-z]+#)
+Verify validators
+LDL\Validators\StringValidator
+Validator is dumpable?
+false
+LDL\Validators\RegexValidator
+Validator is dumpable?
+true

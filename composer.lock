@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/pthreat/ldl-framework-base.git",
-                "reference": "4c98c6e6517bcabdfbba146936cc5f0679930a08"
+                "reference": "c53e74e6107eec2807e78cf1a54bf8154ba0152c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pthreat/ldl-framework-base/zipball/4c98c6e6517bcabdfbba146936cc5f0679930a08",
-                "reference": "4c98c6e6517bcabdfbba146936cc5f0679930a08",
+                "url": "https://api.github.com/repos/pthreat/ldl-framework-base/zipball/c53e74e6107eec2807e78cf1a54bf8154ba0152c",
+                "reference": "c53e74e6107eec2807e78cf1a54bf8154ba0152c",
                 "shasum": ""
             },
             "require": {
@@ -46,7 +46,7 @@
                 "issues": "https://github.com/pthreat/ldl-framework-base/issues",
                 "source": "https://github.com/pthreat/ldl-framework-base/tree/master"
             },
-            "time": "2021-09-21T13:44:18+00:00"
+            "time": "2021-09-24T14:44:57+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -313,5 +313,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.1.0"
 }

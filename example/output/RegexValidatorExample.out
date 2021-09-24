@@ -1,0 +1,6 @@
+Create regex validator from config
+Set config regex: '#[0-9]+#'
+Validate: 'string', exception must be thrown
+EXCEPTION: Given value: "string" does not matches regex: "#[0-9]+#"
+Validate: 123
+OK!

@@ -1,0 +1,40 @@
+Create AndValidatorChain
+Append StringValidator && RegexValidator(#[a-z]+#)
+"(LDL\Validators\StringValidator && LDL\Validators\RegexValidator)"
+Validate: 'a'
+OK!
+Validate: '@' (exception must be thrown)
+EXCEPTION: Given value: "@" does not matches regex: "#[a-z]+#"
+Validate: 0 (exception must be thrown)
+EXCEPTION: Value expected for "LDL\Validators\StringValidator", must be of type string, "integer" was given
+
+Create NEGATED AndValidatorChain
+Append StringValidator && RegexValidator(#[a-z]+#)
+0: LDL\Validators\StringValidator
+1: LDL\Validators\RegexValidator
+Validate: 'a' (exception must be thrown)
+EXCEPTION: Failed to assert that value "'a'" complies to: !(LDL\Validators\StringValidator && LDL\Validators\RegexValidator)
+Validate: '@'
+OK!
+Validate integer number: 0
+OK!
+
+Key: 0 Class: LDL\Validators\StringValidator
+
+Key: 1 Class: LDL\Validators\RegexValidator
+Remove StringValidator
+One item (RegexValidator) Must still remain in collection
+Key: 1 Class: LDL\Validators\RegexValidator
+
+Key: 1 Class: LDL\Validators\RegexValidator
+Append StringValidator negated (NOT dumpable)
+Check items
+Key: 1 Class: LDL\Validators\RegexValidator
+Key: 2 Class: LDL\Validators\StringValidator
+"!(LDL\Validators\RegexValidator)"
+Validate: 'a'
+OK!
+Validate: '@'
+OK!
+Validate: 0
+OK!
