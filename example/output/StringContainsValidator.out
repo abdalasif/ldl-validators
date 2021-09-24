@@ -1,0 +1,13 @@
+Validate that Japanese string: 思いをする contains い
+Validate that Japanese string: くろ contains い
+OK: String: "くろ" does not contains criteria: い
+Validate that Japanese string: 赤い contains い
+
+NEGATED Validation:
+####################################################
+
+Validate that Japanese string: 思いをする does NOT contain い
+OK Failed to validate that string "思いをする" does NOT contain "い"
+Validate that Japanese string: くろ does NOT contain い
+Validate that Japanese string: 赤い does NOT contain い
+OK Failed to validate that string "赤い" does NOT contain "い"

@@ -1,0 +1,16 @@
+Validate that Japanese string length: 思いをする is equal to 5 characters
+Validate that English string length: hello is equal to 5 characters
+Validate that Korean string length: 안녕하세요 is equal to 5 characters
+Validate that spanish string length: hola is equal to 5 characters
+OK: Failed to validate length of string "hola" is === 5
+
+NEGATED Validation
+######################################################
+
+Validate that Japanese string length: 思いをする is NOT equal to 5 characters
+OK: Failed to validate length of string "思いをする" is !== 5
+Validate that English string: hello is NOT equal to 5 characters
+OK: Failed to validate length of string "hello" is !== 5
+Validate that Korean string length: 안녕하세요 is NOT equal to 5 characters
+OK: Failed to validate length of string "안녕하세요" is !== 5
+Validate that Spanish string length: hola is NOT equal to 5 characters

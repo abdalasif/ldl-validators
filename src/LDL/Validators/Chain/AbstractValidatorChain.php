@@ -75,9 +75,13 @@ abstract class AbstractValidatorChain implements ValidatorChainInterface
         });
     }
 
-    public static function factory(iterable $validators=null, ...$params) : ValidatorChainInterface
+    public static function factory(
+        string $description=null,
+        iterable $validators=null,
+        ...$params
+    ) : ValidatorChainInterface
     {
-        return new static($validators, ...$params);
+        return new static($description, $validators);
     }
 
     public function getSucceeded() : ValidatorChainItemCollectionInterface

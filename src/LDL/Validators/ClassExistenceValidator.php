@@ -23,12 +23,12 @@ class ClassExistenceValidator implements ValidatorInterface, NegatedValidatorInt
 
     public function assertTrue($value): void
     {
-        if(class_exists($value)){
+        if(is_string($value) && class_exists($value)){
             return;
         }
 
         $msg = sprintf(
-            'Value expected for "%s", must be a string representing an existing class, "%s" was given. Perhaps an autoloader is missing? Perhaps the namespace of the class is written incorrectly?',
+            'Value expected for "%s", must be a string representing an existing class, "%s" was given. Perhaps an autoloader is missing? Perhaps the namespace of the class is typed incorrectly?',
             __CLASS__,
             gettype($value)
         );

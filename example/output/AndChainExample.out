@@ -1,0 +1,16 @@
+Create AndValidatorChain
+Append IntegerValidator'
+Append AndValidatorChain with two NumericComparisonValidator'
+Minimum: 100 | Maximum: 599
+"(LDL\Validators\IntegerValidator && (LDL\Validators\NumericComparisonValidator && LDL\Validators\NumericComparisonValidator))"
+""Validate integer" && "Number is >= than 100" && "Number is <= than 599""
+Validate: 99, exception must be thrown
+EXCEPTION: Value must be ">=" than "100"; "99" was given.
+Validate: 600, exception must be thrown
+EXCEPTION: Value must be "<=" than "599"; "600" was given.
+Validate: 100
+OK!
+Get Validator collection:
+LDL\Validators\IntegerValidator
+LDL\Validators\NumericComparisonValidator
+LDL\Validators\NumericComparisonValidator

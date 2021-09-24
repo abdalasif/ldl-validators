@@ -1,0 +1,13 @@
+Create AndValidatorChain
+Append StringValidator && RegexValidator(#[a-z]+#)
+"(LDL\Validators\StringValidator && LDL\Validators\RegexValidator)"
+""Validate string" && "Validate regex with pattern: #[a-z]+#""
+
+Create NEGATED AndValidatorChain
+Append StringValidator (NOT dumpable) && RegexValidator(#[a-z]+#) (NOT dumpable)
+"!()"
+"<NO DUMPABLE ITEMS FOUND>"
+Remove StringValidator
+Append StringValidator negated
+"!(!LDL\Validators\StringValidator)"
+"NOT: " NOT "Validate string"""

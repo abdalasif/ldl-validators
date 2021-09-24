@@ -1,0 +1,8 @@
+Create interface compliance validator from config
+Set config interface: 'ValidatorInterface'
+Validate string, exception must be thrown
+EXCEPTION: Value expected for "LDL\Validators\InterfaceComplianceValidator", must be an Object, "string" was given
+Validate validator collection, exception must be thrown
+EXCEPTION: Value of class "LDL\Validators\Collection\ValidatorCollection", does not complies to interface: "LDL\Validators\ValidatorInterface"
+Validate regex validator
+OK!

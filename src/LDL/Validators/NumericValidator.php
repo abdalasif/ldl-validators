@@ -15,15 +15,31 @@ class NumericValidator implements ValidatorInterface, NegatedValidatorInterface
 
     private const DESCRIPTION = 'Validate numeric';
 
-    public function __construct(bool $negated=false, string $description=null)
+    /**
+     * @var bool
+     */
+    private $unsigned;
+
+    public function __construct(bool $negated=false, string $description=null, bool $unsigned=false)
     {
+        $this->unsigned = $unsigned;
         $this->_tNegated = $negated;
         $this->_tDescription = $description ?? self::DESCRIPTION;
     }
 
     public function assertTrue($value): void
     {
-        if(is_numeric($value)){
+        $valid = is_numeric($value);
+
+        if($valid && !$this->unsigned){
+            return;
+        }
+
+        if($valid && $this->unsigned && $value < 0){
+            throw new TypeMismatchException("Only unsigned numbers are allowed \"$value\" was given");
+        }
+
+        if($valid){
             return;
         }
 

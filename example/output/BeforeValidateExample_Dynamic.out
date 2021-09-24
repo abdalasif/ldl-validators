@@ -1,0 +1,26 @@
+!!!DYNAMIC
+Create OrValidatorChain
+
+Append RegexValidator with regex: #[a-z]+#'
+
+Validate: 'hello'
+
+Validate: 'world'
+
+Append BeforeValidateExample
+
+Validate: 123
+
+OK!
+
+Checking internal state
+
+6152fec7bb5337.04423849
+
+Validate: 456
+
+OK!
+
+Checking internal state
+
+6152fec7bb70c6.11188110

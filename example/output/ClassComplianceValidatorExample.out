@@ -1,0 +1,10 @@
+Create class compliance validator from config
+Set config class: 'RegexValidator'
+Validate integer, exception must be thrown
+EXCEPTION: Value expected for "LDL\Validators\ClassComplianceValidator", must be an Object, "integer" was given
+Validate validator collection, exception must be thrown
+EXCEPTION: Value of class "LDL\Validators\Collection\ValidatorCollection", does not complies to class: "LDL\Validators\RegexValidator"
+Validate Exact string match validator, exception must be thrown
+EXCEPTION: Value of class "LDL\Validators\StringEqualsValidator", does not complies to class: "LDL\Validators\RegexValidator"
+Validate regex validator
+OK!

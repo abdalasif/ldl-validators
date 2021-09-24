@@ -85,7 +85,7 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
 
     public function assertTrue($value): void
     {
-        $compare = $this->compare($value);
+        $compare = ComparisonOperatorHelper::compare($value, $this->value, $this->operator);
 
         if($compare){
             return;
@@ -103,7 +103,7 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
 
     public function assertFalse($value): void
     {
-        $compare = $this->compare($value);
+        $compare = ComparisonOperatorHelper::compare($value, $this->value, $this->operator);
 
         if(!$compare){
             return;
@@ -117,32 +117,6 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
         );
 
         throw new NumericComparisonValidatorException($msg);
-    }
-
-    private function compare($value) : bool
-    {
-        switch($this->operator){
-            case ComparisonOperatorHelper::OPERATOR_SEQ:
-                return $value === $this->value;
-
-            case ComparisonOperatorHelper::OPERATOR_EQ:
-                return $value == $this->value;
-
-            case ComparisonOperatorHelper::OPERATOR_GT:
-                return $value > $this->value;
-
-            case ComparisonOperatorHelper::OPERATOR_GTE:
-                return $value >= $this->value;
-
-            case ComparisonOperatorHelper::OPERATOR_LT:
-                return $value < $this->value;
-
-            case ComparisonOperatorHelper::OPERATOR_LTE:
-                return $value <= $this->value;
-
-            default:
-                throw new \RuntimeException('Given operator is invalid (WTF?)');
-        }
     }
 
     public function jsonSerialize(): array
