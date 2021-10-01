@@ -7,6 +7,7 @@ Validate: '@@@'
 """
 EXCEPTION: Given value: "@@@" does not matches regex: "#[a-z]+#"\n
 Value expected for "LDL\Validators\IntegerValidator", must be of type integer, "string" was given\n
+Value: "'@@@'" does not comply to validation: [LDL\Validators\RegexValidator]
 """
 
 Dump chain as boolean expression:
