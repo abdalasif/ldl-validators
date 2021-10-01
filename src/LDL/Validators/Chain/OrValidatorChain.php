@@ -41,7 +41,7 @@ class OrValidatorChain extends AbstractValidatorChain implements BooleanValidato
             return;
         }
 
-        $combinedException = new CombinedException();
+        $exceptions = [];
 
         /**
          * @var ValidatorChainItemInterface $chainItem
@@ -57,13 +57,24 @@ class OrValidatorChain extends AbstractValidatorChain implements BooleanValidato
                 break;
             }catch(\Exception $e){
                 $this->getFailed()->append($chainItem);
-                $combinedException->append($e);
+                $exceptions[] = $e;
             }
         }
 
-        if(!$this->getSucceeded()->count()){
-            throw $combinedException;
+        if($this->getSucceeded()->count() > 0 ) {
+            return;
         }
+
+        throw new CombinedException(
+            sprintf(
+                'Value: "%s" does not comply to validation: [%s]',
+                $this->getVarType($value),
+                ValidatorChainExprDumper::dump($this)
+            ),
+            0,
+            null,
+            $exceptions
+        );
     }
 
     public function assertFalse($value, ...$params): void
@@ -76,7 +87,7 @@ class OrValidatorChain extends AbstractValidatorChain implements BooleanValidato
             return;
         }
 
-        $combinedException = new CombinedException();
+        $exceptions = [];
 
         /**
          * @var ValidatorChainItemInterface $chainItem
@@ -92,23 +103,24 @@ class OrValidatorChain extends AbstractValidatorChain implements BooleanValidato
                 break;
             }catch(\Exception $e){
                 $this->getFailed()->append($chainItem);
-                $combinedException->append($e);
+                $exceptions[] = $e;
             }
         }
 
-        if($this->getSucceeded()->count()){
-            $combinedException->append(
-                new \LogicException(
-                    sprintf(
-                        'Failed to assert that value "%s" complies to: %s',
-                        var_export($value, true),
-                        ValidatorChainExprDumper::dump($this)
-                    )
-                )
-            );
-
-            throw $combinedException;
+        if(!$this->getSucceeded()->count()) {
+            return;
         }
+
+        throw new CombinedException(
+            sprintf(
+                'Value: "%s" complies to validation: [%s]',
+                $this->getVarType($value),
+                ValidatorChainExprDumper::dump($this)
+            ),
+            0,
+            null,
+            $exceptions
+        );
     }
 
     public function jsonSerialize(): array
@@ -134,5 +146,18 @@ class OrValidatorChain extends AbstractValidatorChain implements BooleanValidato
         return [
             'operator' => self::OPERATOR
         ];
+    }
+
+    private function getVarType($var) : string
+    {
+        if(is_object($var)){
+            return get_class($var);
+        }
+
+        if(is_scalar($var)){
+           return var_export($var, true);
+        }
+
+        return gettype($var);
     }
 }

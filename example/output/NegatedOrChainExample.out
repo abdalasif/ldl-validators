@@ -5,6 +5,6 @@ Append RegexValidator, with regex: '#[0-9]+#'
 Chain is negated?
 true
 Validate: 'a', must throw exception
-EXCEPTION: Failed to assert that value "'a'" complies to: !(LDL\Validators\RegexValidator || LDL\Validators\RegexValidator)
+EXCEPTION:
 Validate: '@' must NOT throw exception!
 OK!
