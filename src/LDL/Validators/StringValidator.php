@@ -2,6 +2,7 @@
 
 namespace LDL\Validators;
 
+use LDL\Framework\Base\Contracts\Type\ToStringInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorDescriptionTrait;
@@ -23,6 +24,10 @@ class StringValidator implements ValidatorInterface, NegatedValidatorInterface
 
     public function assertTrue($value): void
     {
+        if($value instanceof ToStringInterface) {
+            $value = $value->toString();
+        }
+
         if(is_string($value)){
             return;
         }
@@ -38,13 +43,14 @@ class StringValidator implements ValidatorInterface, NegatedValidatorInterface
 
     public function assertFalse($value): void
     {
-        if(!is_string($value)){
+        if(!is_string($value) && !$value instanceof ToStringInterface){
             return;
         }
 
         $msg = sprintf(
-            'Value expected for "%s", must NOT be of type string, "%s" was given',
+            'Value expected for "%s", must NOT be of type string or an instanceof "%s", "%s" was given',
             __CLASS__,
+            ToStringInterface::class,
             gettype($value)
         );
 

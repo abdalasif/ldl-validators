@@ -3,8 +3,7 @@
 require __DIR__.'/../vendor/autoload.php';
 
 use LDL\Validators\StringLengthValidator;
-use LDL\Framework\Helper\ComparisonOperatorHelper;
-
+use LDL\Framework\Base\Constants;
 $enSTR = 'hello';
 $jpSTR = '思いをする';
 $krSTR = '안녕하세요';
@@ -14,7 +13,7 @@ $length = 5;
 
 $validator = new StringLengthValidator(
     $length,
-    ComparisonOperatorHelper::OPERATOR_SEQ,
+    Constants::OPERATOR_SEQ,
     'UTF-8'
 );
 

@@ -2,6 +2,7 @@
 
 namespace LDL\Validators;
 
+use LDL\Framework\Base\Contracts\Type\ToStringInterface;
 use LDL\Framework\Helper\RegexHelper;
 use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
@@ -55,6 +56,10 @@ class RegexValidator implements ValidatorInterface, NegatedValidatorInterface, V
 
     public function validate($value): void
     {
+        if($value instanceof ToStringInterface){
+            $value = $value->toString();
+        }
+
         if(!is_scalar($value)){
             throw new \LogicException(sprintf('Validator %s only accepts scalar values', __CLASS__));
         }

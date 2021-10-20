@@ -2,6 +2,7 @@
 
 namespace LDL\Validators;
 
+use LDL\Framework\Base\Contracts\Type\ToStringInterface;
 use LDL\Framework\Helper\ComparisonOperatorHelper;
 use LDL\Framework\Helper\MbEncodingHelper;
 use LDL\Validators\Traits\NegatedValidatorTrait;
@@ -68,6 +69,10 @@ class StringLengthValidator implements ValidatorInterface, NegatedValidatorInter
 
     public function assertTrue($value): void
     {
+        if($value instanceof ToStringInterface){
+            $value = $value->toString();
+        }
+
         $value = (string)$value;
 
         $result = ComparisonOperatorHelper::compare(
@@ -92,6 +97,10 @@ class StringLengthValidator implements ValidatorInterface, NegatedValidatorInter
 
     public function assertFalse($value): void
     {
+        if($value instanceof ToStringInterface){
+            $value = $value->toString();
+        }
+
         $value = (string)$value;
 
         $result = ComparisonOperatorHelper::compareInverse(

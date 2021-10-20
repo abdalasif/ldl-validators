@@ -2,6 +2,7 @@
 
 namespace LDL\Validators;
 
+use LDL\Framework\Base\Contracts\Type\ToScalarInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorDescriptionTrait;
@@ -37,13 +38,18 @@ class ScalarValidator implements ValidatorInterface, NegatedValidatorInterface, 
 
     public function assertTrue($value): void
     {
+        if($value instanceof ToScalarInterface){
+            $value = $value->toScalar();
+        }
+
         if(is_scalar($value)){
             return;
         }
 
         $msg = sprintf(
-            'Value expected for "%s", must be of type scalar, "%s" was given',
+            'Value expected for "%s", must be of type scalar or an instance of "%s", "%s" was given',
             __CLASS__,
+            ToScalarInterface::class,
             gettype($value)
         );
 
@@ -52,13 +58,14 @@ class ScalarValidator implements ValidatorInterface, NegatedValidatorInterface, 
 
     public function assertFalse($value): void
     {
-        if(!is_scalar($value)){
+        if(!is_scalar($value) && !$value instanceof ToScalarInterface){
             return;
         }
 
         $msg = sprintf(
-            'Value expected for "%s", must NOT be of type scalar, "%s" was given',
+            'Value expected for "%s", must NOT be of type scalar or an instance of "%s", "%s" was given',
             __CLASS__,
+            ToScalarInterface::class,
             gettype($value)
         );
 

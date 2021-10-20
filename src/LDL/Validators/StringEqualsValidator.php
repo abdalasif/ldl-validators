@@ -2,6 +2,7 @@
 
 namespace LDL\Validators;
 
+use LDL\Framework\Base\Contracts\Type\ToStringInterface;
 use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorDescriptionTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
@@ -55,6 +56,10 @@ class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInter
 
     public function assertTrue($value): void
     {
+        if($value instanceof ToStringInterface) {
+            $value = $value->toString();
+        }
+
         $comparison = $this->strict ? $this->value === $value : $this->value == $value;
 
         if($comparison){
@@ -73,6 +78,10 @@ class StringEqualsValidator implements ValidatorInterface, NegatedValidatorInter
 
     public function assertFalse($value): void
     {
+        if($value instanceof ToStringInterface) {
+            $value = $value->toString();
+        }
+
         $comparison = $this->strict ? $this->value === $value : $this->value == $value;
 
         if(!$comparison){

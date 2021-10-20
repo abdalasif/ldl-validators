@@ -2,6 +2,7 @@
 
 namespace LDL\Validators;
 
+use LDL\Framework\Base\Contracts\Type\ToDoubleInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorDescriptionTrait;
@@ -29,11 +30,14 @@ class DoubleValidator implements ValidatorInterface, NegatedValidatorInterface
 
     public function assertTrue($value): void
     {
-        $valid = is_float($value);
+        $instanceOfToDouble = $value instanceof ToDoubleInterface;
+        $valid = is_float($value) || $instanceOfToDouble;
 
         if($valid && !$this->unsigned){
             return;
         }
+
+        $value = $instanceOfToDouble ? $value->toDouble() : $value;
 
         if($valid && $this->unsigned && $value < 0){
             throw new TypeMismatchException("Only unsigned numbers are allowed \"$value\" was given");
@@ -44,8 +48,9 @@ class DoubleValidator implements ValidatorInterface, NegatedValidatorInterface
         }
 
         $msg = sprintf(
-            'Value expected for "%s", must be of type double, "%s" given',
+            'Value expected for "%s", must be of type double or an instance of "%s", "%s" given',
             __CLASS__,
+            ToDoubleInterface::class,
             gettype($value)
         );
 
@@ -54,13 +59,16 @@ class DoubleValidator implements ValidatorInterface, NegatedValidatorInterface
 
     public function assertFalse($value): void
     {
-        if(!is_float($value)){
+        $instanceOfToDouble = $value instanceof ToDoubleInterface;
+
+        if(!is_float($value) && !$instanceOfToDouble){
             return;
         }
 
         $msg = sprintf(
-            'Value expected for "%s", must NOT be of type double',
-            __CLASS__
+            'Value expected for "%s", must NOT be of type double or an instance of "%s"',
+            __CLASS__,
+            ToDoubleInterface::class
         );
 
         throw new TypeMismatchException($msg);

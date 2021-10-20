@@ -5,7 +5,7 @@ require __DIR__.'/../vendor/autoload.php';
 use LDL\Validators\Chain\AndValidatorChain;
 use LDL\Validators\IntegerValidator;
 use LDL\Validators\NumericComparisonValidator;
-use LDL\Framework\Helper\ComparisonOperatorHelper;
+use LDL\Framework\Base\Constants;
 use LDL\Validators\Chain\Dumper\ValidatorChainExprDumper;
 use LDL\Validators\Chain\Dumper\ValidatorChainHumanDumper;
 
@@ -18,8 +18,8 @@ echo "Minimum: 100 | Maximum: 599\n";
 $chain = new AndValidatorChain([
     new IntegerValidator(false),
     new AndValidatorChain([
-        new NumericComparisonValidator(100, ComparisonOperatorHelper::OPERATOR_GTE),
-        new NumericComparisonValidator(599, ComparisonOperatorHelper::OPERATOR_LTE),
+        new NumericComparisonValidator(100, Constants::OPERATOR_GTE),
+        new NumericComparisonValidator(599, Constants::OPERATOR_LTE),
     ])
 ]);
 

@@ -2,6 +2,7 @@
 
 namespace LDL\Validators;
 
+use LDL\Framework\Base\Contracts\Type\ToStringInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorDescriptionTrait;
@@ -23,6 +24,10 @@ class EmailValidator implements ValidatorInterface, NegatedValidatorInterface
 
     public function assertTrue($value): void
     {
+        if($value instanceof ToStringInterface) {
+            $value = $value->toString();
+        }
+
         if(filter_var($value, \FILTER_VALIDATE_EMAIL)) {
             return;
         }

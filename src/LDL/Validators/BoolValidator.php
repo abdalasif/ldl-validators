@@ -2,6 +2,7 @@
 
 namespace LDL\Validators;
 
+use LDL\Framework\Base\Contracts\Type\ToBooleanInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorDescriptionTrait;
@@ -23,7 +24,7 @@ class BoolValidator implements ValidatorInterface, NegatedValidatorInterface
 
     public function assertTrue($value): void
     {
-        $valid = is_bool($value);
+        $valid = is_bool($value) || $value instanceof ToBooleanInterface;
 
         if($valid){
             return;

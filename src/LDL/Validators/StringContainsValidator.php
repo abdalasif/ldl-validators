@@ -2,6 +2,7 @@
 
 namespace LDL\Validators;
 
+use LDL\Framework\Base\Contracts\Type\ToStringInterface;
 use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorDescriptionTrait;
 use LDL\Validators\Traits\ValidatorValidateTrait;
@@ -98,6 +99,10 @@ class StringContainsValidator implements ValidatorInterface, NegatedValidatorInt
 
     public function assertTrue($value): void
     {
+        if($value instanceof ToStringInterface) {
+            $value = $value->toString();
+        }
+
         $value = (string)$value;
         $value = $this->toLower ? mb_strtolower($value, $this->encoding) : $value;
 

@@ -2,6 +2,7 @@
 
 namespace LDL\Validators;
 
+use LDL\Framework\Base\Contracts\Type\ToNumericInterface;
 use LDL\Validators\Exception\NumericComparisonValidatorException;
 use LDL\Framework\Helper\ComparisonOperatorHelper;
 use LDL\Validators\Traits\NegatedValidatorTrait;
@@ -85,6 +86,10 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
 
     public function assertTrue($value): void
     {
+        if($value instanceof ToNumericInterface){
+            $value = $value->toNumeric();
+        }
+
         $compare = ComparisonOperatorHelper::compare($value, $this->value, $this->operator);
 
         if($compare){
@@ -103,6 +108,10 @@ class NumericComparisonValidator implements ValidatorInterface, NegatedValidator
 
     public function assertFalse($value): void
     {
+        if($value instanceof ToNumericInterface){
+            $value = $value->toNumeric();
+        }
+
         $compare = ComparisonOperatorHelper::compare($value, $this->value, $this->operator);
 
         if(!$compare){

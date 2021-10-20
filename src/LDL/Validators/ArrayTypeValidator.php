@@ -2,6 +2,7 @@
 
 namespace LDL\Validators;
 
+use LDL\Framework\Base\Contracts\Type\ToArrayInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorDescriptionTrait;
@@ -26,13 +27,14 @@ class ArrayTypeValidator implements ValidatorInterface, NegatedValidatorInterfac
 
     public function assertTrue($value): void
     {
-        if(is_array($value)){
+        if(is_array($value) || $value instanceof ToArrayInterface){
             return;
         }
 
         $msg = sprintf(
-            'Value expected for "%s", must be of type array, "%s" was given',
+            'Value expected for "%s", must be of type array or an object which implements "%s", "%s" was given',
             __CLASS__,
+            ToArrayInterface::class,
             gettype($value)
         );
 
@@ -41,13 +43,14 @@ class ArrayTypeValidator implements ValidatorInterface, NegatedValidatorInterfac
 
     public function assertFalse($value): void
     {
-        if(!is_array($value)){
+        if(!is_array($value) && !$value instanceof ToArrayInterface){
             return;
         }
 
         $msg = sprintf(
-            'Value expected for "%s", must NOT be of type array, "%s" was given',
+            'Value expected for "%s", must NOT be of type array or an object which implements "%s", "%s" was given',
             __CLASS__,
+            ToArrayInterface::class,
             gettype($value)
         );
 

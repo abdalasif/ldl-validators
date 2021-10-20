@@ -2,6 +2,7 @@
 
 namespace LDL\Validators;
 
+use LDL\Framework\Base\Contracts\Type\ToNumericInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorDescriptionTrait;
@@ -29,6 +30,10 @@ class NumericValidator implements ValidatorInterface, NegatedValidatorInterface
 
     public function assertTrue($value): void
     {
+        if($value instanceof ToNumericInterface){
+            $value = $value->toNumeric();
+        }
+
         $valid = is_numeric($value);
 
         if($valid && !$this->unsigned){
@@ -44,8 +49,9 @@ class NumericValidator implements ValidatorInterface, NegatedValidatorInterface
         }
 
         $msg = sprintf(
-            'Value expected for "%s", must be of type numeric; "%s" was given',
+            'Value expected for "%s", must be of type numeric or an instance of "%s"; "%s" was given',
             __CLASS__,
+            ToNumericInterface::class,
             is_scalar($value) ? var_export($value, true) : gettype($value)
         );
 
@@ -54,7 +60,7 @@ class NumericValidator implements ValidatorInterface, NegatedValidatorInterface
 
     public function assertFalse($value): void
     {
-        if(!is_numeric($value)){
+        if(!is_numeric($value) && !$value instanceof ToNumericInterface){
             return;
         }
 
