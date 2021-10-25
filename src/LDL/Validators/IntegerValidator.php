@@ -2,7 +2,7 @@
 
 namespace LDL\Validators;
 
-use LDL\Framework\Base\Contracts\Type\ToIntInterface;
+use LDL\Framework\Base\Contracts\Type\ToIntegerInterface;
 use LDL\Validators\Exception\TypeMismatchException;
 use LDL\Validators\Traits\NegatedValidatorTrait;
 use LDL\Validators\Traits\ValidatorDescriptionTrait;
@@ -30,8 +30,8 @@ class IntegerValidator implements ValidatorInterface, NegatedValidatorInterface
 
     public function assertTrue($value): void
     {
-        if($value instanceof ToIntInterface){
-            $value = $value->toInt();
+        if($value instanceof ToIntegerInterface){
+            $value = $value->toInteger();
         }
 
         $valid = is_int($value);
@@ -51,7 +51,7 @@ class IntegerValidator implements ValidatorInterface, NegatedValidatorInterface
         $msg = sprintf(
             'Value expected for "%s", must be of type integer or an instance of "%s", "%s" was given',
             __CLASS__,
-            ToIntInterface::class,
+            ToIntegerInterface::class,
             gettype($value)
         );
 
@@ -60,14 +60,14 @@ class IntegerValidator implements ValidatorInterface, NegatedValidatorInterface
 
     public function assertFalse($value): void
     {
-        if(!is_int($value) && !$value instanceof ToIntInterface){
+        if(!is_int($value) && !$value instanceof ToIntegerInterface){
             return;
         }
 
         $msg = sprintf(
             'Value expected for "%s", must NOT be of type integer or an instance of "%s", "%s" was given',
             __CLASS__,
-            ToIntInterface::class,
+            ToIntegerInterface::class,
             gettype($value)
         );
 
