@@ -8,7 +8,9 @@ use LDL\Validators\IntegerValidator;
 use LDL\Validators\Chain\OrValidatorChain;
 use LDL\Validators\Chain\AndValidatorChain;
 use LDL\Validators\NumericComparisonValidator;
-use LDL\Validators\Chain\Exception\CombinedException;
+use LDL\Validators\Chain\Dumper\ValidatorChainPhpDumper;
+use LDL\Validators\Chain\Dumper\ValidatorChainExprDumper;
+use LDL\Validators\Chain\Dumper\ValidatorChainJsonDumper;
 
 echo "Create Validator Chain\n";
 
@@ -32,23 +34,14 @@ $chain = new OrValidatorChain([
     ])
 ]);
 
-echo "Validate: 'abc'\n";
-$chain->validate('abc');
-echo "OK!\n";
+echo "\nDump chain as boolean expression:\n";
+echo ValidatorChainExprDumper::dump($chain);
 
-echo "Validate: 123\n";
-$chain->validate(123);
-echo "OK!\n";
+echo "\n\nDump chain as PHP (sleep for 3 seconds):\n";
+sleep(3);
+dump(ValidatorChainPhpDumper::dump($chain));
 
-echo "Validate: '@@@'\n";
-try {
-    $chain->validate('@@@');
-} catch (CombinedException $e) {
-    dump("EXCEPTION: {$e->getCombinedMessage()}");
-}
 
-echo "\nGet Validator collection:\n";
-
-foreach ($chain->getChainItems()->getValidators() as $validator) {
-    echo get_class($validator) . "\n";
-}
+echo "\nDump chain as JSON (sleep for 3 seconds):\n";
+sleep(3);
+dump(ValidatorChainJsonDumper::dump($chain));

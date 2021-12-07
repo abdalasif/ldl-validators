@@ -17,9 +17,9 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "ldl-framework/framework-base": "dev-master",
         "php": ">=7.3",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ldl-framework/file-common": "dev-master"
     },
     "autoload": {
         "psr-4": {
