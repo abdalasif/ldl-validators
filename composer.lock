@@ -4,20 +4,73 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "11026e8aec036d0348b347f7f20751a7",
+    "content-hash": "622d908275156b027d904a87b6164973",
     "packages": [
+        {
+            "name": "ldl-framework/file-common",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ldl-php/ldl-file-common.git",
+                "reference": "2213f8cf1477d5e6639dea00467ae47efcd0c10b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ldl-php/ldl-file-common/zipball/2213f8cf1477d5e6639dea00467ae47efcd0c10b",
+                "reference": "2213f8cf1477d5e6639dea00467ae47efcd0c10b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "ext-json": "*",
+                "ldl-framework/typed-collection": "dev-master",
+                "php": ">=7.3"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "LDL\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Federico Stange",
+                    "email": "jpfstange@gmail.com"
+                }
+            ],
+            "description": "Common classes for handling files",
+            "homepage": "https://github.com/pthreat/ldl-file-common",
+            "keywords": [
+                "collection",
+                "files",
+                "filesystem",
+                "fs",
+                "handling",
+                "type"
+            ],
+            "support": {
+                "issues": "https://github.com/ldl-php/ldl-file-common/issues",
+                "source": "https://github.com/ldl-php/ldl-file-common/tree/master"
+            },
+            "time": "2021-12-07T13:17:25+00:00"
+        },
         {
             "name": "ldl-framework/framework-base",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/pthreat/ldl-framework-base.git",
-                "reference": "d61c631a0308a83a5d3b6f6be42daf4b043aae61"
+                "url": "https://github.com/ldl-php/ldl-framework-base.git",
+                "reference": "9445d5119e51102a8cbf1a8f5595b49f59880828"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pthreat/ldl-framework-base/zipball/d61c631a0308a83a5d3b6f6be42daf4b043aae61",
-                "reference": "d61c631a0308a83a5d3b6f6be42daf4b043aae61",
+                "url": "https://api.github.com/repos/ldl-php/ldl-framework-base/zipball/9445d5119e51102a8cbf1a8f5595b49f59880828",
+                "reference": "9445d5119e51102a8cbf1a8f5595b49f59880828",
                 "shasum": ""
             },
             "require": {
@@ -43,10 +96,60 @@
             ],
             "description": "LDL Framework base contracts and exceptions",
             "support": {
-                "issues": "https://github.com/pthreat/ldl-framework-base/issues",
-                "source": "https://github.com/pthreat/ldl-framework-base/tree/master"
+                "issues": "https://github.com/ldl-php/ldl-framework-base/issues",
+                "source": "https://github.com/ldl-php/ldl-framework-base/tree/master"
             },
-            "time": "2021-10-25T12:00:42+00:00"
+            "time": "2021-12-08T16:11:46+00:00"
+        },
+        {
+            "name": "ldl-framework/typed-collection",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ldl-php/ldl-typed-collection.git",
+                "reference": "074c4ebc45a555aef007837d15a2f814db0a6323"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ldl-php/ldl-typed-collection/zipball/074c4ebc45a555aef007837d15a2f814db0a6323",
+                "reference": "074c4ebc45a555aef007837d15a2f814db0a6323",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ldl-framework/framework-base": "dev-master",
+                "ldl-framework/validators": "dev-master",
+                "php": ">=7.3"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "LDL\\Type\\": "src/Type/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Federico Stange",
+                    "email": "jpfstange@gmail.com"
+                }
+            ],
+            "description": "Adds support for typed collections",
+            "homepage": "https://github.com/pthreat/ldl-type",
+            "keywords": [
+                "collection",
+                "php",
+                "type"
+            ],
+            "support": {
+                "issues": "https://github.com/ldl-php/ldl-typed-collection/issues",
+                "source": "https://github.com/ldl-php/ldl-typed-collection/tree/master"
+            },
+            "time": "2021-12-07T12:52:53+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -213,16 +316,16 @@
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v5.3.8",
+            "version": "v5.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "eaaea4098be1c90c8285543e1356a09c8aa5c8da"
+                "reference": "89ab66eaef230c9cd1992de2e9a1b26652b127b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/eaaea4098be1c90c8285543e1356a09c8aa5c8da",
-                "reference": "eaaea4098be1c90c8285543e1356a09c8aa5c8da",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/89ab66eaef230c9cd1992de2e9a1b26652b127b9",
+                "reference": "89ab66eaef230c9cd1992de2e9a1b26652b127b9",
                 "shasum": ""
             },
             "require": {
@@ -236,8 +339,9 @@
             },
             "require-dev": {
                 "ext-iconv": "*",
-                "symfony/console": "^4.4|^5.0",
-                "symfony/process": "^4.4|^5.0",
+                "symfony/console": "^4.4|^5.0|^6.0",
+                "symfony/process": "^4.4|^5.0|^6.0",
+                "symfony/uid": "^5.1|^6.0",
                 "twig/twig": "^2.13|^3.0.4"
             },
             "suggest": {
@@ -281,7 +385,7 @@
                 "dump"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-dumper/tree/v5.3.8"
+                "source": "https://github.com/symfony/var-dumper/tree/v5.4.0"
             },
             "funding": [
                 {
@@ -297,14 +401,14 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-09-24T15:59:58+00:00"
+            "time": "2021-11-29T15:30:56+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "ldl-framework/framework-base": 20
+        "ldl-framework/file-common": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
@@ -313,5 +417,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.1.0"
 }

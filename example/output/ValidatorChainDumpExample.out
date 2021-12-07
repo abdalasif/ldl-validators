@@ -1,0 +1,162 @@
+Create Validator Chain
+
+Dump chain as boolean expression:
+((LDL\Validators\StringValidator && LDL\Validators\RegexValidator) || (LDL\Validators\IntegerValidator && (LDL\Validators\IntegerValidator || (LDL\Validators\NumericComparisonValidator && LDL\Validators\NumericComparisonValidator))) || LDL\Validators\RegexValidator)
+
+Dump chain as PHP (sleep for 3 seconds):
+array:2 [
+  "parent" => "LDL\Validators\Chain\OrValidatorChain"
+  "children" => array:3 [
+    0 => array:2 [
+      "parent" => "LDL\Validators\Chain\AndValidatorChain"
+      "children" => array:2 [
+        0 => array:2 [
+          "class" => "LDL\Validators\StringValidator"
+          "config" => []
+        ]
+        1 => array:2 [
+          "class" => "LDL\Validators\RegexValidator"
+          "config" => array:3 [
+            "regex" => "#[a-z]+#"
+            "negated" => false
+            "description" => "Validate regex with pattern: #[a-z]+#"
+          ]
+        ]
+      ]
+    ]
+    1 => array:2 [
+      "parent" => "LDL\Validators\Chain\AndValidatorChain"
+      "children" => array:2 [
+        0 => array:2 [
+          "class" => "LDL\Validators\IntegerValidator"
+          "config" => []
+        ]
+        1 => array:2 [
+          "parent" => "LDL\Validators\Chain\OrValidatorChain"
+          "children" => array:2 [
+            0 => array:2 [
+              "class" => "LDL\Validators\IntegerValidator"
+              "config" => []
+            ]
+            1 => array:2 [
+              "parent" => "LDL\Validators\Chain\AndValidatorChain"
+              "children" => array:2 [
+                0 => array:2 [
+                  "class" => "LDL\Validators\NumericComparisonValidator"
+                  "config" => array:4 [
+                    "value" => 500
+                    "operator" => ">"
+                    "negated" => false
+                    "description" => "Number is > than 500"
+                  ]
+                ]
+                1 => array:2 [
+                  "class" => "LDL\Validators\NumericComparisonValidator"
+                  "config" => array:4 [
+                    "value" => 10
+                    "operator" => "<="
+                    "negated" => false
+                    "description" => "Number is <= than 10"
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+    2 => array:2 [
+      "parent" => "LDL\Validators\Chain\OrValidatorChain"
+      "children" => array:1 [
+        0 => array:2 [
+          "class" => "LDL\Validators\RegexValidator"
+          "config" => array:3 [
+            "regex" => "#[a-z]+#"
+            "negated" => false
+            "description" => "Validate regex with pattern: #[a-z]+#"
+          ]
+        ]
+      ]
+    ]
+  ]
+]
+
+Dump chain as JSON (sleep for 3 seconds):
+"""
+{\n
+    "parent": "LDL\\Validators\\Chain\\OrValidatorChain",\n
+    "children": [\n
+        {\n
+            "parent": "LDL\\Validators\\Chain\\AndValidatorChain",\n
+            "children": [\n
+                {\n
+                    "class": "LDL\\Validators\\StringValidator",\n
+                    "config": []\n
+                },\n
+                {\n
+                    "class": "LDL\\Validators\\RegexValidator",\n
+                    "config": {\n
+                        "regex": "#[a-z]+#",\n
+                        "negated": false,\n
+                        "description": "Validate regex with pattern: #[a-z]+#"\n
+                    }\n
+                }\n
+            ]\n
+        },\n
+        {\n
+            "parent": "LDL\\Validators\\Chain\\AndValidatorChain",\n
+            "children": [\n
+                {\n
+                    "class": "LDL\\Validators\\IntegerValidator",\n
+                    "config": []\n
+                },\n
+                {\n
+                    "parent": "LDL\\Validators\\Chain\\OrValidatorChain",\n
+                    "children": [\n
+                        {\n
+                            "class": "LDL\\Validators\\IntegerValidator",\n
+                            "config": []\n
+                        },\n
+                        {\n
+                            "parent": "LDL\\Validators\\Chain\\AndValidatorChain",\n
+                            "children": [\n
+                                {\n
+                                    "class": "LDL\\Validators\\NumericComparisonValidator",\n
+                                    "config": {\n
+                                        "value": 500,\n
+                                        "operator": ">",\n
+                                        "negated": false,\n
+                                        "description": "Number is > than 500"\n
+                                    }\n
+                                },\n
+                                {\n
+                                    "class": "LDL\\Validators\\NumericComparisonValidator",\n
+                                    "config": {\n
+                                        "value": 10,\n
+                                        "operator": "<=",\n
+                                        "negated": false,\n
+                                        "description": "Number is <= than 10"\n
+                                    }\n
+                                }\n
+                            ]\n
+                        }\n
+                    ]\n
+                }\n
+            ]\n
+        },\n
+        {\n
+            "parent": "LDL\\Validators\\Chain\\OrValidatorChain",\n
+            "children": [\n
+                {\n
+                    "class": "LDL\\Validators\\RegexValidator",\n
+                    "config": {\n
+                        "regex": "#[a-z]+#",\n
+                        "negated": false,\n
+                        "description": "Validate regex with pattern: #[a-z]+#"\n
+                    }\n
+                }\n
+            ]\n
+        }\n
+    ]\n
+}
+"""
